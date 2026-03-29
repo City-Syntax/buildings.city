@@ -1091,7 +1091,7 @@
 
 .ml-class-row {
     display: grid;
-    grid-template-columns: minmax(0, 1.2fr) repeat(3, minmax(48px, 72px));
+    grid-template-columns: minmax(0, 1.1fr) repeat(3, minmax(56px, 88px));
     gap: 8px;
     align-items: center;
     padding: 10px 12px;
@@ -2163,6 +2163,6 @@
     }
 
     .ml-class-row {
-        grid-template-columns: minmax(0, 1fr) repeat(3, 56px);
+        grid-template-columns: minmax(0, 1fr) repeat(3, 68px);
     }
 }

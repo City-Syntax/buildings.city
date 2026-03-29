@@ -454,7 +454,7 @@ function populateMlSummary(result) {
         if (classMetrics.length) {
             const header = document.createElement('div');
             header.className = 'ml-class-row ml-class-header';
-            header.innerHTML = '<span class="ml-class-name">Class</span><span class="ml-class-metric">P</span><span class="ml-class-metric">R</span><span class="ml-class-metric">F1</span>';
+            header.innerHTML = '<span class="ml-class-name">Class</span><span class="ml-class-metric">Precision</span><span class="ml-class-metric">Recall</span><span class="ml-class-metric">F1</span>';
             classesEl.appendChild(header);
 
             classMetrics.slice(0, 8).forEach(([label, values]) => {
