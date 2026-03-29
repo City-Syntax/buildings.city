@@ -1,0 +1,27 @@
+{
+  "name": "buildings.city-package",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "ml:setup": "powershell -ExecutionPolicy Bypass -File ./ml-service/setup-venv.ps1",
+    "ml:start": "powershell -ExecutionPolicy Bypass -File ./ml-service/start-ml-service.ps1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "UBEM Platform for Building Carbon and Energy Analysis",
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "@mapbox/mapbox-gl-draw": "^1.5.1",
+    "@mapbox/mapbox-gl-geocoder": "^5.1.2",
+    "@turf/turf": "^7.3.4",
+    "echarts": "^6.0.0",
+    "mapbox-gl": "^3.2.0",
+    "xlsx": "^0.18.5"
+  }
+}

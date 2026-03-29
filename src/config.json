@@ -1,0 +1,91 @@
+{
+  "city_name": "Zurich",
+  "_comment_city_name": "City name, shown on the page and map. Example: Singapore.",
+  "projectDescription": "Buildings.city Zurich is an interactive urban analysis platform focused on Zurich's building stock, urban archetypes, and simplified carbon-related performance. It combines compact GeoJSON building data with inferred archetypes, height estimates, and archetype-based operational energy and embodied carbon assumptions to support city-scale comparison and exploration.",
+  "_comment_projectDescription": "Short description of the project shown in the About popup. Supports plain text.",
+  "country": "Switzerland",
+  "_comment_country": "Country name, for identification only. Example: Singapore.",
+  "mapbox_token": "pk....",
+  "_comment_mapbox_token": "Mapbox token, required. Get from https://account.mapbox.com/.",
+  "map_style": "mapbox://styles/mapbox/dark-v11",
+  "_comment_map_style": "Map style URL, can use Mapbox official or custom style.",
+  "buildings_source": {
+    "type": "geojson",
+    "data": "/data/export.compact.geojson"
+  },
+  "_comment_buildings_source": "Building data source. 'data' is the path to your GeoJSON file.",
+  "ml_service_url": "http://localhost:8000",
+  "_comment_ml_service_url": "Local URL for the optional ML service that predicts unknown building archetypes.",
+  "ml_archetype_property": "building_archetype",
+  "_comment_ml_archetype_property": "GeoJSON property used by the ML service as the target archetype label.",
+  "height_field": "height",
+  "_comment_height_field": "Field name for building height, must match GeoJSON property.",
+  "dataset_url": "",
+  "_comment_dataset_url": "Mapbox dataset URL (optional, can leave blank if not used).",
+  "layers": {
+    "base_building_layer": "zurich-buildings-3d",
+    "carbon_layer": "zurich-carbon-layer",
+    "energy_layer": "zurich-energy-layer"
+  },
+  "_comment_layers": "Layer IDs. Must match the IDs in your Mapbox style file.",
+  "data_disclaimer": "Disclaimer: All operational energy and embodied carbon values presented in this project are AI-generated illustrative estimates. They are provided exclusively for platform demonstration and visualization, intended to show how the Buildings.city toolkit can scale across urban datasets and interface workflows. These values are not measured, audited, validated, or suitable for technical reference, benchmarking, design, policy, investment, compliance, or decision-making purposes. The simulation pathway and methodology are documented at https://city-syntax.github.io/buildings.sg/documentation.html. By using this dataset, users acknowledge that these figures carry no professional or evidentiary authority, and the project team assumes no responsibility for any interpretation, application, or consequences arising from their use.",
+  "_comment_data_disclaimer": "Formal disclaimer for AI-generated energy and carbon values shown by the platform.",
+  "operational_energy_data": {
+    "unit": "kWh/m2/year",
+    "columns": ["total", "heating", "cooling", "lighting", "equipment", "hot_water"],
+    "data": {
+      "unknown": [95, 42, 4, 14, 21, 14],
+      "residential": [85, 38, 2, 8, 12, 25],
+      "commercial": [180, 55, 18, 32, 60, 15],
+      "others": [70, 30, 3, 10, 17, 10],
+      "office": [165, 42, 20, 30, 65, 8],
+      "education": [110, 48, 6, 20, 28, 8],
+      "parking_garage": [18, 2, 0, 8, 8, 0],
+      "civic_religious": [95, 40, 4, 18, 23, 10],
+      "industrial": [140, 50, 6, 18, 60, 6],
+      "hospitality": [220, 70, 22, 30, 48, 50],
+      "healthcare": [260, 82, 20, 34, 88, 36],
+      "sports": [125, 52, 8, 18, 27, 20],
+      "agricultural_utility": [45, 18, 0, 6, 18, 3],
+      "transport": [105, 38, 6, 18, 35, 8]
+    }
+  },
+  "_comment_operational_energy_data": "Building operational energy data. Fill in for each building type. Unit: kWh/m2/year.",
+  "embodied_carbon_values": {
+    "unit": "kgCO2e/m2",
+    "data": {
+      "unknown": 540,
+      "residential": 420,
+      "commercial": 520,
+      "others": 300,
+      "office": 560,
+      "education": 510,
+      "parking_garage": 380,
+      "civic_religious": 540,
+      "industrial": 460,
+      "hospitality": 620,
+      "healthcare": 700,
+      "sports": 480,
+      "agricultural_utility": 220,
+      "transport": 500
+    }
+  },
+  "_comment_embodied_carbon_values": "Building embodied carbon intensity. Fill in for each building type. Unit: kgCO2e/m2.",
+  "archetype_descriptions": {
+    "Unknown": "Buildings tagged too generically to support a confident use classification. In Zurich this is dominated by features mapped only as building=yes or similarly underspecified records.",
+    "Residential": "Housing-related buildings including apartments, houses, dormitories, and other residential forms that make up a large share of Zurich's built fabric.",
+    "Commercial": "Retail and service-oriented buildings such as shops, street-facing businesses, restaurants, and other commerce-focused premises.",
+    "Others": "Minor, ambiguous, temporary, or support structures that do not fit the main archetype groups, including roofs, sheds, and miscellaneous utility-like forms.",
+    "Office": "Administrative and workplace buildings used primarily for offices, professional services, and corporate activities.",
+    "Education": "Schools, universities, colleges, childcare facilities, and other buildings supporting teaching, learning, and research.",
+    "Parking Garage": "Garages, parking structures, and carport-like buildings primarily dedicated to vehicle storage and access.",
+    "Civic Religious": "Public, institutional, cultural, and religious buildings such as churches, museums, libraries, civic facilities, and government-related structures.",
+    "Industrial": "Production, storage, workshop, logistics, and warehouse buildings associated with industrial activity and urban services.",
+    "Hospitality": "Hotels, hostels, and visitor accommodation buildings serving short-stay and tourism-related uses.",
+    "Healthcare": "Hospitals, clinics, and related medical buildings with comparatively intensive servicing and building-system demands.",
+    "Sports": "Sports halls, sports centres, and recreation-oriented indoor facilities.",
+    "Agricultural Utility": "Utility-like or semi-rural support buildings such as greenhouses, barns, and auxiliary farm structures.",
+    "Transport": "Station and transport-support buildings associated with rail, bus, and public mobility infrastructure."
+  },
+  "_comment_archetype_descriptions": "Descriptions shown in the panel when a building archetype is selected. Keys must match the formatted archetype names. Add or remove entries to match your classification."
+}

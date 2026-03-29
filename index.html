@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buildings.city</title>
+    <link rel="icon" type="image/x-icon" href="logo/favicon.ico" />
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.2/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.2/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.5.0/mapbox-gl-draw.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.5.0/mapbox-gl-draw.css"
+        type="text/css">
+    <link rel="stylesheet"
+        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <link rel="stylesheet" href="mapboxgl.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <style>
+        body {
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+            color: #fff;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .loadingContent {
+            text-align: center;
+        }
+
+        .loadingContent p {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            line-height: 2;
+        }
+
+        .progressBar {
+            width: 300px;
+            height: 8px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progressBarInner {
+            height: 100%;
+            width: 0%;
+            background-color: #f0f0f0;
+            transition: width 0.3s ease;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+        }
+
+        #geocoder {
+            position: absolute;
+            border: 0;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loadingOverlay">
+        <div class="loadingContent">
+            <p>
+                Loading Buildings.city<br>
+                Carbon Map, Urban Building Energy Models & Scenarios for
+                <span id="dynamic-city-name">...</span>'s Built Environment
+            </p>
+            <div class="progressBar">
+                <div class="progressBarInner" id="progressBarInner"></div>
+            </div>
+        </div>
+    </div>
+
+    <header class="header">
+        <a href="/" class="title">Buildings.city | <span class="dynamic-city-name">...</span></a>
+        <nav class="nav">
+            <a href="#" id="type-link" class="nav-link active">Archetype</a>
+            <a href="#" id="carbon-link" class="nav-link">Embodied Carbon</a>
+            <a href="#" id="energy-link" class="nav-link">Operational Carbon</a>
+            <a href="#" id="about-link">About</a>
+        </nav>
+    </header>
+
+    <div id="map"></div>
+
+    <div class="legend-container type active">
+        <div class="legend-name">Building Archetypes</div>
+        <div class="legend-grid" id="archetype-legend-grid"></div>
+    </div>
+
+    <div class="legend-container carbon">
+        <div class="legend-name">Embodied Carbon (kgCO₂e)</div>
+        <div class="legend-main">
+            <div class="legend-bar-carbon"></div>
+            <div class="legend-labels" id="carbon-legend-labels">
+                <span>Min</span><span>Max</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="legend-container energy">
+        <div class="legend-name">Operational Carbon (kgCO₂e)</div>
+        <div class="legend-main">
+            <div class="legend-bar-energy"></div>
+            <div class="legend-labels" id="energy-legend-labels">
+                <span>Low</span><span>High</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="calculation-box" style="display: none;">
+        <button class="closex" id="close-calc">&times;</button>
+        <h3>Area Information</h3>
+        <div id="calculated-area"></div>
+    </div>
+
+    <div class="result-panel">
+        <h2 class="panel-section-title" id="title-type">Building Archetype</h2>
+        <h2 class="panel-section-title" id="title-carbon" style="display:none">Embodied Carbon</h2>
+        <h2 class="panel-section-title" id="title-energy" style="display:none">Operational Carbon</h2>
+        <div class="simulation-header">
+            <select id="archetype" class="archetype-btn">
+                <option value="">All Archetype</option>
+            </select>
+
+            <button class="clear-btn" id="clear-filters">Clear</button>
+            <button class="panel-close-btn" id="close-panel">&times;</button>
+        </div>
+
+        <div id="archetype-charts">
+            <div id="sunchartsnumber"></div>
+            <div id="sunchartsfootprint"></div>
+            <div class="container">
+                <div class="sunchartname">By</div>
+                <div class="toggle-container" onclick="toggleSwitch()">
+                    <div class="toggle-slider"></div>
+                    <div id="numberLabel" class="toggle-option active">Building Numbers</div>
+                    <div id="footprintLabel" class="toggle-option">Footprint Area</div>
+                </div>
+                <div id="downloadSunChart">Download</div>
+            </div>
+            <div class="type-intro">
+                <h3>Archetype Introduction</h3>
+                <p id="archetype-description">Select a type or an archetype to view the description.</p>
+            </div>
+        </div>
+
+
+        <div id="carbon-container" class="result-container">
+            <div id="carbon-underselect" class="result-underselect">
+                <h4>Embodied Carbon Intensity (kgCO₂e/m²)</h4>
+                <div id="downloadCarbonBar" class="downloadBar">Download</div>
+                <div id="carbonChartContainer" class="ChartContainer"></div>
+            </div>
+        </div>
+
+        <div id="energy-container" class="result-container">
+            <div id="energy-underselect" class="result-underselect">
+                <h4>Energy Use Intensity (kWh/m²)</h4>
+                <div id="downloadEnergyBar" class="downloadBar">Download</div>
+                <div id="energyChartContainer" class="ChartContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <button id="toggle2D" title="Switch to 2D view">2D</button>
+
+    <button
+        id="run-ml-prediction"
+        class="ml-predict-btn"
+        type="button"
+        aria-label="Predict unknown building archetypes"
+    >
+        <span>Predict Unknown Archetypes</span>
+    </button>
+
+    <a
+        class="visit-example-btn"
+        href="https://buildings.sg/"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Visit Example - Buildings.sg"
+    >
+        <span>Visit Example - Buildings.sg</span>
+        <span class="visit-example-icon" aria-hidden="true">&#8599;</span>
+    </a>
+
+    <a
+        class="report-issues-btn"
+        href="https://github.com/City-Syntax/buildings.sg/issues/new/choose"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Report an Issue"
+    >
+        <span>Report an Issue</span>
+        <span class="visit-example-icon" aria-hidden="true">&#8599;</span>
+    </a>
+
+    <!--draw polygon and calculating funtion-->
+    <div class="calculation-box">
+        <button class="closex">&times;</button>
+        <h3>Area Information</h3>
+        <div id="calculated-area"></div>
+    </div>
+
+        <div id="overlay" class="overlay"></div>
+
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <div id="popup-text"></div>
+            <button id="close-btn">Close</button>
+            <div class="popup-bottom-space" aria-hidden="true"></div>
+        </div>
+    </div>
+
+    <div id="mlProgressOverlay" class="ml-overlay" aria-hidden="true">
+        <div class="ml-progress-card" role="dialog" aria-modal="true" aria-labelledby="ml-progress-title">
+            <div class="ml-progress-eyebrow">Machine Learning</div>
+            <h3 id="ml-progress-title">Predicting Unknown Archetypes</h3>
+            <p id="mlProgressMessage">Preparing GeoJSON for backend analysis.</p>
+            <div class="ml-progress-bar">
+                <div id="mlProgressBarInner" class="ml-progress-bar-inner"></div>
+            </div>
+            <div class="ml-progress-meta">
+                <span id="mlProgressPercent">0%</span>
+                <span id="mlProgressStage">Queued</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="mlSummaryOverlay" class="ml-overlay" aria-hidden="true">
+        <div class="ml-summary-card" role="dialog" aria-modal="true" aria-labelledby="ml-summary-title">
+            <div class="ml-summary-header">
+                <div>
+                    <div class="ml-progress-eyebrow">Model Summary</div>
+                    <h3 id="ml-summary-title">Random Forest Results</h3>
+                    <p id="mlSummaryMessage" class="ml-summary-message"></p>
+                </div>
+                <div class="ml-summary-actions ml-summary-actions-top">
+                    <button id="mlDownloadPrediction" type="button" class="ml-secondary-btn">Download Predicted GeoJSON</button>
+                    <button id="mlCancelApply" type="button" class="ml-secondary-btn">Keep Current Data</button>
+                    <button id="mlConfirmApply" type="button" class="ml-primary-btn">Apply Predicted GeoJSON</button>
+                </div>
+            </div>
+
+            <div class="ml-summary-body">
+                <div class="ml-summary-column ml-summary-column-metrics">
+                    <div class="ml-summary-label">Overview</div>
+                    <div class="ml-summary-grid">
+                        <div class="ml-summary-item">
+                            <span class="ml-summary-label">Accuracy</span>
+                            <strong id="mlSummaryAccuracy">-</strong>
+                        </div>
+                        <div class="ml-summary-item">
+                            <span class="ml-summary-label">Known Buildings</span>
+                            <strong id="mlSummaryKnown">-</strong>
+                        </div>
+                        <div class="ml-summary-item">
+                            <span class="ml-summary-label">Unknown Predicted</span>
+                            <strong id="mlSummaryUnknown">-</strong>
+                        </div>
+                        <div class="ml-summary-item">
+                            <span class="ml-summary-label">Train / Test</span>
+                            <strong id="mlSummarySplit">-</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ml-summary-column">
+                    <div class="ml-summary-section ml-summary-section-tight">
+                        <div class="ml-summary-label">Feature Importance</div>
+                        <div id="mlSummaryFeatures" class="ml-feature-list"></div>
+                    </div>
+                </div>
+
+                <div class="ml-summary-column ml-summary-column-classes">
+                    <div class="ml-summary-section ml-summary-section-tight">
+                        <div class="ml-summary-label">Class Metrics</div>
+                        <div id="mlSummaryClasses" class="ml-class-metrics"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+
+
+</html>

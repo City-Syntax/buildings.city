@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.vite/
+
+ml-service/.venv/
+ml-service/app/__pycache__/
+__pycache__/
+*.pyc
+
+.env
+.DS_Store
+Thumbs.db

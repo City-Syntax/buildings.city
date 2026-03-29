@@ -1,0 +1,2168 @@
+.header {
+    margin-left: 5px;
+    margin-right: 0;
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header .title {
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #fff;
+    line-height: 1;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header .nav {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header .nav a {
+    text-decoration: none;
+    color: #f0f0f0;
+    font-size: 12px;
+    line-height: 1;
+    transition: color 0.3s ease;
+}
+
+.header .nav a:hover,
+.header .nav a:active {
+    color: #fff;
+    font-weight: bold;
+}
+
+.header .nav .active {
+    color: #fff;
+    font-weight: bold;
+}
+
+
+/* 弹出框样式 */
+.popup {
+    position: fixed;
+    top: 55px;
+    right: 10px;
+    width: calc(100% - 490px);
+    bottom: 30px;
+    padding: 20px;
+    font-size: 12px;
+    line-height: 18px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 100;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.popup::-webkit-scrollbar {
+    width: 0px;
+    background-color: transparent;
+}
+
+.popup h2 {
+    display: block;
+    width: 100%;
+    margin-top: 0;
+    font-size: larger;
+    font-weight: bold;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+}
+
+.popup .link {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.popup table,
+.popup th,
+.popup td {
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.popup th,
+.popup td {
+    text-align: left;
+    padding: 8px;
+}
+
+.popup td:first-child,
+.popup th:first-child {
+    font-weight: bold;
+}
+
+.popup-content {
+    width: 100%;
+}
+
+.popup-bottom-space {
+    height: 5px;
+}
+
+.popup table {
+    width: 100%;
+    margin-top: 10px;
+    font-size: 12px;
+    border-collapse: collapse;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 99;
+}
+
+#data-sub-buttons {
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    width: 100px;
+    height: 100px;
+    top: 50px;
+    right: 45px;
+    background: transparent;
+    z-index: 5;
+}
+
+#data-sub-buttons.show {
+    display: block;
+}
+
+#data-sub-buttons button {
+    width: 100px;
+    text-align: center;
+    padding: 5px 10px;
+    margin-top: 5px;
+    color: #fff;
+    background-color: #333;
+    border-radius: 10px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    border: 0;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+#data-sub-buttons button:hover,
+#data-sub-buttons button:active {
+    color: #fff;
+    font-weight: bold;
+}
+
+#data-sub-buttons button.active {
+    color: #333;
+    background-color: #fff;
+    font-weight: bold;
+}
+
+#popupDownload {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+}
+
+.download-grid {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-bottom: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.download-item {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.2s;
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.download-item img {
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+    filter: grayscale(100%) contrast(90%) brightness(120%) invert(20%);
+    transition: filter 0.3s ease;
+}
+
+.download-item:hover img {
+    filter: grayscale(0%) contrast(100%) brightness(100%) invert(0%);
+}
+
+.download-tooltip {
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 10px;
+    opacity: 0;
+    box-sizing: border-box;
+    transition: opacity 0.3s ease;
+}
+
+.download-item:hover .download-tooltip {
+    opacity: 1;
+}
+
+.download-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    padding: 4px 6px;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.download-item:hover .download-label {
+    opacity: 0;
+}
+
+#close-btn {
+    display: block;
+    font-size: 12px;
+    margin: 20px auto;
+    padding: 8px 12px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+
+
+.calculation-box {
+    width: 230px;
+    position: absolute;
+    top: 256px;
+    max-height: 300px;
+    right: 10px;
+    background-color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    padding: 0 5px;
+    border-radius: 10px;
+    color: #333;
+    font-size: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: left;
+    display: none;
+}
+
+.calculation-box h3 {
+    font-family: 'Roboto Mono', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    color: #007cbf;
+    margin: 15px 10px;
+}
+
+.calculation-box p {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    margin-left: 10px;
+    line-height: 0.75;
+}
+
+.calculation-box .closex {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    color: #666;
+}
+
+.close-btn:hover {
+    color: #333;
+    border: none;
+}
+
+/* BCA 下拉按钮 */
+.buttons-container {
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    width: 165px;
+    height: 100px;
+    top: 50px;
+    right: 165px;
+    background: transparent;
+    z-index: 5;
+}
+
+.buttons-container.show {
+    display: block;
+}
+
+.buttons-container button {
+    width: 165px;
+    text-align: center;
+    padding: 5px 10px;
+    margin-top: 5px;
+    color: #fff;
+    background-color: #333;
+    border-radius: 10px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    border: 0;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.buttons-container button:hover,
+.buttons-container button:active {
+    color: #fff;
+    font-weight: bold;
+}
+
+.buttons-container button.active {
+    color: #333;
+    background-color: #fff;
+    font-weight: bold;
+}
+
+/* 图例容器的样式 */
+.legend-container-bca {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 40;
+}
+
+.legend-container-bca.show {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+}
+
+.legend-name {
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+    margin-left: 5px;
+    margin-bottom: 10px;
+}
+
+/* 图例内容的隐藏样式 */
+.legend-content {
+    position: fixed;
+    width: 220px;
+    bottom: 75px;
+    right: 10px;
+    background-color: #fff;
+    padding: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    display: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+}
+
+.legend-content.show {
+    display: block;
+}
+
+.legend-grid-bca {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 5px;
+    column-gap: 27px;
+    margin-left: 5px;
+}
+
+.legend-item-bca {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 10px;
+}
+
+.legend-box-bca {
+    width: 20px;
+    height: 12px;
+    border-radius: 10px;
+}
+
+.legend-bar-eui {
+    width: 220px;
+    height: 15px;
+    background: linear-gradient(to right, #5cfe2f, #146aff, #a114ff);
+    border-radius: 10px;
+    margin-bottom: 5px;
+    margin-right: 40px;
+}
+
+.legend-bar-gfa {
+    width: 220px;
+    height: 15px;
+    background: linear-gradient(to right,
+            #660b27 0%,
+            #e07410 20%,
+            #faef14 50%,
+            #c8dd69 100%);
+    border-radius: 10px;
+    margin-bottom: 5px;
+    margin-right: 40px;
+}
+
+/* Green Mark 颜色定义 */
+.greenmark-goldplus {
+    background-color: #fff457;
+}
+
+.greenmark-gold {
+    background-color: #d6ff33;
+}
+
+.greenmark-platinum {
+    background-color: #7eff3d;
+}
+
+.greenmark-legislated {
+    background-color: #00ff62;
+}
+
+.greenmark-certified {
+    background-color: #0affb1;
+}
+
+/* Main Layers Legend*/
+.legend-main {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+}
+
+.legend-container.masterplan {
+    display: block;
+    position: fixed;
+    width: 220px;
+    bottom: 30px;
+    left: 12px !important;
+    background-color: #fff;
+    padding: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    display: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    z-index: 20;
+}
+
+.introduce-masterplan {
+    display: block;
+    position: fixed;
+    width: 220px;
+    bottom: 395px;
+    left: 12px;
+    background-color: #fff;
+    padding: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    display: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    z-index: 20;
+}
+
+.masterplan-title {
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+.masterplan-p {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    font-size: 12px;
+    margin-left: 5px;
+    margin-top: 0px;
+    margin-bottom: 5px;
+    line-height: 1.5;
+}
+
+.legend-container {
+    display: block;
+    position: fixed;
+    width: 220px;
+    bottom: 75px;
+    right: 10px;
+    background-color: #fff;
+    padding: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    display: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+}
+
+.legend-container.active {
+    display: block;
+}
+
+.legend-container.show {
+    opacity: 1;
+}
+
+.legend-labels {
+    display: flex;
+    justify-content: space-between;
+    color: #333;
+}
+
+.legend-labels span {
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.legend-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    row-gap: 5px;
+    column-gap: 10px;
+    margin-left: 5px;
+}
+
+.legend-grid-masterplan {
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 5px;
+    margin-left: 5px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 5px;
+}
+
+.legend-box {
+    width: 12px;
+    height: 12px;
+    border-radius: 10px;
+}
+
+/* Archetypes 颜色定义*/
+.legend-public-housing {
+    background-color: #1abc9c;
+}
+
+.legend-landed-property {
+    background-color: #2ecc71;
+}
+
+.legend-private-apartment {
+    background-color: #3498db;
+}
+
+.legend-other-dwelling {
+    background-color: #9b59b6;
+}
+
+.legend-educational {
+    background-color: #e67e22;
+}
+
+.legend-healthcare {
+    background-color: #f1c40f;
+}
+
+.legend-commercial {
+    background-color: #34495e;
+}
+
+.legend-industrial {
+    background-color: #e74c3c;
+}
+
+.legend-others {
+    background-color: #95a5a6;
+}
+
+.legend-unknown {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+}
+
+.legend-bar-energy {
+    width: 220px;
+    height: 15px;
+    background: linear-gradient(to right,
+            #0d9c6c 0%,
+            #57f46c 30%,
+            #f5ed0f 60%,
+            #f56b0f 100%);
+    border-radius: 10px;
+    margin-bottom: 5px;
+    margin-right: 40px;
+}
+
+.legend-bar-carbon {
+    width: 220px;
+    height: 15px;
+    background: linear-gradient(to right,
+            #2bf3a9 0%,
+            #0fb89f 20%,
+            #275fa0 40%,
+            #df80e0 70%,
+            #f0004c 100%);
+    border-radius: 10px;
+    margin-bottom: 5px;
+    margin-right: 40px;
+}
+
+/* Result Panel*/
+.result-panel {
+    position: fixed;
+    top: 50px;
+    left: 12px;
+    bottom: 30px;
+    width: 420px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 5px;
+    display: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.result-panel.show {
+    display: block;
+}
+
+.result-panel select {
+    position: relative;
+    top: 0px;
+    left: 10px;
+    background-color: #333;
+    color: #fff;
+    border: 0px;
+    border-radius: 10px;
+    padding: 5px 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    font-size: 12px;
+}
+
+.result-panel select option {
+    margin-top: 10px;
+    background-color: #fff;
+    color: #333;
+    border-color: #fff;
+    border-radius: 10px;
+    padding: 5px 10px;
+    font-size: 12px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.result-panel select:hover {
+    background-color: #333;
+}
+
+.result-panel select::-ms-expand {
+    margin-right: 12px;
+}
+
+.result-panel .subtype-btn {
+    width: 130px;
+    border: 0px;
+}
+
+.result-panel .archetype-btn {
+    width: 200px;
+    border: 0px;
+}
+
+.result-panel .clear-btn {
+    position: relative;
+    top: 0px;
+    left: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 5px 10.5px;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    font-size: 12px;
+}
+
+.result-panel .clear-btn:hover {
+    background-color: #333;
+}
+
+.panel-section-title {
+    position: relative;
+    top: 0px;
+    left: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 13.5px 0px;
+}
+
+#toggle2D {
+    position: fixed;
+    top: 215px;
+    right: 10px;
+    padding: 8px 6px;
+    background-color: #fff;
+    color: #333;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1;
+    border-width: 2px;
+    border: none;
+    outline: 2px solid rgba(50, 50, 50, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.1s, color 0.1s
+}
+
+#toggle2D:hover {
+    background-color: #f5f5f5;
+}
+
+#toggle2D:active,
+#toggle2D.active {
+    background-color: #333;
+    color: #fff;
+}
+
+.ml-predict-btn {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 117px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    min-width: 250px;
+    gap: 8px;
+    padding: 10px 15px;
+    margin: 0 auto;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(236, 242, 247, 0.98));
+    color: #1f2933;
+    text-decoration: none;
+    font-size: 12px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+    z-index: 30;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.ml-predict-btn:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.ml-predict-btn:disabled {
+    opacity: 0.65;
+    cursor: wait;
+}
+
+.visit-example-btn {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 75px;
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    gap: 8px;
+    padding: 10px 15px;
+    margin: 0 auto;
+    border-radius: 999px;
+    background-color: rgba(51, 51, 51, 0.92);
+    color: #fff;
+    text-decoration: none;
+    font-size: 12px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.18);
+    z-index: 30;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.visit-example-btn:hover {
+    box-shadow: 0 7px 14px rgba(0, 0, 0, 0.22);
+    background-color: #333;
+}
+
+.visit-example-btn:active {
+    transform: none;
+}
+
+.visit-example-icon {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.report-issues-btn {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 33px;
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    gap: 8px;
+    padding: 10px 15px;
+    margin: 0 auto;
+    border-radius: 999px;
+    background-color: rgba(51, 51, 51, 0.92);
+    color: #fff;
+    text-decoration: none;
+    font-size: 12px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.18);
+    z-index: 30;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.report-issues-btn:hover {
+    box-shadow: 0 7px 14px rgba(0, 0, 0, 0.22);
+    background-color: #333;
+}
+
+.report-issues-btn:active {
+    transform: none;
+}
+
+.ml-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(10, 12, 16, 0.58);
+    backdrop-filter: blur(4px);
+    z-index: 120;
+}
+
+.ml-overlay.show {
+    display: flex;
+}
+
+#mlSummaryOverlay {
+    align-items: stretch;
+    justify-content: stretch;
+    padding: 50px 10px 30px 12px;
+}
+
+.ml-progress-card,
+.ml-summary-card {
+    width: min(560px, calc(100vw - 32px));
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
+    padding: 24px;
+}
+
+.ml-progress-eyebrow {
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6c7782;
+    margin-bottom: 10px;
+}
+
+.ml-progress-card h3,
+.ml-summary-card h3 {
+    margin: 0 0 10px;
+    font-size: 22px;
+    line-height: 1.2;
+    color: #16212b;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.ml-progress-card p,
+.ml-summary-message {
+    margin: 0;
+    color: #41505f;
+    font-size: 14px;
+    line-height: 1.55;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.ml-progress-bar {
+    width: 100%;
+    height: 10px;
+    margin-top: 18px;
+    background: #e6ecf1;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.ml-progress-bar-inner {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #2d7ff9 0%, #4bc78d 100%);
+    transition: width 0.25s ease;
+}
+
+.ml-progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    color: #627181;
+    font-size: 12px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.ml-summary-card {
+    position: fixed;
+    top: 50px;
+    left: 12px;
+    right: 10px;
+    bottom: 30px;
+    width: auto;
+    max-width: none;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 5px;
+    overflow: hidden;
+    padding: 22px 20px 18px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.ml-summary-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e8edf2;
+}
+
+.ml-summary-header > div:first-child {
+    min-width: 0;
+    flex: 1;
+}
+
+.ml-summary-body {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.95fr) minmax(260px, 0.8fr) minmax(360px, 1.15fr);
+    gap: 18px;
+    min-height: 0;
+    flex: 1;
+    padding-top: 18px;
+}
+
+.ml-summary-column {
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.ml-summary-column-metrics {
+    gap: 14px;
+}
+
+.ml-summary-column-classes .ml-class-metrics,
+.ml-summary-column .ml-feature-list {
+    min-height: 0;
+    overflow: auto;
+    padding-right: 4px;
+}
+
+.ml-summary-actions-top {
+    margin-top: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-self: flex-start;
+}
+
+.ml-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.ml-summary-item {
+    padding: 14px;
+    border-radius: 14px;
+    background: #f6f8fa;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ml-summary-label {
+    color: #6d7781;
+    font-size: 11px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.ml-summary-item strong {
+    color: #16212b;
+    font-size: 20px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.ml-summary-section {
+    margin-top: 18px;
+}
+
+.ml-summary-section-tight {
+    margin-top: 0;
+    min-height: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.ml-feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.ml-class-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.ml-class-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) repeat(3, minmax(48px, 72px));
+    gap: 8px;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #f6f8fa;
+}
+
+.ml-class-row.ml-class-header {
+    background: #eef2f5;
+}
+
+.ml-class-name,
+.ml-class-metric {
+    font-size: 12px;
+    color: #22303d;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.ml-class-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ml-class-metric {
+    text-align: right;
+}
+
+.ml-feature-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 74px;
+    gap: 10px;
+    align-items: center;
+}
+
+.ml-feature-name {
+    color: #1f2933;
+    font-size: 13px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.ml-feature-value {
+    color: #5d6874;
+    font-size: 12px;
+    text-align: right;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.ml-summary-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.ml-primary-btn,
+.ml-secondary-btn {
+    min-height: 30px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.ml-primary-btn {
+    background: #17212b;
+    color: #fff;
+}
+
+.ml-secondary-btn {
+    background: #eef2f5;
+    color: #253342;
+}
+
+@media (max-width: 1120px) {
+    #mlSummaryOverlay {
+        padding: 20px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ml-summary-card {
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        width: min(960px, calc(100vw - 40px));
+        height: min(88vh, 900px);
+        border-radius: 20px;
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
+    }
+
+    .ml-summary-body {
+        grid-template-columns: 1fr;
+        overflow: auto;
+    }
+
+    .ml-summary-actions-top {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 720px) {
+    .ml-summary-header {
+        flex-direction: column;
+    }
+
+    .ml-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ml-summary-actions-top {
+        width: 100%;
+    }
+
+    .ml-summary-actions-top .ml-primary-btn,
+    .ml-summary-actions-top .ml-secondary-btn {
+        width: 100%;
+    }
+}
+
+/* 关闭按钮样式 */
+.panel-close-btn {
+    position: absolute;
+    top: 7px;
+    right: 10px;
+    font-size: 14px;
+    padding: 0px;
+    background: none;
+    border: none;
+    border-radius: 10px;
+    color: #666;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: Verdana, sans-serif;
+    transition: color 0.3s;
+}
+
+.panel-close-btn:hover {
+    color: #333;
+}
+
+#archetype-charts {
+    position: relative;
+    top: 0px;
+    width: 420px;
+}
+
+#sunchartsnumber {
+    position: relative;
+    top: 0px;
+    width: 420px;
+    height: 380px;
+    z-index: 90;
+    animation: showIcon 0.5s forwards;
+    animation-delay: 0s;
+}
+
+#sunchartsfootprint {
+    position: relative;
+    top: 0px;
+    width: 420px;
+    height: 380px;
+    z-index: 90;
+    animation: showIcon 0.5s forwards;
+    animation-delay: 0s;
+    display: none;
+}
+
+#archetype-charts .container {
+    display: flex;
+    gap: 10px;
+    width: 420px;
+}
+
+.sunchartname {
+    position: relative;
+    left: 15px;
+    top: 0px;
+    height: 26px;
+    font-size: 12px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#archetype-charts .toggle-container {
+    display: flex;
+    align-items: center;
+    background: #ddd;
+    border-radius: 11px;
+    border: 1.5px solid #ddd;
+    padding: 5px;
+    width: 280px;
+    height: 26px;
+    position: relative;
+    top: -5px;
+    left: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+#archetype-charts .toggle-option {
+    flex: 1;
+    text-align: center;
+    line-height: 25px;
+    font-size: 12px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    color: #fff;
+    z-index: 10;
+    position: relative;
+}
+
+#archetype-charts .toggle-option .active {
+    color: #fff;
+}
+
+#archetype-charts .toggle-slider {
+    position: absolute;
+    width: 142px;
+    height: 23px;
+    background: #333;
+    border-radius: 10px;
+    transition: 0.3s;
+    top: 0px;
+    left: 0px;
+}
+
+#downloadSunChart {
+    position: relative;
+    left: 10px;
+    top: -5px;
+    height: 25px;
+    width: 83px;
+    line-height: 25px;
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    background: #333;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#downloadSunChart:hover {
+    font-weight: bold;
+}
+
+#downloadSunChart.active {
+    font-weight: bold;
+}
+
+#archetype-charts h3 {
+    font-family: 'Roboto Mono', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    color: #007cbf;
+    margin: 10px 15px;
+}
+
+#archetype-description {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    margin: 10px 15px;
+    line-height: 1.25;
+}
+
+.result-container h3 {
+    font-family: 'Roboto Mono', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    color: #007cbf;
+    margin: 10px 15px;
+}
+
+.result-container h4 {
+    font-family: 'Roboto Mono', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    color: #333;
+    margin: 10px 15px;
+    flex: 1;
+    min-width: 280px;
+}
+
+.result-container p {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    margin: 0px 15px;
+    line-height: 1.5;
+}
+
+.result-underselect {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 420px;
+    margin-top: 10px;
+}
+
+.downloadBar {
+    position: relative;
+    top: 6px;
+    margin-right: 10px;
+    flex: 1;
+    min-width: 90px;
+    max-width: 90px;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    background: #333;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#carbonChartContainer {
+    position: relative;
+    top: 0px;
+    margin: -10px 10px 0px 0px;
+    flex-basis: 100%;
+    width: 410px;
+    height: 445px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    font-size: 10px;
+    z-index: 90;
+    animation: showIcon 0.5s;
+    animation-delay: 0s;
+}
+
+#carbonSubChart {
+    position: relative;
+    top: 0px;
+    margin: 0px 10px 10px 15px;
+    flex-basis: 100%;
+    width: 390px;
+    height: 420px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    font-size: 10px;
+    z-index: 90;
+    animation: showIcon 0.5s;
+    animation-delay: 0s;
+}
+
+#energyChartContainer {
+    position: relative;
+    top: 0px;
+    margin: -10px 10px 0px 0px;
+    flex-basis: 100%;
+    width: 410px;
+    height: 445px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    font-size: 10px;
+    z-index: 90;
+    animation: showIcon 0.5s;
+    animation-delay: 0s;
+}
+
+#energySubChart {
+    position: relative;
+    top: 0px;
+    margin: 0px 10px 10px 15px;
+    flex-basis: 100%;
+    width: 390px;
+    height: 420px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    font-size: 10px;
+    z-index: 90;
+    animation: showIcon 0.5s;
+    animation-delay: 0s;
+}
+
+.result-content {
+    display: none;
+    flex-wrap: wrap;
+    gap: 0px;
+    width: 420px;
+    margin-top: 10px;
+}
+
+.result-subtype {
+    display: none;
+    flex-wrap: wrap;
+    gap: 0px;
+    width: 420px;
+    margin-top: 10px;
+}
+
+.image-container {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ddd;
+    font-size: 12px;
+    color: #333;
+    margin: 10px 0px 0px 10px;
+    width: 140px;
+    height: 140px;
+    border-radius: 10px;
+    z-index: 40;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 10px;
+    object-fit: contain;
+}
+
+.overview {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    flex: 1;
+    min-width: 240px;
+    top: 5px;
+    line-height: 1.2;
+    margin-right: 10px;
+    margin-left: 0px;
+}
+
+.overview p {
+    line-height: 1.5;
+}
+
+#archetype-value span,
+#ec-intensity span,
+#fitted-distribution span,
+#distribution-params span {
+    display: inline-block;
+}
+
+.parameters {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    top: 0px;
+    margin: 0px;
+    flex-basis: 100%;
+    min-width: 400px;
+    min-height: 150px;
+}
+
+.result-content table {
+    position: relative;
+    margin: 0px 15px 0px 15px;
+    min-width: 390px;
+    height: 100px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    font-size: 12px;
+    line-height: 1.5;
+    border-collapse: collapse;
+}
+
+.result-content td {
+    text-align: left;
+}
+
+.result-content th {
+    text-align: center;
+}
+
+.result-content td:nth-child(2),
+.result-content td:nth-child(3) {
+    text-align: right;
+}
+
+.result-content .figure {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+    min-width: 400px;
+    max-width: 410px;
+    min-height: 160px;
+    margin: 0px;
+}
+
+#energy-eui {
+    position: relative;
+    flex-basis: 100%;
+    flex: 1;
+    top: 0px;
+    left: 15px;
+    width: 395px;
+    height: 180px;
+    margin: 0px;
+    animation-delay: 0s;
+}
+
+#carbonHistogram {
+    position: relative;
+    top: 0px;
+    min-height: 260px !important;
+    flex-basis: 100%;
+    margin: 0px;
+    margin-bottom: 10px;
+    min-width: 415px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    font-size: 10px;
+    animation-delay: 0s;
+}
+
+.downloadcharts {
+    position: relative;
+    left: 100px;
+    top: 5px;
+    margin-bottom: 25px;
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    background: #333;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.mlswitch-label {
+    cursor: pointer;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    background-color: #ddd;
+    border-radius: 12px;
+    position: relative;
+    transition: background-color 0.3s ease;
+}
+
+.mlswitch-wrapper {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-145px);
+    bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 5px 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.toggle-mlswitch {
+    display: none;
+}
+
+.mlswitch-label::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 18px;
+    height: 18px;
+    background-color: white;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.toggle-mlswitch:checked+.mlswitch-label {
+    background-color: #4CAF50;
+}
+
+.toggle-mlswitch:checked+.mlswitch-label::before {
+    transform: translateX(24px);
+}
+
+.label-text {
+    font-size: 12px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+#visitorcounter {
+    position: fixed;
+    bottom: 5px;
+    left: 100px;
+    background-color: transparent;
+    padding: 0px;
+    font-size: 12px;
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    z-index: 9;
+}
+
+/* 基础面板样式*/
+.bench-panel {
+    position: fixed;
+    top: 50px;
+    left: 12px;
+    bottom: 30px;
+    right: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 5px;
+    display: none;
+    overflow: hidden;
+    padding-left: 15px;
+    z-index: 90;
+}
+
+.bench-panel h2 {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    font-size: larger;
+    font-weight: bold;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    margin-right: 80%;
+}
+
+.bench-panel h3 {
+    font-family: 'Roboto Mono', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    color: #007cbf;
+    left: 0px;
+    margin: 10px 0px;
+}
+
+.bench-panel.show {
+    display: block;
+    /* 显示面板 */
+}
+
+.bench-panel select {
+    position: relative;
+    top: 0px;
+    left: -5px;
+    background-color: #333 ! important;
+    color: #fff;
+    border: 0px;
+    border-radius: 10px;
+    padding: 5px 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    font-size: 12px;
+}
+
+.bench-panel select option {
+    margin-top: 10px;
+    background-color: #fff;
+    color: #333;
+    border-color: #fff;
+    border-radius: 10px;
+    padding: 5px 10px;
+    font-size: 12px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.bench-panel select:hover {
+    background-color: #333;
+}
+
+.bench-panel select::-ms-expand {
+    margin-right: 12px;
+}
+
+.bench-panel .subtype-btn {
+    width: 130px;
+    border: 0px;
+}
+
+.bench-panel .archetype-btn {
+    width: 200px;
+    border: 0px;
+}
+
+.bench-panel .clear-btn {
+    position: relative;
+    top: 0px;
+    left: -5px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 5px 10.5px;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    font-size: 12px;
+}
+
+.action-buttons {
+    margin-left: auto;
+    display: flex;
+    padding-right: 10px;
+    gap: 10px;
+    align-self: flex-end;
+}
+
+#bm-calculate-btn {
+    position: static;
+    top: auto;
+    right: 0px;
+    width: 200px;
+    background-color: #333;
+    color: #fff;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    border: none;
+    border-radius: 10px;
+    padding: 5px 12px;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    font-size: 12px;
+}
+
+#bm-calculate-btn:hover {
+    font-weight: bold;
+}
+
+#bm-export-btn {
+    position: static;
+    top: auto;
+    right: 0px;
+    width: 150px;
+    background-color: #333;
+    color: #fff;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    border: none;
+    border-radius: 10px;
+    padding: 5px 12px;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    font-size: 12px;
+}
+
+#bm-export-btn:hover {
+    font-weight: bold;
+}
+
+
+/* 顶部控制区的容器样式 */
+.controls-container {
+    display: flex;
+    flex-wrap: wrap;
+    right: 0px;
+    gap: 10px;
+    padding-bottom: 10px;
+}
+
+.input-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 5px 20px;
+    margin-top: 10px;
+    padding-left: 0px;
+}
+
+.input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 32%;
+    min-width: 300px;
+}
+
+.input-row .bm-label {
+    min-width: 140px;
+    text-align: left;
+    margin: 0;
+    padding-right: 0px;
+    font-size: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    color: #333;
+    white-space: nowrap;
+}
+
+.input-container input[type="number"] {
+    width: 80px;
+    padding: 3px 5px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-container input[type="number"]:focus {
+    border: 1px solid #ccc !important;
+    outline: none;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.bm-unit {
+    font-size: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    min-width: 80px;
+}
+
+/* 结果区样式 */
+.results-container {
+    display: flex;
+    flex-wrap: nowrap;
+    height: calc(100% - 230px);
+    overflow-x: auto;
+    gap: 20px;
+}
+
+/* 单个图表和解析组的样式 (4个指标横向排列) */
+.chart-analysis-group {
+    min-width: calc(100% - 15px);
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+/* 核心：Grid 布局容器 */
+.bm-analysis-grid {
+    display: grid;
+    margin-left: 0px;
+    grid-template-columns: 180px repeat(4, 1fr);
+    grid-auto-rows: minmax(12px, auto);
+}
+
+.bm-analysis-grid p {
+    font-size: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    padding: 3px 5px 3px 0px;
+    border: 0px;
+    text-align: left;
+    margin: 0px;
+    display: flex;
+    align-items: center;
+}
+
+/* 表头样式*/
+.bm-grid-header {
+    font-weight: bold;
+    color: #333;
+}
+
+/* 第一列标签样式 (首列) */
+.bm-grid-row-label {
+    font-weight: bold;
+    color: #333;
+    text-align: left;
+    justify-content: flex-start;
+}
+
+#bm-chart-eui {
+    display: flex;
+    margin-left: 160px;
+    width: calc(100% - 180px);
+    height: 260px;
+}
+
+.chart-item {
+    flex: 0 0 25%;
+    min-width: 0;
+    height: 100%;
+}
+
+.analysis-container {
+    padding: 0px;
+}
+
+#bm-panel.show {
+    display: block;
+}
+
+#bm-close-btn {
+    display: block;
+    font-size: 12px;
+    margin: 10px auto 0px auto;
+    padding: 8px 12px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+
+#bm-close-btn:hover {
+    color: white;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.mapboxgl-popup {
+    border-radius: 10px !important;
+    overflow: hidden;
+}
+
+.mapboxgl-popup-content {
+    background: #fff;
+    border-radius: 10px !important;
+    border: 0px;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+.mapboxgl-popup-tip {
+    fill: #fff;
+    transform: scale(1.1);
+    stroke: #fff;
+    stroke-width: 2px;
+}
+
+.mapboxgl-popup-close-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    color: #666;
+}
+
+.mapboxgl-popup-close-button:hover {
+    color: #333;
+    background-color: transparent;
+    border-top-right-radius: 10px !important;
+    border: none;
+}
+
+/* 调整标题和文本样式 */
+.mapboxgl-popup-content h3 {
+    margin: 3px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    color: #007cbf;
+}
+
+.mapboxgl-popup-content p {
+    margin: 3px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    color: #333;
+}
+
+/* 修改搜索框的 placeholder 字体 */
+.mapboxgl-ctrl-geocoder input::placeholder {
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    color: #666;
+}
+
+.mapboxgl-ctrl-geocoder .suggestions {
+    transform: translateX(-245px) translateY(36px);
+    font-size: 12px;
+    border: 0px;
+    border-radius: 10px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* 修改搜索输入框的字体大小 */
+.mapboxgl-ctrl-geocoder input {
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    color: #666;
+}
+
+.mapboxgl-ctrl-bottom-left .mapboxgl-ctrl-scale {
+    background: transparent;
+    color: #333;
+    font-size: 12px;
+    position: fixed;
+    left: 100px;
+    bottom: 28px !important;
+    border: none;
+    box-shadow: none;
+    padding: 0px 10px;
+}
+
+.mapboxgl-ctrl-bottom-left.mapboxgl-ctrl-scale {
+    direction: rtl;
+    /* 让元素从右往左排列 */
+    text-align: right;
+    /* 确保文本在右侧 */
+}
+
+.mapboxgl-ctrl-scale::after {
+    content: '';
+    display: block;
+    width: 50%;
+    height: 3px;
+    border-radius: 1.5px;
+    background: #333;
+    margin-bottom: 2px;
+}
+
+.mapboxgl-ctrl-icon {
+    color: #fff;
+    border: 0;
+}
+
+.mapboxgl-ctrl-logo {
+    margin-bottom: -10px !important;
+    width: 75px !important;
+}
+
+.mapboxgl-ctrl {
+    border: 0;
+    border-radius: 10px;
+}
+
+.mapboxgl-ctrl-geocoder input:focus {
+    outline: none;
+}
+
+.mapboxgl-ctrl-attrib {
+    background: transparent !important;
+    white-space: nowrap !important;
+    display: flex !important;
+}
+
+@media (max-width: 768px) {
+    .ml-predict-btn {
+        bottom: 110px;
+        width: calc(100% - 24px);
+        max-width: 330px;
+        min-width: auto;
+        justify-content: center;
+        padding: 10px 12px;
+    }
+
+    .visit-example-btn {
+        bottom: 70px;
+        width: calc(100% - 24px);
+        max-width: 330px;
+        justify-content: center;
+        padding: 10px 12px;
+    }
+
+    .report-issues-btn {
+        bottom: 30px;
+        width: calc(100% - 24px);
+        max-width: 330px;
+        justify-content: center;
+        padding: 10px 12px;
+    }
+
+    .ml-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ml-summary-actions {
+        flex-direction: column-reverse;
+    }
+
+    .ml-class-row {
+        grid-template-columns: minmax(0, 1fr) repeat(3, 56px);
+    }
+}

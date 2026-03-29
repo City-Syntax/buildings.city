@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+title: "Buildings.city: A Lightweight Toolkit for Urban Building Energy Modeling Platforms"
+message: "If you use this toolkit in research or projects, please cite it as follows."
+type: software
+
+authors:
+  - family-names: "City Syntax Lab"
+    given-names: "Buildings.sg Project"
+
+repository-code: "https://github.com/City-Syntax/buildings.sg"
+url: "https://buildings.sg"
+
+abstract: >
+  Buildings.city is a lightweight toolkit for building interactive
+  Urban Building Energy Modeling (UBEM) platforms using city-scale
+  building datasets. The platform enables cities and researchers
+  to visualize building data, explore operational and embodied
+  carbon information, and communicate urban energy insights
+  through an interactive map interface.
+
+keywords:
+  - urban energy modeling
+  - UBEM
+  - building energy
+  - urban analytics
+  - geojson
+  - mapbox
+  - urban sustainability
+
+license: MIT
+version: 1.0.0
+date-released: 2026-03-16
