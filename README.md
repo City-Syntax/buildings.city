@@ -16,30 +16,30 @@ The core project structure is shown below:
 
 ```
 buildings.city-package/
-├── index.html                 ## App shell and root DOM structure
+├── index.html                         ## App shell and root DOM structure
 ├── public/
-│   └── data/                  ## Local GeoJSON datasets (city building data)
-├── ml-service/                ## Optional FastAPI ML backend for unknown archetype prediction
+│   └── data/                          ## Local GeoJSON datasets (city building data)
+├── ml-service/                        ## Optional FastAPI ML backend for unknown archetype prediction
 │   ├── app/
-│   │   ├── main.py            ## API endpoints and async job orchestration
-│   │   ├── ml.py              ## Feature extraction and prediction pipeline glue
-│   │   ├── random_forest_model.py ## Random-forest training and inference logic
-│   │   └── schemas.py         ## Request/response models
-│   ├── requirements.txt       ## Python dependencies for ML service
-│   ├── setup-venv.ps1         ## Creates/updates local .venv and installs dependencies
-│   ├── start-ml-service.ps1   ## Starts uvicorn service on port 8000
-│   └── README.md              ## ML service details and API contract
+│   │   ├── main.py                    ## API endpoints and async job orchestration
+│   │   ├── ml.py                      ## Feature extraction and prediction pipeline glue
+│   │   ├── random_forest_model.py     ## Random-forest training and inference logic
+│   │   └── schemas.py                 ## Request/response models
+│   ├── requirements.txt               ## Python dependencies for ML service
+│   ├── setup-venv.ps1                 ## Creates/updates local .venv and installs dependencies
+│   ├── start-ml-service.ps1           ## Starts uvicorn service on port 8000
+│   └── README.md                      ## ML service details and API contract
 ├── src/
-│   ├── main.js                ## App bootstrap and cross-module orchestration
-│   ├── mapbox.js              ## Mapbox map init, layer control, and map filtering
-│   ├── data-processor.js      ## Archetype stats, formatting, and color-map utilities
-│   ├── charts.js              ## ECharts options, rendering, and chart download logic
-│   ├── panel.js               ## Result panel interactions and archetype panel UI
-│   ├── popup.js               ## About popup content and popup event handling
-│   ├── style.css              ## Global styles, layout, and component visuals
-│   └── config.json            ## User config (city, token, fields, UBEM inputs)
-├── package.json               ## npm scripts and dependencies
-└── vite.config.js             ## Vite dev/build configuration
+│   ├── main.js                        ## App bootstrap and cross-module orchestration
+│   ├── mapbox.js                      ## Mapbox map init, layer control, and map filtering
+│   ├── data-processor.js              ## Archetype stats, formatting, and color-map utilities
+│   ├── charts.js                      ## ECharts options, rendering, and chart download logic
+│   ├── panel.js                       ## Result panel interactions and archetype panel UI
+│   ├── popup.js                       ## About popup content and popup event handling
+│   ├── style.css                      ## Global styles, layout, and component visuals
+│   └── config.json                    ## User config (city, token, fields, UBEM inputs)
+├── package.json                       ## npm scripts and dependencies
+└── vite.config.js                     ## Vite dev/build configuration
 ```
 
 Users typically only need to modify:
@@ -293,22 +293,8 @@ Make sure `src/config.json` matches the service URL:
 
 If the ML service is not running, the core map and visualization still work; only the unknown-archetype prediction action will be unavailable.
 
----
 
-#### Development workflow
-
-During development the platform will automatically reload when files are updated, including:
-
-- `config.json`
-- GeoJSON datasets
-- map configuration
-- UI scripts
-
-This allows rapid testing of changes to datasets and configuration.
-
-
-
-#### Troubleshooting
+#### 3.4 Troubleshooting
 
 If the platform does not start correctly, check:
 
@@ -325,8 +311,7 @@ If ML prediction fails, additionally check:
 - `ml_service_url` in `src/config.json` points to the running backend
 
 
-
-## Optional ML Feature Explanation
+#### Optional ML Feature Explanation
 
 The optional ML module is designed to help datasets where some buildings are labeled as unknown.
 
@@ -334,7 +319,7 @@ ML prediction progress overlay example:
 
 ![ML prediction progress overlay](public/images/screenshot203444.png)
 
-#### What the ML module does
+##### What the ML module does?
 
 - reads the active GeoJSON from the frontend
 - identifies features where `building_archetype` is unknown-like
@@ -342,20 +327,20 @@ ML prediction progress overlay example:
 - predicts archetypes and probabilities for unknown features
 - returns model metrics and an updated GeoJSON
 
-#### What users need to prepare
+##### What users need to prepare?
 
 - keep the archetype target property in GeoJSON (default: `building_archetype`)
 - ensure enough labeled samples exist for at least some classes
 - keep geometry valid so feature extraction can run
 
-#### Where to configure
+##### Where to configure?
 
 - frontend config: `src/config.json`
   - `ml_service_url`
   - `ml_archetype_property`
 - backend service: `ml-service/`
 
-#### Where to look when debugging
+##### Where to look when debugging?
 
 - frontend request flow: `src/main.js`, `src/ml-api.js`
 - backend API and jobs: `ml-service/app/main.py`
