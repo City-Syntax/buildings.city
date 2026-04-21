@@ -1,4 +1,4 @@
-cff-version: 1.2
+cff-version: 1.2.0
 title: "Buildings.city: A Lightweight Toolkit for Urban Building Energy Modeling Platforms"
 message: "If you use this toolkit in research or projects, please cite it as follows."
 type: software
