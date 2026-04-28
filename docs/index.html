@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>buildings.city | Interactive UBEM Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -37,6 +38,38 @@
             background: radial-gradient(circle at 50% 50%, #1e1e1e 0%, #121212 100%);
         }
 
+        /* Hero with 3D city background */
+        .hero-wrap {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        #city-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Vignette + readability overlay so text stays crisp on top of the city */
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse at 50% 45%, rgba(18,18,18,0.55) 0%, rgba(18,18,18,0.85) 55%, rgba(18,18,18,1) 100%),
+                linear-gradient(to bottom, rgba(18,18,18,0.4) 0%, rgba(18,18,18,0) 25%, rgba(18,18,18,0) 70%, rgba(18,18,18,1) 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
         /* Logo 裁剪效果：内切圆形裁剪 */
         .logo-clip {
             width: 64px;
@@ -55,36 +88,43 @@
 </head>
 <body class="hero-gradient min-h-screen">
 
-    <nav class="container mx-auto px-6 py-8 flex justify-between items-center">
-        <div class="nav-brand text-xl font-bold tracking-tighter text-white">Buildings.city</div>
-        <div class="hidden md:flex space-x-8 text-sm font-medium text-gray-400">
-            <a href="https://city-syntax.github.io/buildings.sg/documentation.html" target="_blank" class="hover:text-white transition">Docs</a>
-            <a href="https://buildings.sg" target="_blank" class="hover:text-white transition">Buildings.sg</a>
-            <a href="https://github.com/City-Syntax/buildings.city" target="_blank" class="hover:text-white transition">GitHub</a>
-        </div>
-    </nav>
+    <div class="hero-wrap">
+        <canvas id="city-canvas"></canvas>
+        <div class="hero-overlay"></div>
 
-    <section class="container mx-auto px-6 pt-16 pb-24 text-center">
-        <div class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest uppercase bg-white/5 border border-white/10 rounded-full text-[var(--muted)] mono-text">
-            Lightweight UBEM Toolkit V1.0
+        <div class="hero-content">
+            <nav class="container mx-auto px-6 py-8 flex justify-between items-center">
+                <div class="nav-brand text-xl font-bold tracking-tighter text-white">Buildings.city</div>
+                <div class="hidden md:flex space-x-8 text-sm font-medium text-gray-400">
+                    <a href="https://city-syntax.github.io/buildings.sg/documentation.html" target="_blank" class="hover:text-white transition">Docs</a>
+                    <a href="https://buildings.sg" target="_blank" class="hover:text-white transition">Buildings.sg</a>
+                    <a href="https://github.com/City-Syntax/buildings.city" target="_blank" class="hover:text-white transition">GitHub</a>
+                </div>
+            </nav>
+
+            <section class="container mx-auto px-6 pt-16 pb-24 text-center">
+                <div class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest uppercase bg-white/5 border border-white/10 rounded-full text-[var(--muted)] mono-text">
+                    Lightweight UBEM Toolkit V1.0
+                </div>
+                <h1 class="text-4xl md:text-6xl font-bold mb-8 tracking-tight leading-tight">
+                    Build Your City's <br><span class="text-[var(--target)]">Interactive Energy Map</span>
+                </h1>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
+                    A lightweight toolkit to quickly deploy Urban Building Energy Modeling platforms. 
+                    Visualize GeoJSON datasets, simulate carbon pathways, and use ML to predict building archetypes locally.
+                </p>
+                
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4">
+                    <a href="https://github.com/City-Syntax/buildings.city/archive/refs/heads/main.zip" download class="px-8 py-4 bg-[var(--target)] text-black font-bold rounded-lg btn-hover transition w-full md:w-auto">
+                        Download the Latest Package
+                    </a>
+                    <a href="https://buildings.sg" target="_blank" class="px-8 py-4 glass text-white font-bold rounded-lg hover:bg-white/5 transition w-full md:w-auto">
+                        Explore Live Demo
+                    </a>
+                </div>
+            </section>
         </div>
-        <h1 class="text-4xl md:text-6xl font-bold mb-8 tracking-tight leading-tight">
-            Build Your City's <br><span class="text-[var(--target)]">Interactive Energy Map</span>
-        </h1>
-        <p class="text-lg text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
-            A lightweight toolkit to quickly deploy Urban Building Energy Modeling platforms. 
-            Visualize GeoJSON datasets, simulate carbon pathways, and use ML to predict building archetypes locally.
-        </p>
-        
-        <div class="flex flex-col md:flex-row justify-center items-center gap-4">
-            <a href="https://github.com/City-Syntax/buildings.city/archive/refs/heads/main.zip" download class="px-8 py-4 bg-[var(--target)] text-black font-bold rounded-lg btn-hover transition w-full md:w-auto">
-                Download the Latest Package
-            </a>
-            <a href="https://buildings.sg" target="_blank" class="px-8 py-4 glass text-white font-bold rounded-lg hover:bg-white/5 transition w-full md:w-auto">
-                Explore Live Demo
-            </a>
-        </div>
-    </section>
+    </div>
 
     <section class="container mx-auto px-6 mb-32 grid md:grid-cols-2 gap-12 items-center">
         <div class="glass p-8 rounded-2xl border-white/5 shadow-xl">
@@ -152,6 +192,186 @@
             </div>
         </div>
     </footer>
+
+    <script>
+    (function () {
+        const canvas = document.getElementById('city-canvas');
+        if (!canvas || typeof THREE === 'undefined') return;
+
+        const BG_COLOR = 0x121212;
+        const ACCENT = 0xbbe7ff;
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(BG_COLOR);
+        scene.fog = new THREE.Fog(BG_COLOR, 60, 260);
+
+        const renderer = new THREE.WebGLRenderer({
+            canvas: canvas,
+            antialias: true,
+            alpha: false
+        });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 600);
+        camera.position.set(0, 38, 70);
+        camera.lookAt(0, 8, 0);
+
+        // Lighting — subtle, mostly ambient + a soft cyan rim
+        const ambient = new THREE.AmbientLight(0xffffff, 0.35);
+        scene.add(ambient);
+
+        const keyLight = new THREE.DirectionalLight(0xffffff, 0.55);
+        keyLight.position.set(60, 100, 40);
+        scene.add(keyLight);
+
+        const rimLight = new THREE.DirectionalLight(ACCENT, 0.6);
+        rimLight.position.set(-80, 40, -60);
+        scene.add(rimLight);
+
+        // Ground plane (very dark, blends into bg)
+        const ground = new THREE.Mesh(
+            new THREE.PlaneGeometry(800, 800),
+            new THREE.MeshStandardMaterial({ color: 0x0a0a0a, roughness: 1, metalness: 0 })
+        );
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = 0;
+        scene.add(ground);
+
+        // Subtle grid lines (street feel)
+        const grid = new THREE.GridHelper(400, 80, 0x1f2a33, 0x161616);
+        grid.material.transparent = true;
+        grid.material.opacity = 0.35;
+        grid.position.y = 0.01;
+        scene.add(grid);
+
+        // City buildings
+        const cityGroup = new THREE.Group();
+        scene.add(cityGroup);
+
+        const buildingMat = new THREE.MeshStandardMaterial({
+            color: 0x1a1f24,
+            roughness: 0.85,
+            metalness: 0.15,
+            flatShading: true
+        });
+
+        // Reusable edge material for accent outlines
+        const edgeMat = new THREE.LineBasicMaterial({
+            color: ACCENT,
+            transparent: true,
+            opacity: 0.18
+        });
+
+        // Glow material for occasional highlighted ("active") buildings
+        const glowMat = new THREE.MeshStandardMaterial({
+            color: 0x223240,
+            emissive: ACCENT,
+            emissiveIntensity: 0.55,
+            roughness: 0.6,
+            metalness: 0.2,
+            flatShading: true
+        });
+
+        const GRID_SIZE = 22;       // buildings per side
+        const SPACING = 6;          // distance between building centers
+        const HALF = (GRID_SIZE - 1) * SPACING / 2;
+
+        // Pseudo-random with fixed seed for stable layout
+        let seed = 1337;
+        const rand = () => {
+            seed = (seed * 9301 + 49297) % 233280;
+            return seed / 233280;
+        };
+
+        for (let i = 0; i < GRID_SIZE; i++) {
+            for (let j = 0; j < GRID_SIZE; j++) {
+                // Carve a couple of "avenues" by skipping rows/cols occasionally
+                if (i % 7 === 3 || j % 8 === 4) continue;
+                if (rand() < 0.08) continue; // empty plots
+
+                const x = -HALF + i * SPACING + (rand() - 0.5) * 0.8;
+                const z = -HALF + j * SPACING + (rand() - 0.5) * 0.8;
+
+                // Distance from center → taller buildings near the middle (downtown)
+                const dist = Math.sqrt(x * x + z * z);
+                const downtown = Math.max(0, 1 - dist / 80);
+                const baseHeight = 2 + Math.pow(rand(), 1.6) * 14;
+                const height = baseHeight + downtown * (8 + rand() * 22);
+
+                const w = 2.2 + rand() * 1.8;
+                const d = 2.2 + rand() * 1.8;
+
+                const geom = new THREE.BoxGeometry(w, height, d);
+                const isAccent = rand() < 0.025; // ~2.5% glow buildings
+                const mesh = new THREE.Mesh(geom, isAccent ? glowMat : buildingMat);
+                mesh.position.set(x, height / 2, z);
+                cityGroup.add(mesh);
+
+                // Accent edges for taller buildings (cleaner silhouette)
+                if (height > 10 && !isAccent && rand() < 0.55) {
+                    const edges = new THREE.EdgesGeometry(geom);
+                    const line = new THREE.LineSegments(edges, edgeMat);
+                    line.position.copy(mesh.position);
+                    cityGroup.add(line);
+                }
+            }
+        }
+
+        // Tiny "window" point sprites scattered across taller buildings for life
+        const windowGeom = new THREE.BufferGeometry();
+        const windowCount = 600;
+        const positions = new Float32Array(windowCount * 3);
+        for (let k = 0; k < windowCount; k++) {
+            const angle = rand() * Math.PI * 2;
+            const r = rand() * 70;
+            positions[k * 3 + 0] = Math.cos(angle) * r;
+            positions[k * 3 + 1] = 2 + rand() * 22;
+            positions[k * 3 + 2] = Math.sin(angle) * r;
+        }
+        windowGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const windowMat = new THREE.PointsMaterial({
+            color: ACCENT,
+            size: 0.18,
+            transparent: true,
+            opacity: 0.45,
+            sizeAttenuation: true
+        });
+        scene.add(new THREE.Points(windowGeom, windowMat));
+
+        function resize() {
+            const wrap = canvas.parentElement;
+            const w = wrap.clientWidth;
+            const h = wrap.clientHeight;
+            renderer.setSize(w, h, false);
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+        }
+
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Track pointer for subtle parallax
+        let targetRotX = 0, targetRotY = 0;
+        window.addEventListener('mousemove', (e) => {
+            const nx = (e.clientX / window.innerWidth) * 2 - 1;
+            const ny = (e.clientY / window.innerHeight) * 2 - 1;
+            targetRotY = nx * 0.15;
+            targetRotX = -ny * 0.05;
+        });
+
+        const clock = new THREE.Clock();
+        function animate() {
+            const t = clock.getElapsedTime();
+            // Slow ambient orbit of the city
+            cityGroup.rotation.y = t * 0.04 + targetRotY;
+            cityGroup.rotation.x = targetRotX * 0.5;
+
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+        animate();
+    })();
+    </script>
 
 </body>
 </html>
