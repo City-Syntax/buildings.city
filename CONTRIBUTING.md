@@ -8,7 +8,7 @@ Buildings.city is an open-source toolkit designed to help cities and researchers
 
 We welcome contributions that improve the platform, documentation, or usability of the package.
 
----
+
 
 ## Ways to Contribute
 
@@ -48,7 +48,7 @@ Possible contributions include:
 
 If data cannot be shared publicly, anonymized or simplified examples are also helpful.
 
----
+
 
 ## Development Setup
 
@@ -69,7 +69,7 @@ src/config.json
 
 When adding features, please maintain compatibility with the configuration structure where possible.
 
----
+
 
 ## Design Principles
 
@@ -83,7 +83,7 @@ When contributing, please try to follow these principles:
 - maintain compatibility with different city datasets
 - keep the platform easy to deploy as a static web application
 
----
+
 
 ## Pull Requests
 
@@ -95,7 +95,7 @@ Before submitting a pull request:
 
 If the change affects the interface or visualization, including screenshots is helpful.
 
----
+
 
 ## Questions or Suggestions
 
