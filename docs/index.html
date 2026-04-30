@@ -19,7 +19,7 @@
         }
         
         body {
-            background-color: var(--bg);
+            background: radial-gradient(circle at 50% 0%, #1e1e1e 0%, #121212 45%, #0f0f0f 100%);
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             color: #f5f7fa;
         }
@@ -70,6 +70,19 @@
             z-index: 2;
         }
 
+        .hero-wrap::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -1px;
+            height: 120px;
+            z-index: 1;
+            pointer-events: none;
+            background: linear-gradient(to bottom, rgba(18,18,18,0), #0f0f0f);
+        }
+
+
         /* Logo 裁剪效果：内切圆形裁剪 */
         .logo-clip {
             width: 64px;
@@ -86,7 +99,7 @@
         }
     </style>
 </head>
-<body class="hero-gradient min-h-screen">
+<body class="min-h-screen">
 
     <div class="hero-wrap">
         <canvas id="city-canvas"></canvas>
