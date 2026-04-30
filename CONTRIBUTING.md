@@ -1,5 +1,3 @@
-# Create the CONTRIBUTING.md file for download
-
 # Contributing to Buildings.city
 
 Thank you for your interest in contributing to **Buildings.city**.
