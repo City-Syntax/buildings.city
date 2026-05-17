@@ -1,0 +1,2073 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buildings.city | Building Energy Simulation Mode</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22/>">
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #333;
+            --panel: rgba(0, 0, 0, 0.68);
+            --panel-border: rgba(255, 255, 255, 0.12);
+            --text: #f5f7fa;
+            --muted: #b3c0cc;
+            --target: #bbe7ff;
+            --invalid: #575d67;
+            --context: #d5dbe1;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        #map {
+            position: fixed;
+            inset: 0;
+        }
+
+        .top-left-stack {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            bottom: 30px;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .simulation-header {
+            position: static;
+            width: 340px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: stretch;
+            padding: 14px 16px;
+            border-radius: 10px;
+            background: var(--panel);
+            border: none;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+        }
+
+        .header-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .simulation-header h1 {
+            margin: 6px 0 4px;
+            font-size: 16px;
+            line-height: 2;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .simulation-header p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.45;
+            color: var(--muted);
+            max-width: 400px;
+        }
+
+        .back-link {
+            color: #dbeafe;
+            text-decoration: none;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1.45;
+            letter-spacing: 0;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            width: fit-content;
+            transition: color 0.15s ease;
+        }
+
+        .back-link:hover {
+            text-decoration: none;
+            color: #bbe7ff;
+        }
+
+        .back-icon {
+            position: relative;
+            width: 14px;
+            height: 14px;
+            color: currentColor;
+            flex: 0 0 auto;
+        }
+
+        .back-icon::before,
+        .back-icon::after {
+            content: '';
+            position: absolute;
+            display: block;
+        }
+
+        .back-icon::before {
+            left: 2px;
+            top: 6px;
+            width: 10px;
+            height: 2px;
+            border-radius: 999px;
+            background: currentColor;
+        }
+
+        .back-icon::after {
+            left: 2px;
+            top: 3px;
+            width: 7px;
+            height: 7px;
+            border-left: 2px solid currentColor;
+            border-bottom: 2px solid currentColor;
+            border-radius: 1px;
+            transform: rotate(45deg);
+        }
+
+        .confirm-sim-btn {
+            width: 100%;
+            margin-top: 6px;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            border-radius: 999px;
+            padding: 6px 12px;
+            background: #f8fafc;
+            color: #333;
+            font-weight: 500;
+            font-size: 12px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            cursor: pointer;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+        }
+
+        .confirm-sim-btn:hover {
+            font-weight: 800;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
+        }
+
+        .confirm-sim-btn:disabled {
+            opacity: 0.65;
+            cursor: wait;
+            transform: none;
+        }
+
+        .surrogate-sim-btn {
+            margin-top: 2px;
+        }
+
+        .sync-geojson-btn {
+            position: fixed;
+            top: 12px;
+            right: 10px;
+            z-index: 30;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            border-radius: 999px;
+            padding: 6px 18px;
+            background: #f8fafc;
+            color: #333;
+            font-weight: 500;
+            font-size: 12px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            cursor: pointer;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transition: background 0.15s ease, font-weight 0.15s ease, opacity 0.15s ease;
+        }
+
+        .sync-geojson-btn:hover {
+            background: #eef2f5;
+            font-weight: 800;
+        }
+
+        .sync-geojson-btn:disabled {
+            opacity: 0.65;
+            cursor: wait;
+        }
+
+        .control-strip {
+            display: flex;
+            margin-top: 12px;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+
+        .radius-control {
+            display: flex;
+            width: 100%;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .radius-control-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .radius-slider-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .radius-control strong {
+            color: #fff;
+            font-weight: 500;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .radius-control input[type="range"] {
+            width: 100%;
+            accent-color: #f8fafc;
+        }
+
+        .control-strip .radius-reset-btn {
+            min-width: 58px;
+            padding: 5px 10px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 999px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.15s ease, opacity 0.15s ease;
+        }
+
+        .control-strip .radius-reset-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .mode-actions button {
+            border: none;
+            border-radius: 999px;
+            padding: 6px 20px;
+            font-size: 12px;
+            cursor: pointer;
+            justify-content: center;
+            transition: transform 0.15s ease, opacity 0.15s ease;
+        }
+
+        .mode-actions button:hover {
+            transform: translateY(-1px);
+        }
+
+        .simulation-map-tool {
+            position: fixed;
+            top: 215px;
+            right: 10px;
+            z-index: 30;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            background-color: #fff;
+            color: #333;
+            border: none;
+            outline: 2px solid rgba(50, 50, 50, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: background-color 0.1s, color 0.1s;
+        }
+
+        .simulation-map-tool:hover {
+            background-color: #f5f5f5;
+        }
+
+        .simulation-map-tool.active {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .simulation-clear-tool {
+            top: 253px;
+        }
+
+        .circle-tool-icon {
+            width: 16px;
+            height: 16px;
+            border: 2px dashed currentColor;
+            border-radius: 50%;
+        }
+
+        .broom-tool-icon {
+            position: relative;
+            width: 17px;
+            height: 17px;
+            transform: rotate(-28deg);
+        }
+
+        .broom-tool-icon::before {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 7px;
+            width: 2px;
+            height: 11px;
+            border-radius: 999px;
+            background: currentColor;
+        }
+
+        .broom-tool-icon::after {
+            content: '';
+            position: absolute;
+            left: 4px;
+            bottom: 1px;
+            width: 9px;
+            height: 6px;
+            border-radius: 1px 1px 3px 3px;
+            background: currentColor;
+        }
+
+        .broom-bristles {
+            position: absolute;
+            left: 3px;
+            bottom: 0;
+            width: 11px;
+            height: 2px;
+            border-radius: 0 0 999px 999px;
+            background: currentColor;
+            opacity: 0.55;
+        }
+
+        .mapboxgl-popup {
+            border-radius: 10px !important;
+            overflow: hidden;
+        }
+
+        .mapboxgl-popup-content {
+            background: #fff;
+            border-radius: 10px !important;
+            border: 0;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .mapboxgl-popup-tip {
+            fill: #fff;
+            transform: scale(1.1);
+            stroke: #fff;
+            stroke-width: 2px;
+        }
+
+        .mapboxgl-popup-close-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-weight: 500;
+            border: none;
+            background: transparent;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .mapboxgl-popup-close-button:hover {
+            color: #333;
+            background-color: transparent;
+            border-top-right-radius: 10px !important;
+            border: none;
+        }
+
+        .mapboxgl-popup-content h3 {
+            margin: 3px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: bold;
+            font-size: 12px;
+            color: #007cbf;
+        }
+
+        .mapboxgl-popup-content p {
+            margin: 3px;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            color: #333;
+        }
+
+        .mapboxgl-ctrl-top-right {
+            top: 46px;
+        }
+
+        .mapboxgl-ctrl-group {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .mapboxgl-ctrl-group>button {
+            width: 28px;
+            height: 28px;
+        }
+
+        .mapboxgl-ctrl-geocoder {
+            margin: 8px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .mapboxgl-ctrl-geocoder input {
+            border-radius: 10px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .mapboxgl-ctrl-geocoder input::placeholder {
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .mapboxgl-ctrl-geocoder .suggestions {
+            transform: translateX(-245px) translateY(36px);
+            font-size: 12px;
+            border: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .mapboxgl-ctrl-bottom-left .mapboxgl-ctrl-scale {
+            background: transparent;
+            color: #333;
+            font-size: 12px;
+            position: fixed;
+            left: 100px;
+            bottom: 28px !important;
+            border: none;
+            box-shadow: none;
+            padding: 0 10px;
+        }
+
+        .mapboxgl-ctrl-bottom-left.mapboxgl-ctrl-scale {
+            direction: rtl;
+            text-align: right;
+        }
+
+        .mapboxgl-ctrl-scale::after {
+            content: '';
+            display: block;
+            width: 50%;
+            height: 3px;
+            border-radius: 1.5px;
+            background: #333;
+            margin-bottom: 2px;
+        }
+
+        .mapboxgl-ctrl-icon {
+            color: #fff;
+            border: 0;
+        }
+
+        .mapboxgl-ctrl-logo {
+            margin-bottom: -10px !important;
+            width: 75px !important;
+        }
+
+        .mapboxgl-ctrl {
+            border: 0;
+            border-radius: 10px;
+        }
+
+        .mapboxgl-ctrl-geocoder input:focus {
+            outline: none;
+        }
+
+        .mapboxgl-ctrl-attrib {
+            background: transparent !important;
+            white-space: nowrap !important;
+            display: flex !important;
+            font-size: 12px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .status-bar {
+            position: fixed;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            z-index: 25;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            width: auto;
+            max-width: calc(100vw - 24px);
+        }
+
+        .status-pill-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .status-pill {
+            padding: 6px 12px;
+            background: var(--panel);
+            border: none;
+            backdrop-filter: blur(8px);
+            font-size: 12px;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            border-radius: 999px;
+        }
+
+        .status-pill strong {
+            margin-left: 6px;
+            font-size: 12px;
+        }
+
+        .status-pill.target strong {
+            color: var(--target);
+        }
+
+        .status-pill.invalid strong {
+            color: var(--invalid);
+        }
+
+        .status-pill.context strong {
+            color: var(--context);
+        }
+
+        .status-note {
+            display: block;
+            width: fit-content;
+            max-width: min(560px, calc(100vw - 24px));
+            border-radius: 10px;
+            color: var(--muted);
+            line-height: 1.45;
+            text-align: center;
+        }
+
+        #simulationResult {
+            display: none;
+        }
+
+        #simulationResult.show {
+            display: block;
+        }
+
+        .mode-prompt {
+            position: fixed;
+            inset: 0;
+            z-index: 40;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(6px);
+        }
+
+        .mode-prompt.show {
+            display: flex;
+        }
+
+        .mode-card {
+            width: 550px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
+            padding: 24px;
+            border: none;
+        }
+
+        .eyebrow {
+            margin: 0 0 10px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            color: #666;
+        }
+
+        .mode-card h2 {
+            margin: 0 0 10px;
+            font-size: 16px;
+            line-height: 1.2;
+            color: #333;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .mode-card p:last-of-type {
+            margin: 0;
+            color: #41505f;
+            line-height: 1.55;
+            font-size: 14px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .mode-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 18px;
+        }
+
+        .mode-actions button[data-mode="single"] {
+            background: #333;
+            color: #fff;
+            font-weight: 500;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .mode-actions button[data-mode="area"] {
+            background: #eef2f5;
+            color: #333;
+            border: none;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sim-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 120;
+        }
+
+        .sim-overlay.show {
+            display: flex;
+        }
+
+        #simulationSummaryOverlay {
+            align-items: center;
+            justify-content: center;
+            padding: 32px 20px;
+        }
+
+        .sim-progress-card,
+        .sim-summary-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
+        }
+
+        .sim-progress-card {
+            width: min(550px, calc(100vw - 32px));
+            padding: 24px;
+        }
+
+        .sim-progress-eyebrow,
+        .sim-summary-label {
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            letter-spacing: 0;
+            color: #666666;
+        }
+
+        .sim-progress-eyebrow {
+            margin-bottom: 10px;
+        }
+
+        .sim-progress-card h3,
+        .sim-summary-card h3 {
+            margin: 0 0 10px;
+            font-size: 16px;
+            line-height: 1.2;
+            color: #333333;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sim-progress-card p,
+        .sim-summary-message,
+        .sim-summary-note {
+            margin: 0;
+            color: #666666;
+            font-size: 14px;
+            line-height: 1.55;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sim-progress-bar {
+            width: 100%;
+            height: 10px;
+            margin-top: 18px;
+            background: #e6ecf1;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .sim-progress-bar-inner {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2d7ff9 0%, #4bc78d 100%);
+            transition: width 0.25s ease;
+        }
+
+        .sim-progress-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            color: #627181;
+            font-size: 12px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sim-summary-card {
+            position: relative;
+            width: min(1000px, calc(100vw - 40px));
+            height: min(860px, calc(100vh - 32px));
+            max-height: calc(100vh - 32px);
+            margin: 0 auto;
+            border-radius: 10px;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
+            padding: 22px 20px 18px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sim-summary-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e8edf2;
+        }
+
+        .sim-summary-header>div:first-child {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .sim-summary-actions,
+        .sim-summary-actions-top {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .sim-summary-actions-top {
+            justify-content: flex-end;
+            align-self: flex-start;
+        }
+
+        .sim-primary-btn,
+        .sim-secondary-btn {
+            min-height: 34px;
+            padding: 0 16px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .sim-primary-btn {
+            background: #333333;
+            color: #fff;
+        }
+
+        .sim-secondary-btn {
+            background: #eef2f5;
+            color: #253342;
+        }
+
+        .sim-primary-btn:disabled,
+        .sim-secondary-btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        button:hover:not(:disabled) {
+            font-weight: 700;
+        }
+
+        .sim-summary-body {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-top: 14px;
+            margin-right: -20px;
+            padding-right: 20px;
+            scrollbar-width: thin;
+            scrollbar-color: #d0d5da transparent;
+        }
+
+        .sim-summary-body.hide-scrollbar {
+            scrollbar-width: none;
+            overflow-y: auto;
+        }
+
+        .sim-summary-body.hide-scrollbar::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        .sim-summary-body::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sim-summary-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sim-summary-body::-webkit-scrollbar-thumb {
+            background: #d0d5da;
+            border-radius: 4px;
+        }
+
+        .sim-summary-body::-webkit-scrollbar-button {
+            display: none;
+        }
+
+        .sim-summary-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sim-summary-top-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 18px;
+            align-items: stretch;
+        }
+
+        .sim-summary-top-grid .sim-summary-section {
+            min-width: 0;
+            height: 100%;
+        }
+
+        .sim-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .sim-overview-grid {
+            flex: 1;
+            grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+            grid-template-rows: repeat(2, minmax(0, 1fr));
+        }
+
+        .sim-summary-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: #f6f8fa;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .sim-summary-item .sim-summary-label,
+        .sim-average-label {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            color: #60707f;
+        }
+
+        .sim-summary-item strong {
+            color: #333333;
+            font-size: 14px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            overflow-wrap: anywhere;
+        }
+
+        .sim-average-list {
+            flex: 1;
+            display: grid;
+            grid-template-rows: repeat(6, minmax(0, 1fr));
+            border: 1px solid #eef2f5;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .sim-average-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(110px, 0.82fr);
+            gap: 12px;
+            align-items: center;
+            padding: 7px 14px;
+            border-bottom: 1px solid #eef2f5;
+        }
+
+        .sim-average-row:last-child {
+            border-bottom: 0;
+        }
+
+        .sim-average-value {
+            color: #333333;
+            font-size: 12px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .sim-table-wrap {
+            overflow: auto;
+            border: 1px solid #e8edf2;
+            border-radius: 10px;
+            background: #fff;
+        }
+
+        .sim-results-table {
+            width: 100%;
+            min-width: 780px;
+            border-collapse: collapse;
+        }
+
+        .sim-results-table thead {
+            background: #f6f8fa;
+        }
+
+        .sim-results-table th,
+        .sim-results-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #eef2f5;
+            font-size: 12px;
+            color: #333333;
+        }
+
+        .sim-results-table th {
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-size: 11px;
+            color: #60707f;
+            text-align: right;
+        }
+
+        .sim-results-table td {
+            text-align: right;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            vertical-align: middle;
+        }
+
+        .sim-results-table th:first-child,
+        .sim-results-table td:first-child {
+            text-align: left;
+            max-width: 220px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sim-results-table th:last-child,
+        .sim-results-table td:last-child {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .sim-results-table tbody tr:hover {
+            background: #fbfcfd;
+        }
+
+        .sim-table-sql-btn,
+        .sim-hourly-series-row {
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sim-table-sql-btn {
+            min-height: 26px;
+            min-width: 70px;
+            padding: 0 10px;
+            background: #eef2f5;
+            color: #253342;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            vertical-align: middle;
+        }
+
+        .sim-hourly-section {
+            display: none;
+            overflow: visible;
+        }
+
+        .sim-hourly-section.show {
+            display: flex;
+        }
+
+        .sim-hourly-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .sim-hourly-header .sim-summary-note {
+            display: none;
+        }
+
+        .sim-hourly-range {
+            width: 100%;
+            display: grid;
+            grid-template-columns: auto auto minmax(0, 1fr) 112px;
+            gap: 10px;
+            align-items: center;
+            color: #60707f;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            text-transform: none;
+        }
+
+        .sim-hourly-slider-wrap {
+            position: relative;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            margin: 0 18px;
+        }
+
+        .sim-hourly-slider-track {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 6px;
+            border-radius: 999px;
+            background: #e9eef2;
+        }
+
+        .sim-hourly-slider-fill {
+            position: absolute;
+            height: 6px;
+            border-radius: 999px;
+            background: #55595f;
+        }
+
+        .sim-hourly-range input[type="range"] {
+            position: absolute;
+            width: 100%;
+            flex: 1;
+            min-width: 0;
+            appearance: none;
+            background: transparent;
+            pointer-events: none;
+        }
+
+        .sim-hourly-range input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 2px solid #55595f;
+            background: #55595f;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        .sim-hourly-range input[type="range"]::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 2px solid #55595f;
+            background: #55595f;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        .sim-hourly-range-label {
+            color: #405061;
+            text-transform: none;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .sim-hourly-month-select {
+            width: 100%;
+            min-height: 30px;
+            padding: 0 12px;
+            border: none;
+            border-radius: 999px;
+            background: #eef2f5;
+            color: #253342;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .sim-hourly-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 210px;
+            gap: 14px;
+            align-items: stretch;
+            overflow: visible;
+        }
+
+        .sim-hourly-canvas {
+            width: 100%;
+            height: 200px;
+            border: none;
+            background: transparent;
+            display: block;
+        }
+
+        .sim-hourly-series-list {
+            min-height: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border: none;
+            background: transparent;
+            padding: 8px;
+            scrollbar-width: none;
+        }
+
+        .sim-hourly-series-list::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        .sim-hourly-series-row {
+            width: 100%;
+            min-height: 28px;
+            display: grid;
+            grid-template-columns: 12px minmax(0, 1fr);
+            gap: 7px;
+            align-items: center;
+            padding: 4px 8px;
+            background: transparent;
+            color: #333;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .sim-hourly-series-row.selected {
+            background: transparent;
+            font-weight: 400;
+        }
+
+        button.sim-hourly-series-row:hover:not(:disabled),
+        button.sim-hourly-series-row.selected:hover:not(:disabled) {
+            font-weight: 400;
+        }
+
+        .sim-hourly-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid currentColor;
+            background: transparent;
+        }
+
+        .sim-hourly-series-row.selected .sim-hourly-dot {
+            background: currentColor;
+        }
+
+        .sim-status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            background: #eef2f5;
+            color: #333333;
+        }
+
+        .sim-status-badge.is-completed {
+            background: #e8f7ef;
+            color: #146c43;
+        }
+
+        .sim-status-badge.is-failed {
+            background: #fceaea;
+            color: #b42318;
+        }
+
+        .sim-status-badge.is-partial {
+            background: #fff4db;
+            color: #9a6700;
+        }
+
+        .building-editor-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 130;
+            display: none;
+            background: rgba(0, 0, 0, 0.58);
+            backdrop-filter: blur(5px);
+            padding: 28px 20px;
+        }
+
+        .building-editor-overlay.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .building-editor-shell {
+            width: min(1080px, calc(100vw - 40px));
+            height: min(580px, calc(100vh - 56px));
+            display: grid;
+            grid-template-columns: minmax(320px, 430px) minmax(0, 1fr);
+            min-height: 0;
+            background: #fff;
+            color: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
+        }
+
+        .building-editor-preview {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            min-height: 0;
+            padding: 22px;
+            background: #111111;
+            color: #f5f7fa;
+        }
+
+        .building-editor-preview h3,
+        .building-editor-panel h3 {
+            margin: 0 0 8px;
+            font-size: 16px;
+            line-height: 1.2;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .building-editor-preview p,
+        .building-editor-panel p {
+            margin: 0;
+            color: #777777;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .building-editor-preview p {
+            color: #c7c7c7;
+        }
+
+        .building-editor-preview h3+p,
+        .building-editor-panel h3+p {
+            margin-top: 8px;
+        }
+
+        .building-preview-canvas-wrap {
+            flex: 1;
+            min-height: 240px;
+            margin-top: 18px;
+            border-radius: 10px;
+            background: #111111;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+        }
+
+        #buildingPreviewCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .building-editor-panel {
+            min-width: 0;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 22px 20px 18px;
+        }
+
+        .building-editor-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            flex-shrink: 0;
+            padding-bottom: 12px;
+        }
+
+        .building-editor-close {
+            flex: 0 0 auto;
+            border: none;
+            border-radius: 999px;
+            background: #eeeeee;
+            color: #333;
+            cursor: pointer;
+            min-height: 30px;
+            padding: 6px 14px;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+        }
+
+        .building-editor-body {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding-top: 12px;
+            padding-right: 8px;
+            margin-right: -8px;
+            scrollbar-width: thin;
+            scrollbar-color: #cfcfcf transparent;
+        }
+
+        .building-editor-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .building-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .building-parameter-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .building-field-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .building-field-section-title {
+            color: #555555;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .building-field-section-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .building-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .building-field label {
+            color: #555555;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+        }
+
+        .building-field input,
+        .building-field select {
+            width: 100%;
+            min-height: 32px;
+            border: 1px solid #d8d8d8;
+            border-radius: 10px;
+            outline: none;
+            background: #fff;
+            color: #333;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            box-shadow: inset 0 0 0 0 transparent;
+            transition: border-color 0.12s ease, box-shadow 0.12s ease;
+        }
+
+        .building-field input:focus,
+        .building-field select:focus {
+            border-color: #333;
+            box-shadow: inset 0 0 0 1px #333;
+        }
+
+        .building-field input:disabled {
+            background: #f1f1f1;
+            color: #777777;
+            cursor: not-allowed;
+        }
+
+        .building-editor-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+            padding-top: 14px;
+        }
+
+        .building-editor-actions button {
+            min-height: 30px;
+            padding: 6px 16px;
+            border-radius: 999px;
+            border: 1px solid #e0e4e8;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            white-space: nowrap;
+        }
+
+        .building-editor-actions .building-download-btn {
+            background: #fff;
+            color: #333;
+        }
+
+        .building-editor-actions .building-save-btn {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+
+        .building-editor-actions .building-download-btn:hover {
+            background: #f3f4f6;
+            font-weight: 700;
+        }
+
+        .building-editor-actions .building-save-btn:hover {
+            background: #444;
+            font-weight: 700;
+        }
+
+        .schedule-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .schedule-controls label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #555555;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+        }
+
+        .schedule-controls input[type="range"] {
+            width: 150px;
+            accent-color: #333333;
+        }
+
+        .schedule-controls button,
+        .schedule-chart-header button {
+            min-height: 28px;
+            padding: 0 12px;
+            border: none;
+            border-radius: 999px;
+            background: #eeeeee;
+            color: #333333;
+            cursor: pointer;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+        }
+
+        .schedule-chart-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .schedule-chart-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .schedule-chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            color: #555555;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+        }
+
+        .schedule-chart-canvas {
+            display: block;
+            width: 100%;
+            border-radius: 10px;
+            background: #ffffff;
+            cursor: grab;
+            touch-action: none;
+        }
+
+        .schedule-chart-canvas:active {
+            cursor: grabbing;
+        }
+
+        #buildingEditorSaveStatus {
+            align-self: center;
+            margin-right: auto;
+            color: #555555;
+            font-size: 12px;
+        }
+
+        @media (max-width: 1120px) {
+            .sim-summary-card {
+                width: min(960px, calc(100vw - 32px));
+                max-height: calc(100vh - 40px);
+            }
+
+            .sim-summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .sim-overview-grid {
+                grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+            }
+
+            .sim-summary-actions-top {
+                justify-content: flex-start;
+            }
+        }
+
+        @media (orientation: portrait) {
+            .building-editor-overlay {
+                padding: 14px;
+            }
+
+            .building-editor-shell {
+                width: calc(100vw - 28px);
+                height: calc(100vh - 28px);
+                grid-template-columns: 1fr;
+                grid-template-rows: minmax(260px, 42vh) minmax(0, 1fr);
+            }
+
+            .building-editor-preview {
+                padding: 18px;
+            }
+
+            .building-preview-canvas-wrap {
+                min-height: 160px;
+                margin-top: 14px;
+            }
+
+            .building-editor-panel {
+                padding: 18px 16px 14px;
+            }
+        }
+
+        .sim-results-panel {
+            display: none;
+            flex-direction: column;
+            width: 340px;
+            max-height: 100%;
+            min-height: 0;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+            color: #333;
+            overflow: hidden;
+        }
+
+        .sim-results-panel.show {
+            display: flex;
+        }
+
+        .sim-results-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-bottom: 1px solid #eef2f5;
+            flex-shrink: 0;
+        }
+
+        .sim-results-panel-title {
+            font-size: 11px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            color: #60707f;
+            font-weight: 600;
+        }
+
+        .sim-results-panel-controls {
+            display: flex;
+            gap: 6px;
+        }
+
+        .sim-results-panel-controls button {
+            padding: 3px 10px;
+            border-radius: 999px;
+            border: 1px solid #e0e4e8;
+            background: #f5f7fa;
+            color: #333;
+            font-size: 12px;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            cursor: pointer;
+            transition: background 0.12s;
+        }
+
+        .sim-results-panel-controls button:hover {
+            background: #e4eaf0;
+        }
+
+        .sim-results-list {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            max-height: none;
+            min-height: 44px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .sim-results-list::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+            background: transparent;
+        }
+
+        .sim-results-empty {
+            padding: 16px 14px;
+            font-size: 12px;
+            color: #aab4bf;
+            text-align: center;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sim-results-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            cursor: pointer;
+            transition: background 0.1s;
+            user-select: none;
+        }
+
+        .sim-results-row:hover {
+            background: #f8fafc;
+        }
+
+        .sim-results-row:not(:last-child) {
+            border-bottom: 1px solid #eef2f5;
+        }
+
+        .sim-results-row-check {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid #cdd3d9;
+            flex-shrink: 0;
+            background: transparent;
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .sim-results-row.selected .sim-results-row-check {
+            background: #333;
+            border-color: #333;
+        }
+
+        .sim-results-row-id {
+            font-size: 11px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            flex: 0 1 92px;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .sim-results-row-archetype {
+            font-size: 11px;
+            color: #888;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .sim-results-row-eui {
+            font-size: 11px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            flex-shrink: 0;
+            text-align: right;
+            min-width: 68px;
+        }
+
+        .sim-results-panel-footer {
+            display: flex;
+            gap: 8px;
+            padding: 10px 14px;
+            border-top: 1px solid #eef2f5;
+            flex-shrink: 0;
+        }
+
+        .sim-results-panel-footer button {
+            flex: 1;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: none;
+            font-size: 11px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            cursor: pointer;
+            transition: opacity 0.15s;
+            white-space: nowrap;
+        }
+
+        .sim-results-panel-footer button:hover {
+            opacity: 0.82;
+        }
+
+        #simResultsExportCsv,
+        #simResultsDownloadGeojson {
+            background: #333;
+            color: #fff;
+        }
+
+        @media (max-width: 820px) {
+            .building-editor-overlay {
+                padding: 12px;
+            }
+
+            .building-editor-shell {
+                width: calc(100vw - 24px);
+                height: calc(100vh - 24px);
+                grid-template-columns: 1fr;
+                grid-template-rows: minmax(240px, 40vh) minmax(0, 1fr);
+            }
+
+            .building-editor-preview,
+            .building-editor-panel {
+                padding: 16px;
+            }
+
+            .building-editor-header {
+                gap: 10px;
+            }
+
+            .building-editor-preview h3,
+            .building-editor-panel h3 {
+                font-size: 19px;
+            }
+
+            .building-parameter-grid,
+            .building-info-grid,
+            .building-field-section-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .simulation-header {
+                flex-direction: column;
+                width: min(340px, calc(100vw - 24px));
+            }
+
+            .header-top {
+                flex-wrap: wrap;
+            }
+
+            .control-strip {
+                justify-content: flex-start;
+            }
+
+            .sim-results-panel {
+                width: min(340px, calc(100vw - 24px));
+            }
+
+            .sim-hourly-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sim-summary-top-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sim-hourly-header {
+                flex-direction: column;
+            }
+
+            .sim-hourly-range {
+                width: 100%;
+                min-width: 0;
+                grid-template-columns: auto auto minmax(0, 1fr);
+            }
+
+            .sim-hourly-month-select {
+                grid-column: 1 / -1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <div id="simulationProgressOverlay" class="sim-overlay" aria-hidden="true">
+        <div class="sim-progress-card" role="dialog" aria-modal="true" aria-labelledby="simulation-progress-title">
+            <h3 id="simulation-progress-title">Running Building Energy Simulation</h3>
+            <p id="simulationProgressMessage">Preparing the simulation request.</p>
+            <div class="sim-progress-bar">
+                <div id="simulationProgressBarInner" class="sim-progress-bar-inner"></div>
+            </div>
+            <div class="sim-progress-meta">
+                <span id="simulationProgressPercent">0%</span>
+                <span id="simulationProgressStage">Queued</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="simulationSummaryOverlay" class="sim-overlay" aria-hidden="true">
+        <div class="sim-summary-card" role="dialog" aria-modal="true" aria-labelledby="simulation-summary-title">
+            <div class="sim-summary-header">
+                <div>
+                    <h3 id="simulationSummaryTitle">Building Energy Simulation Summary</h3>
+                    <p id="simulationSummaryMessage" class="sim-summary-message"></p>
+                </div>
+                <div class="sim-summary-actions sim-summary-actions-top">
+                    <button id="simulationDownloadSummary" type="button" class="sim-secondary-btn">Download Summary
+                        CSV</button>
+                    <button id="simulationDownloadSql" type="button" class="sim-secondary-btn">Save SQL</button>
+                    <button id="simulationSaveToList" type="button" class="sim-primary-btn">Save</button>
+                    <button id="simulationCloseSummary" type="button" class="sim-primary-btn">Close</button>
+                </div>
+            </div>
+
+            <div class="sim-summary-body">
+                <div class="sim-summary-top-grid">
+                    <section class="sim-summary-section">
+                        <div class="sim-summary-label">Overview</div>
+                        <div id="simulationOverviewGrid" class="sim-summary-grid sim-overview-grid"></div>
+                    </section>
+
+                    <section class="sim-summary-section">
+                        <div class="sim-summary-label">Average Results</div>
+                        <div id="simulationAverageGrid" class="sim-average-list"></div>
+                    </section>
+                </div>
+
+                <section id="simulationTableSection" class="sim-summary-section">
+                    <div class="sim-summary-label">Per-building Results</div>
+                    <div class="sim-table-wrap">
+                        <table class="sim-results-table">
+                            <thead>
+                                <tr>
+                                    <th>Building ID</th>
+                                    <th>Total EUI</th>
+                                    <th>Cooling</th>
+                                    <th>Heating</th>
+                                    <th>Lighting</th>
+                                    <th>Equipment</th>
+                                    <th>Hot Water</th>
+                                    <th>Status</th>
+                                    <th>SQL</th>
+                                </tr>
+                            </thead>
+                            <tbody id="simulationResultsTableBody">
+                                <tr>
+                                    <td colspan="9">No simulation result is loaded yet.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p id="simulationTableNote" class="sim-summary-note">Each row will show one target building when the
+                        run completes.</p>
+                </section>
+
+                <section id="simulationHourlySection" class="sim-summary-section sim-hourly-section">
+                    <div class="sim-hourly-header">
+                        <div>
+                            <div class="sim-summary-label">Hourly Outputs</div>
+                            <p id="simulationHourlyNote" class="sim-summary-note">Showing the first week by default.</p>
+                        </div>
+                        <button id="simulationDownloadHourlyChart" type="button" class="sim-secondary-btn" disabled>Download</button>
+                    </div>
+                    <div class="sim-hourly-layout">
+                        <canvas id="simulationHourlyCanvas" class="sim-hourly-canvas"></canvas>
+                        <div id="simulationHourlySeriesList" class="sim-hourly-series-list"></div>
+                    </div>
+                    <label class="sim-hourly-range">
+                        <span>Time span</span>
+                        <span id="simulationHourlyRangeLabel" class="sim-hourly-range-label">1/1 - 1/7</span>
+                        <div class="sim-hourly-slider-wrap">
+                            <div class="sim-hourly-slider-track"></div>
+                            <div id="simulationHourlyRangeFill" class="sim-hourly-slider-fill"></div>
+                            <input id="simulationHourlyRangeStart" type="range" min="0" max="0" step="24" value="0" aria-label="Hourly output start day" />
+                            <input id="simulationHourlyRangeEnd" type="range" min="0" max="0" step="24" value="168" aria-label="Hourly output end day" />
+                        </div>
+                        <select id="simulationHourlyMonth" class="sim-hourly-month-select" aria-label="Hourly output month"></select>
+                    </label>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <div id="buildingEditorOverlay" class="building-editor-overlay" aria-hidden="true">
+        <div class="building-editor-shell" role="dialog" aria-modal="true" aria-labelledby="buildingEditorTitle">
+            <section class="building-editor-preview">
+                <div>
+                    <h3 id="buildingPreviewTitle">Building Preview</h3>
+                    <p id="buildingPreviewSubtitle">Double-click a building to edit its IDF defaults.</p>
+                </div>
+                <div class="building-preview-canvas-wrap">
+                    <canvas id="buildingPreviewCanvas"></canvas>
+                </div>
+            </section>
+
+            <section class="building-editor-panel">
+                <div class="building-editor-header">
+                    <div>
+                        <h3 id="buildingEditorTitle">Simulation Parameters</h3>
+                        <p>Edit the default IDF assumptions used for this building or its archetype template.</p>
+                    </div>
+                    <button id="buildingEditorClose" type="button" class="building-editor-close">Close</button>
+                </div>
+
+                <div class="building-editor-body">
+                    <section class="building-editor-section">
+                        <div class="sim-summary-label">Basic Information</div>
+                        <div id="buildingInfoGrid" class="building-info-grid"></div>
+                    </section>
+
+                    <section class="building-editor-section">
+                        <div class="sim-summary-label">IDF Defaults</div>
+                        <div id="buildingParameterGrid" class="building-parameter-grid"></div>
+                    </section>
+
+                    <section id="buildingScheduleSection" class="building-editor-section">
+                        <div class="sim-summary-label">Schedule</div>
+                        <div class="schedule-controls">
+                            <label for="scheduleHeightInput">
+                                Chart height
+                                <input id="scheduleHeightInput" type="range" min="110" max="260" step="10" value="150" />
+                                <span id="scheduleHeightValue">150px</span>
+                            </label>
+                            <button id="scheduleResetAll" type="button">Reset All</button>
+                        </div>
+                        <div id="scheduleChartGrid" class="schedule-chart-grid"></div>
+                    </section>
+                </div>
+
+                <div class="building-editor-actions">
+                    <span id="buildingEditorSaveStatus" aria-live="polite"></span>
+                    <button id="buildingEditorDownloadBuilding" type="button" class="building-download-btn">Download individual building json</button>
+                    <button id="buildingEditorDownloadTemplate" type="button" class="building-download-btn">Sync template IDF</button>
+                    <button id="buildingEditorSaveBuilding" type="button" class="building-save-btn">Save</button>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="top-left-stack">
+        <header class="simulation-header">
+            <div class="header-top">
+                <a class="back-link" href="/"><span class="back-icon" aria-hidden="true"></span><span>BACK TO THE MAIN MAP</span></a>
+            </div>
+            <div>
+                <h1>Building Energy Simulation Mode</h1>
+                <p id="modeDescription">Click buildings to add or remove targets, up to 50. Use the circle button for a one-time area selection.</p>
+
+                <div class="control-strip">
+                    <label class="radius-control" for="radiusInput">
+                        <span class="radius-control-row">
+                            <span>Circle radius</span>
+                            <strong id="radiusValue">200 m</strong>
+                        </span>
+                        <span class="radius-slider-row">
+                            <input id="radiusInput" type="range" min="50" max="1000" step="25" value="200" />
+                            <button id="resetRadius" class="radius-reset-btn" type="button">Reset</button>
+                        </span>
+                    </label>
+                    <label class="radius-control" for="contextRadiusInput">
+                        <span class="radius-control-row">
+                            <span>Context radius</span>
+                            <strong id="contextRadiusValue">200 m</strong>
+                        </span>
+                        <span class="radius-slider-row">
+                            <input id="contextRadiusInput" type="range" min="50" max="1000" step="25" value="200" />
+                            <button id="resetContextRadius" class="radius-reset-btn" type="button">Reset</button>
+                        </span>
+                    </label>
+                    <button id="confirmSimulation" class="confirm-sim-btn" type="button">Simulate Buildings by EnergyPlus / Eppy</button>
+                    <button id="confirmSurrogateSimulation" class="confirm-sim-btn surrogate-sim-btn" type="button">Simulate Buildings by Surrogate Model</button>
+                </div>
+            </div>
+        </header>
+
+        <div id="simResultsPanel" class="sim-results-panel">
+            <div class="sim-results-panel-header">
+                <span class="sim-results-panel-title">Simulation Results</span>
+                <div class="sim-results-panel-controls">
+                    <button id="simResultsSelectAll" type="button">Select All</button>
+                    <button id="simResultsClear" type="button">Clear</button>
+                </div>
+            </div>
+            <div id="simResultsList" class="sim-results-list">
+                <div class="sim-results-empty">No simulations run yet.</div>
+            </div>
+            <div class="sim-results-panel-footer">
+                <button id="simResultsExportCsv" type="button">Save CSV</button>
+                <button id="simResultsDownloadGeojson" type="button">Download GeoJSON</button>
+            </div>
+        </div>
+
+        <div class="status-bar" aria-live="polite">
+            <div class="status-pill-row">
+                <div class="status-pill target">Target <strong id="targetCount">0</strong></div>
+                <div class="status-pill invalid">Invalid <strong id="invalidCount">0</strong></div>
+                <div class="status-pill context">Context <strong id="contextCount">0</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <button id="drawAreaSelection" class="simulation-map-tool" type="button" title="Draw area circle once" aria-label="Draw area circle once">
+        <span class="circle-tool-icon" aria-hidden="true"></span>
+    </button>
+    <button id="resetSelection" class="simulation-map-tool simulation-clear-tool" type="button" title="Clear selected map buildings" aria-label="Clear selected map buildings">
+        <span class="broom-tool-icon" aria-hidden="true"><span class="broom-bristles"></span></span>
+    </button>
+    <button id="syncGeojsonDataset" class="sync-geojson-btn" type="button">Sync GeoJSON dataset</button>
+
+    <script type="module" src="/src/energy-simulation.js"></script>
+</body>
+
+</html>

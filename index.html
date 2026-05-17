@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buildings.city</title>
-    <link rel="icon" type="image/x-icon" href="logo/favicon.ico" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22/>">
 
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.2/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.2/mapbox-gl.js"></script>
@@ -131,8 +131,12 @@
         </div>
     </div>
 
+    <div class="energy-breakdown-container">
+        <div class="energy-breakdown-legend" id="energy-breakdown-legend" aria-label="EUI breakdown"></div>
+    </div>
+
     <div class="legend-container energy">
-        <div class="legend-name">Operational Carbon (kgCO₂e)</div>
+        <div class="legend-name">EUI · Total (kWh/m²·yr)</div>
         <div class="legend-main">
             <div class="legend-bar-energy"></div>
             <div class="legend-labels" id="energy-legend-labels">
@@ -198,14 +202,29 @@
 
     <button id="toggle2D" title="Switch to 2D view">2D</button>
 
-    <button
-        id="run-ml-prediction"
-        class="ml-predict-btn"
-        type="button"
-        aria-label="Predict unknown building archetypes"
+    <a
+        id="open-archetype-prediction-floating"
+        class="ml-predict-btn archetype-mode-btn"
+        href="/archetype-prediction.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Open Archetype Prediction Mode"
     >
-        <span>Predict Unknown Archetypes</span>
-    </button>
+        <span>Open Archetype Prediction Mode</span>
+        <span class="visit-example-icon" aria-hidden="true">&#8599;</span>
+    </a>
+
+    <a
+        id="open-energy-simulation-floating"
+        class="ml-predict-btn energy-mode-btn"
+        href="/energy-simulation.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Open Building Energy Simulation Mode"
+    >
+        <span>Open Building Energy Simulation Mode</span>
+        <span class="visit-example-icon" aria-hidden="true">&#8599;</span>
+    </a>
 
     <a
         class="visit-example-btn"
@@ -243,76 +262,6 @@
             <div id="popup-text"></div>
             <button id="close-btn">Close</button>
             <div class="popup-bottom-space" aria-hidden="true"></div>
-        </div>
-    </div>
-
-    <div id="mlProgressOverlay" class="ml-overlay" aria-hidden="true">
-        <div class="ml-progress-card" role="dialog" aria-modal="true" aria-labelledby="ml-progress-title">
-            <div class="ml-progress-eyebrow">Machine Learning</div>
-            <h3 id="ml-progress-title">Predicting Unknown Archetypes</h3>
-            <p id="mlProgressMessage">Preparing GeoJSON for backend analysis.</p>
-            <div class="ml-progress-bar">
-                <div id="mlProgressBarInner" class="ml-progress-bar-inner"></div>
-            </div>
-            <div class="ml-progress-meta">
-                <span id="mlProgressPercent">0%</span>
-                <span id="mlProgressStage">Queued</span>
-            </div>
-        </div>
-    </div>
-
-    <div id="mlSummaryOverlay" class="ml-overlay" aria-hidden="true">
-        <div class="ml-summary-card" role="dialog" aria-modal="true" aria-labelledby="ml-summary-title">
-            <div class="ml-summary-header">
-                <div>
-                    <div class="ml-progress-eyebrow">Model Summary</div>
-                    <h3 id="ml-summary-title">Random Forest Results</h3>
-                    <p id="mlSummaryMessage" class="ml-summary-message"></p>
-                </div>
-                <div class="ml-summary-actions ml-summary-actions-top">
-                    <button id="mlDownloadPrediction" type="button" class="ml-secondary-btn">Download Predicted GeoJSON</button>
-                    <button id="mlCancelApply" type="button" class="ml-secondary-btn">Keep Current Data</button>
-                    <button id="mlConfirmApply" type="button" class="ml-primary-btn">Apply Predicted GeoJSON</button>
-                </div>
-            </div>
-
-            <div class="ml-summary-body">
-                <div class="ml-summary-column ml-summary-column-metrics">
-                    <div class="ml-summary-label">Overview</div>
-                    <div class="ml-summary-grid">
-                        <div class="ml-summary-item">
-                            <span class="ml-summary-label">Accuracy</span>
-                            <strong id="mlSummaryAccuracy">-</strong>
-                        </div>
-                        <div class="ml-summary-item">
-                            <span class="ml-summary-label">Known Buildings</span>
-                            <strong id="mlSummaryKnown">-</strong>
-                        </div>
-                        <div class="ml-summary-item">
-                            <span class="ml-summary-label">Unknown Predicted</span>
-                            <strong id="mlSummaryUnknown">-</strong>
-                        </div>
-                        <div class="ml-summary-item">
-                            <span class="ml-summary-label">Train / Test</span>
-                            <strong id="mlSummarySplit">-</strong>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="ml-summary-column">
-                    <div class="ml-summary-section ml-summary-section-tight">
-                        <div class="ml-summary-label">Feature Importance</div>
-                        <div id="mlSummaryFeatures" class="ml-feature-list"></div>
-                    </div>
-                </div>
-
-                <div class="ml-summary-column ml-summary-column-classes">
-                    <div class="ml-summary-section ml-summary-section-tight">
-                        <div class="ml-summary-label">Class Metrics</div>
-                        <div id="mlSummaryClasses" class="ml-class-metrics"></div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 

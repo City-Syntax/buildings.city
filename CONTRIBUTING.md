@@ -1,104 +1,163 @@
-# Create the CONTRIBUTING.md file for download
-
 # Contributing to Buildings.city
 
 Thank you for your interest in contributing to **Buildings.city**.
 
-Buildings.city is an open-source toolkit designed to help cities and researchers quickly build interactive Urban Building Energy Modeling (UBEM) platforms using their own building datasets. The project aims to lower the technical barrier for deploying urban-scale energy visualization tools and to make UBEM platforms easier to adapt across different cities.
+Buildings.city is a local-first Urban Building Energy Modeling (UBEM) platform that helps cities, researchers, and urban energy teams build interactive applications from their own building datasets. The project aims to lower the barrier to city-scale building visualization, missing archetype completion, and EnergyPlus-based simulation workflows.
 
-We welcome contributions that improve the platform, documentation, or usability of the package.
+We welcome contributions that make the platform easier to use, easier to adapt, and more reliable across different city datasets.
 
----
 
-## Ways to Contribute
+## Contribution Areas
 
-There are several ways to contribute to the project.
+### Documentation
 
-### Documentation Improvements
+Documentation improvements are highly valuable, especially when they help non-specialist users get started faster.
 
-Improving documentation is one of the most valuable contributions. Examples include:
+Good documentation contributions include:
 
-- clarifying setup instructions
-- improving the platform documentation
-- adding tutorials or workflow explanations
-- fixing typos or unclear sections
+- clearer setup instructions
+- beginner-friendly workflow guides
+- examples for preparing GeoJSON datasets
+- troubleshooting notes for local APIs
+- screenshots or short explanations of UI workflows
+- corrections to unclear or outdated text
 
-### Platform Improvements
+### Frontend Platform
 
-Contributions that improve the usability or capabilities of the toolkit are welcome, such as:
+The frontend is the local Vite/HTML/JavaScript app used for map visualization, archetype review, prediction workflow UI, and simulation workflow UI.
 
-- improving map interactions or UI components
-- adding new visualization features
-- improving performance
-- enhancing GeoJSON data handling
-- improving configuration flexibility
+Useful frontend contributions include:
 
-When proposing new features, please try to keep the platform lightweight and configuration-driven.
+- clearer map interactions
+- improved chart or legend behavior
+- better dataset diagnostics
+- more robust GeoJSON loading and validation
+- improved sync review states
+- accessibility and responsive layout improvements
 
-### Example Cities and Datasets
+Please keep frontend changes lightweight and consistent with the existing data-driven configuration approach.
 
-Example datasets can help other users understand how to deploy the platform for their own cities.
+### ML API
 
-Possible contributions include:
+The ML API supports missing or unknown building archetype prediction from partially labeled GeoJSON datasets.
 
-- example GeoJSON building datasets
-- example city configurations
-- demonstration UBEM outputs
-- documentation describing dataset structure
+Useful ML contributions include:
 
-If data cannot be shared publicly, anonymized or simplified examples are also helpful.
+- improved feature extraction
+- clearer model diagnostics
+- better handling of small or imbalanced datasets
+- safer confidence thresholding
+- more useful prediction summaries
+- tests for edge cases in GeoJSON input
 
----
+### Simulation API
+
+The Simulation API supports building selection, geometry preparation, archetype template use, IDF generation, EnergyPlus execution, result parsing, and output sync.
+
+Useful simulation contributions include:
+
+- more robust geometry handling
+- clearer EnergyPlus error reporting
+- improved template validation
+- better SQL and hourly output parsing
+- safer artifact management
+- tests for building ID lookup and sync workflows
+
+### Example Data and Configurations
+
+Example datasets and configurations help users adapt the platform to new cities.
+
+Helpful examples include:
+
+- small public GeoJSON datasets
+- anonymized or simplified building datasets
+- example `user-data/config.json` files
+- example simulation template sets
+- notes explaining field mappings and assumptions
+
+Only contribute data that you have permission to share.
+
 
 ## Development Setup
 
-To work on the project locally:
+Start with the frontend:
 
+```bash
 npm install
 npm run dev
+```
 
-The platform is built with:
+Optional ML API:
 
-- Vite
-- Mapbox GL JS
-- a configuration-driven architecture
+```bash
+npm run ml:setup
+npm run ml:start
+```
 
-Most platform behavior is controlled through:
+Optional Simulation API:
 
-src/config.json
+```bash
+npm run simulation:setup
+npm run simulation:start
+```
 
-When adding features, please maintain compatibility with the configuration structure where possible.
+Most project-specific edits should happen in:
 
----
+```text
+user-data/
+```
 
-## Design Principles
+Most users should not need to edit application source code unless they are contributing platform features or service behavior.
 
-Buildings.city aims to remain simple, flexible, and easy to adapt for different cities.
 
-When contributing, please try to follow these principles:
+## Development Principles
 
-- keep the platform lightweight
-- avoid introducing heavy dependencies
-- prioritize configuration-based solutions
-- maintain compatibility with different city datasets
-- keep the platform easy to deploy as a static web application
+When contributing, please keep these principles in mind:
 
----
+- Make the platform easier for first-time users.
+- Keep workflows local-first and transparent.
+- Prefer configuration and data-driven behavior over hard-coded city assumptions.
+- Keep ML and simulation services optional.
+- Avoid unnecessary heavy dependencies.
+- Preserve compatibility with valid GeoJSON `FeatureCollection` datasets.
+- Keep sync behavior explicit and reviewable before writing back to source data.
+- Document assumptions when adding energy, carbon, ML, or simulation logic.
 
-## Pull Requests
+
+## Pull Request Guidelines
 
 Before submitting a pull request:
 
-- make sure the change is focused and clearly scoped
-- explain what the change does and why it is useful
-- keep code simple and readable
+- keep the change focused and clearly scoped
+- explain what changed and why
+- note whether the change affects frontend, ML API, Simulation API, documentation, or user data
+- include screenshots for visible UI changes
+- include setup or migration notes when configuration changes
+- avoid committing local generated logs, temporary files, or private datasets
 
-If the change affects the interface or visualization, including screenshots is helpful.
+Recommended checks:
 
----
+```bash
+npm run build
+```
 
-## Questions or Suggestions
+If your change affects an optional API, also run the relevant setup/start command and document any manual verification you performed.
 
-If you have an idea for a feature or improvement but are unsure how to implement it, feel free to open an issue to discuss it.
 
-We welcome contributions from researchers, developers, and cities interested in improving urban energy tools.
+## Data, Privacy, and Scientific Assumptions
+
+Many Buildings.city workflows use city-scale datasets, inferred archetypes, simulation assumptions, and illustrative energy or carbon values.
+
+Please be careful when contributing:
+
+- Do not commit private, restricted, or sensitive building data.
+- Clearly label synthetic, inferred, or illustrative datasets.
+- Document assumptions behind energy, carbon, ML, and simulation values.
+- Avoid presenting unvalidated estimates as measured or policy-ready results.
+
+
+## Questions and Suggestions
+
+If you have an idea but are unsure how to implement it, open an issue or start a discussion before making a large change.
+
+Contributions from cities, researchers, designers, developers, and building energy practitioners are welcome.

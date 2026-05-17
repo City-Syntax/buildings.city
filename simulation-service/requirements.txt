@@ -1,0 +1,6 @@
+fastapi>=0.110,<1.0
+uvicorn[standard]>=0.27,<1.0
+shapely>=2.0,<3.0
+eppy>=0.5.63,<1.0
+epinterface==1.0.5
+archetypal==2.18.9

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>buildings.city | Interactive UBEM Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -18,13 +19,70 @@
         }
         
         body {
-            background-color: var(--bg);
+            background: #121212;
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             color: #f5f7fa;
         }
 
         h1, h2, h3, .nav-brand, .mono-text {
             font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .site-nav {
+            gap: 1.5rem;
+        }
+
+        .site-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .site-menu {
+            display: none;
+            position: relative;
+            z-index: 5;
+        }
+
+        .site-menu summary {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f5f7fa;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .site-menu summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .site-menu summary::before {
+            content: "";
+            width: 4px;
+            height: 4px;
+            border-radius: 9999px;
+            background: currentColor;
+            box-shadow: -8px 0 0 currentColor, 8px 0 0 currentColor;
+        }
+
+        .site-menu-panel {
+            position: absolute;
+            top: calc(100% + 0.6rem);
+            right: 0;
+            display: grid;
+            gap: 0.65rem;
+            min-width: 145px;
+            padding: 0.8rem 0.9rem;
+            text-align: right;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            background: rgba(18, 18, 18, 0.94);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
         }
 
         .glass {
@@ -36,6 +94,51 @@
         .hero-gradient {
             background: radial-gradient(circle at 50% 50%, #1e1e1e 0%, #121212 100%);
         }
+
+        /* Hero with 3D city background */
+        .hero-wrap {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        #city-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Vignette + readability overlay so text stays crisp on top of the city */
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse at 50% 45%, rgba(18,18,18,0.55) 0%, rgba(18,18,18,0.85) 55%, #121212 100%),
+                linear-gradient(to bottom, rgba(18,18,18,0.4) 0%, rgba(18,18,18,0) 25%, rgba(18,18,18,0) 70%, #121212 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-wrap::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -1px;
+            height: 120px;
+            z-index: 1;
+            pointer-events: none;
+            background: linear-gradient(to bottom, rgba(18,18,18,0), #121212);
+        }
+
 
         /* Logo 裁剪效果：内切圆形裁剪 */
         .logo-clip {
@@ -51,40 +154,516 @@
             box-shadow: 0 0 20px rgba(187, 231, 255, 0.3);
             transform: translateY(-2px);
         }
+
+        .workflow-showcase {
+            position: relative;
+            margin-top: -2rem;
+            padding: 5.5rem 0 6rem;
+            overflow: hidden;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background:
+                linear-gradient(180deg, #121212 0%, #0b0e10 45%, #121212 100%);
+        }
+
+        .workflow-showcase::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.2;
+            background:
+                linear-gradient(90deg, rgba(187, 231, 255, 0.12) 1px, transparent 1px) 0 0 / 48px 48px,
+                linear-gradient(180deg, rgba(187, 231, 255, 0.08) 1px, transparent 1px) 0 0 / 48px 48px;
+            mask-image: radial-gradient(ellipse at center, #000 0%, rgba(0,0,0,0.75) 45%, transparent 78%);
+        }
+
+        .workflow-showcase::after {
+            content: none;
+        }
+
+        .workflow-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 1060px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .workflow-heading {
+            max-width: 920px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .workflow-kicker {
+            color: var(--target);
+            font-size: 0.875rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .workflow-heading h2 {
+            margin-top: 0.85rem;
+            font-size: 32px;
+            line-height: 1.12;
+            font-weight: 800;
+            letter-spacing: 0;
+        }
+
+        .workflow-timeline {
+            position: relative;
+            display: grid;
+            gap: 6rem;
+            max-width: 1000px;
+            margin: 5rem auto 0;
+        }
+
+        .workflow-stage {
+            --accent: #bbe7ff;
+            --stage-opacity: 0.46;
+            --stage-progress: 0;
+            --stage-lift: 16px;
+            --stage-shadow-size: 0px;
+            --stage-shadow-alpha: 0;
+            --image-opacity: 0.92;
+            --image-scale: 1.01;
+            position: relative;
+            display: grid;
+            grid-template-columns: minmax(0, 1.34fr) minmax(220px, 0.66fr);
+            gap: clamp(2rem, 4vw, 3.25rem);
+            align-items: center;
+            opacity: var(--stage-opacity);
+            transform: translateY(var(--stage-lift));
+            transition: opacity 640ms cubic-bezier(0.22, 1, 0.36, 1), transform 640ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .workflow-stage:nth-child(3) {
+            --accent: #8fd8ff;
+        }
+
+        .workflow-stage:nth-child(even) {
+            grid-template-columns: minmax(220px, 0.66fr) minmax(0, 1.34fr);
+        }
+
+        .workflow-stage:nth-child(even) .workflow-shot {
+            order: 2;
+        }
+
+        .workflow-stage.is-active,
+        .workflow-stage:hover {
+            --stage-opacity: 1;
+            --stage-progress: 1;
+            --stage-lift: 0px;
+            --stage-shadow-size: 26px;
+            --stage-shadow-alpha: 0.28;
+            --image-opacity: 1;
+            --image-scale: 1.035;
+        }
+
+        .workflow-shot {
+            position: relative;
+            filter: drop-shadow(0 0 var(--stage-shadow-size) rgba(187, 231, 255, var(--stage-shadow-alpha)));
+            transform: perspective(1200px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+            transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), filter 700ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .workflow-shot-shell {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: #050607;
+            box-shadow:
+                0 28px 80px rgba(0, 0, 0, 0.62),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+            isolation: isolate;
+        }
+
+        .workflow-shot-shell::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            pointer-events: none;
+            z-index: 2;
+            background:
+                linear-gradient(90deg, rgba(18,18,18,0.85), transparent 9%, transparent 91%, rgba(18,18,18,0.85)),
+                linear-gradient(180deg, rgba(18,18,18,0.7), transparent 12%, transparent 88%, rgba(18,18,18,0.75));
+        }
+
+        .workflow-shot img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 16 / 8.5;
+            object-fit: cover;
+            opacity: var(--image-opacity);
+            transform: scale(var(--image-scale));
+            transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), transform 820ms cubic-bezier(0.22, 1, 0.36, 1);
+            -webkit-mask-image: radial-gradient(ellipse at center, #000 62%, rgba(0,0,0,0.9) 78%, transparent 100%);
+            mask-image: radial-gradient(ellipse at center, #000 62%, rgba(0,0,0,0.9) 78%, transparent 100%);
+        }
+
+        .workflow-scan {
+            display: none;
+        }
+
+        .workflow-stage.is-active .workflow-scan,
+        .workflow-stage:hover .workflow-scan {
+            animation: none;
+        }
+
+        .workflow-hotspot {
+            position: absolute;
+            z-index: 4;
+            width: 12px;
+            height: 12px;
+            border-radius: 9999px;
+            background: var(--accent);
+            box-shadow: 0 0 18px var(--accent);
+        }
+
+        .workflow-hotspot::after {
+            content: "";
+            position: absolute;
+            inset: -12px;
+            border: 1px solid var(--accent);
+            border-radius: 9999px;
+            opacity: 0.55;
+            animation: workflow-pulse 2s ease-out infinite;
+        }
+
+        .workflow-hotspot.map {
+            left: 58%;
+            top: 45%;
+        }
+
+        .workflow-hotspot.ml {
+            left: 56%;
+            top: 26%;
+        }
+
+        .workflow-hotspot.sim {
+            left: 66%;
+            top: 39%;
+        }
+
+        .workflow-note {
+            position: relative;
+            padding: 1rem 0;
+        }
+
+        .workflow-line {
+            position: absolute;
+            top: 1.35rem;
+            left: -4.25rem;
+            width: 3.25rem;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent));
+            transform: scaleX(calc(0.25 + (var(--stage-progress) * 0.75)));
+            transform-origin: right;
+            opacity: calc(0.38 + (var(--stage-progress) * 0.62));
+            transition: transform 640ms cubic-bezier(0.22, 1, 0.36, 1), opacity 640ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .workflow-line::after {
+            content: "";
+            position: absolute;
+            right: -4px;
+            top: -3px;
+            width: 7px;
+            height: 7px;
+            border-radius: 9999px;
+            background: var(--accent);
+            box-shadow: 0 0 16px var(--accent);
+        }
+
+        .workflow-stage:nth-child(even) .workflow-line {
+            left: auto;
+            right: -4.25rem;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            transform-origin: left;
+        }
+
+        .workflow-stage:nth-child(even) .workflow-line::after {
+            right: auto;
+            left: -4px;
+        }
+
+        .workflow-stage.is-active .workflow-line,
+        .workflow-stage:hover .workflow-line {
+            opacity: 1;
+            transform: scaleX(1);
+        }
+
+        .workflow-step {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--accent);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .workflow-note h3 {
+            margin-top: 0.9rem;
+            color: #fff;
+            font-size: clamp(1.2rem, 1.55vw, 1.55rem);
+            line-height: 1.15;
+            font-weight: 800;
+            letter-spacing: 0;
+        }
+
+        .workflow-note p {
+            margin-top: 0.95rem;
+            color: #a8b0bb;
+            line-height: 1.75;
+            font-size: 0.95rem;
+        }
+
+        @keyframes workflow-scan {
+            0% {
+                opacity: 0;
+                transform: translateX(-32%);
+            }
+            18%,
+            52% {
+                opacity: 0.26;
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(32%);
+            }
+        }
+
+        @keyframes workflow-pulse {
+            0% {
+                transform: scale(0.7);
+                opacity: 0.65;
+            }
+            100% {
+                transform: scale(1.8);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .workflow-inner {
+                max-width: 920px;
+            }
+
+            .workflow-timeline {
+                max-width: 880px;
+            }
+
+            .workflow-stage,
+            .workflow-stage:nth-child(even) {
+                grid-template-columns: minmax(0, 1.25fr) minmax(210px, 0.75fr);
+                gap: clamp(1.75rem, 3.5vw, 2.75rem);
+            }
+
+            .workflow-stage:nth-child(even) {
+                grid-template-columns: minmax(210px, 0.75fr) minmax(0, 1.25fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .workflow-showcase {
+                margin-top: -3rem;
+                padding: 4.75rem 0 4.75rem;
+            }
+
+            .workflow-inner {
+                max-width: 720px;
+                padding: 0 1.5rem;
+            }
+
+            .workflow-heading h2 {
+                font-size: 28px;
+                line-height: 1.16;
+            }
+
+            .workflow-timeline {
+                gap: 4.25rem;
+                margin-top: 3.75rem;
+            }
+
+            .workflow-stage,
+            .workflow-stage:nth-child(even) {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                --stage-opacity: 0.58;
+            }
+
+            .workflow-stage:nth-child(even) .workflow-shot {
+                order: 0;
+            }
+
+            .workflow-line,
+            .workflow-stage:nth-child(even) .workflow-line {
+                top: -0.75rem;
+                left: 0;
+                right: auto;
+                width: 4rem;
+                background: linear-gradient(90deg, var(--accent), transparent);
+                transform-origin: left;
+            }
+
+            .workflow-line::after,
+            .workflow-stage:nth-child(even) .workflow-line::after {
+                left: -1px;
+                right: auto;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .site-nav {
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .site-links {
+                display: none;
+            }
+
+            .site-menu {
+                display: block;
+            }
+
+            .nav-brand {
+                font-size: 1rem;
+                line-height: 1.2;
+            }
+
+            .footer-meta {
+                align-self: flex-end;
+            }
+
+            .workflow-showcase {
+                margin-top: -2rem;
+                padding: 4rem 0 4.5rem;
+            }
+
+            .workflow-inner {
+                padding: 0 1.25rem;
+            }
+
+            .workflow-heading {
+                max-width: 360px;
+            }
+
+            .workflow-kicker {
+                font-size: 0.875rem;
+            }
+
+            .workflow-heading h2 {
+                font-size: 24px;
+                line-height: 1.18;
+            }
+
+            .workflow-timeline {
+                gap: 3.75rem;
+                margin-top: 3.25rem;
+            }
+
+            .workflow-stage,
+            .workflow-stage:nth-child(even) {
+                gap: 1.25rem;
+            }
+
+            .workflow-shot-shell {
+                border-radius: 6px;
+            }
+
+            .workflow-note {
+                padding: 0.65rem 0 0;
+            }
+
+            .workflow-step {
+                font-size: 0.72rem;
+            }
+
+            .workflow-note h3 {
+                font-size: 1.15rem;
+                line-height: 1.18;
+            }
+
+            .workflow-note p {
+                font-size: 0.9rem;
+                line-height: 1.7;
+            }
+
+            .workflow-hotspot {
+                width: 9px;
+                height: 9px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .workflow-stage,
+            .workflow-shot,
+            .workflow-shot img,
+            .workflow-line {
+                transition: none;
+            }
+
+            .workflow-stage.is-active .workflow-scan,
+            .workflow-stage:hover .workflow-scan,
+            .workflow-hotspot::after {
+                animation: none;
+            }
+        }
     </style>
 </head>
-<body class="hero-gradient min-h-screen">
+<body class="min-h-screen">
 
-    <nav class="container mx-auto px-6 py-8 flex justify-between items-center">
-        <div class="nav-brand text-xl font-bold tracking-tighter text-white">Buildings.city</div>
-        <div class="hidden md:flex space-x-8 text-sm font-medium text-gray-400">
-            <a href="https://city-syntax.github.io/buildings.sg/documentation.html" target="_blank" class="hover:text-white transition">Docs</a>
-            <a href="https://buildings.sg" target="_blank" class="hover:text-white transition">Buildings.sg</a>
-            <a href="https://github.com/City-Syntax/buildings.city" target="_blank" class="hover:text-white transition">GitHub</a>
-        </div>
-    </nav>
+    <div class="hero-wrap">
+        <canvas id="city-canvas"></canvas>
+        <div class="hero-overlay"></div>
 
-    <section class="container mx-auto px-6 pt-16 pb-24 text-center">
-        <div class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest uppercase bg-white/5 border border-white/10 rounded-full text-[var(--muted)] mono-text">
-            Lightweight UBEM Toolkit V1.0
+        <div class="hero-content">
+            <nav class="site-nav container mx-auto px-6 py-8 flex justify-between items-center">
+                <div class="nav-brand text-xl font-bold tracking-tighter text-white">Buildings.city</div>
+                <div class="site-links text-sm font-medium text-gray-400">
+                    <a href="https://doi.org/10.1016/j.compenvurbsys.2026.102453" target="_blank" class="hover:text-white transition">Publication</a>
+                    <a href="https://buildings.sg" target="_blank" class="hover:text-white transition">Buildings.sg</a>
+                    <a href="https://github.com/City-Syntax/buildings.city" target="_blank" class="hover:text-white transition">GitHub</a>
+                </div>
+                <details class="site-menu">
+                    <summary aria-label="Open navigation menu"></summary>
+                    <div class="site-menu-panel text-sm font-medium text-gray-300">
+                        <a href="https://doi.org/10.1016/j.compenvurbsys.2026.102453" target="_blank" class="hover:text-white transition">Publication</a>
+                        <a href="https://buildings.sg" target="_blank" class="hover:text-white transition">Buildings.sg</a>
+                        <a href="https://github.com/City-Syntax/buildings.city" target="_blank" class="hover:text-white transition">GitHub</a>
+                    </div>
+                </details>
+            </nav>
+
+            <section class="container mx-auto px-6 pt-16 pb-24 text-center">
+                <div class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest uppercase bg-white/5 border border-white/10 rounded-full text-[var(--muted)] mono-text">
+                    Local-first UBEM Platform V2.0
+                </div>
+                <h1 class="text-4xl md:text-6xl font-bold mb-8 tracking-tight leading-tight">
+                    Build Your City's <br><span class="text-[var(--target)]">Interactive Energy Map</span>
+                </h1>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
+                    Turn one GeoJSON building dataset into a local-first Urban Building Energy Modeling application.
+                    Visualize archetypes, energy, and carbon metrics, predict missing labels, run EnergyPlus workflows, and sync reviewed results back into your active data.
+                </p>
+                
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4">
+                    <a href="https://github.com/City-Syntax/buildings.city/archive/refs/heads/main.zip" download class="px-8 py-3 bg-[var(--target)] text-black font-bold rounded-lg btn-hover transition w-full md:w-auto">
+                        Download the Latest Package
+                    </a>
+                    <a href="https://buildings.sg" target="_blank" class="px-8 py-3 glass text-white font-bold rounded-lg hover:bg-white/5 transition w-full md:w-auto">
+                        Explore Live Demo
+                    </a>
+                </div>
+            </section>
         </div>
-        <h1 class="text-4xl md:text-6xl font-bold mb-8 tracking-tight leading-tight">
-            Build Your City's <br><span class="text-[var(--target)]">Interactive Energy Map</span>
-        </h1>
-        <p class="text-lg text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
-            A lightweight toolkit to quickly deploy Urban Building Energy Modeling platforms. 
-            Visualize GeoJSON datasets, simulate carbon pathways, and use ML to predict building archetypes locally.
-        </p>
-        
-        <div class="flex flex-col md:flex-row justify-center items-center gap-4">
-            <a href="https://github.com/City-Syntax/buildings.city/archive/refs/heads/main.zip" download class="px-8 py-4 bg-[var(--target)] text-black font-bold rounded-lg btn-hover transition w-full md:w-auto">
-                Download the Latest Package
-            </a>
-            <a href="https://buildings.sg" target="_blank" class="px-8 py-4 glass text-white font-bold rounded-lg hover:bg-white/5 transition w-full md:w-auto">
-                Explore Live Demo
-            </a>
-        </div>
-    </section>
+    </div>
 
     <section class="container mx-auto px-6 mb-32 grid md:grid-cols-2 gap-12 items-center">
         <div class="glass p-8 rounded-2xl border-white/5 shadow-xl">
@@ -92,45 +671,120 @@
             <ul class="space-y-6 text-sm text-gray-300">
                 <li class="flex gap-4">
                     <span class="bg-[var(--target)] text-black w-6 h-6 rounded-full flex items-center justify-center font-bold shrink-0">1</span>
-                    <div><strong>Prepare Files:</strong> Update <code class="text-white">config.json</code> and drop your GeoJSON into <code class="text-white">public/data/</code>.</div>
+                    <div><strong>Configure Your City:</strong> Update <code class="text-white">user-data/config.json</code> and point to your GeoJSON dataset.</div>
                 </li>
                 <li class="flex gap-4">
                     <span class="bg-[var(--target)] text-black w-6 h-6 rounded-full flex items-center justify-center font-bold shrink-0">2</span>
-                    <div><strong>Archetype Simulation:</strong> Connect your simulation-ready energy & carbon intensity values.</div>
+                    <div><strong>Explore & Review:</strong> Visualize archetypes, energy, and carbon on the map, then refine missing labels.</div>
                 </li>
                 <li class="flex gap-4">
                     <span class="bg-[var(--target)] text-black w-6 h-6 rounded-full flex items-center justify-center font-bold shrink-0">3</span>
-                    <div><strong>Launch:</strong> Run <code class="text-white">npm run dev</code> to serve your interactive 3D urban dashboard.</div>
+                    <div><strong>Launch:</strong> Run <code class="text-white">npm run dev</code> for the dashboard. When needed, start the optional APIs in separate terminals for archetype prediction and EnergyPlus simulation.</div>
                 </li>
             </ul>
         </div>
         <div class="glass rounded-xl overflow-hidden shadow-2xl border-white/10">
             <div class="bg-white/5 px-4 py-2 flex items-center gap-2">
-                <span class="text-xs text-gray-500 mono-text italic">Optional ML Service (FastAPI)</span>
+                <span class="text-xs text-gray-500 mono-text italic">Optional APIs</span>
             </div>
             <div class="p-6 mono-text text-sm leading-relaxed">
-                <div class="text-green-400 mb-2"># Predicting Unknown Archetypes</div>
+                <div class="text-green-400 mb-2"># Run each optional API in its own terminal</div>
                 <div class="text-gray-400">$ npm run ml:start</div>
-                <div class="text-white mt-2">> Extracting geometry-derived features...</div>
-                <div class="text-white">> Training Random-Forest classifier...</div>
-                <div class="text-[var(--target)]">> Inferred labels updated in-memory.</div>
+                <div class="text-white mt-2">> ML API: http://localhost:8000</div>
+                <div class="text-white">> Predict missing archetypes from known labels.</div>
+                <div class="text-gray-400 mt-5">$ npm run simulation:start</div>
+                <div class="text-white mt-2">> Simulation API: http://127.0.0.1:8010</div>
+                <div class="text-white">> Generate IDFs, run EnergyPlus, and return results.</div>
+                <div class="text-[var(--target)] mt-5">> Review outputs, then sync approved data back into GeoJSON.</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="workflow-showcase" id="workflow-showcase">
+        <div class="workflow-inner">
+            <div class="workflow-heading">
+                <div class="workflow-kicker mono-text">Interactive Workflow</div>
+                <h2>From city map to prediction and simulation</h2>
+            </div>
+
+            <div class="workflow-timeline">
+                <article class="workflow-stage is-active" data-workflow-stage>
+                    <div class="workflow-shot">
+                        <div class="workflow-shot-shell">
+                            <img src="image.png" alt="Buildings.city 3D map with building archetype visualization">
+                            <span class="workflow-scan" aria-hidden="true"></span>
+                            <span class="workflow-hotspot map" aria-hidden="true"></span>
+                        </div>
+                    </div>
+                    <div class="workflow-note">
+                        <span class="workflow-line" aria-hidden="true"></span>
+                        <span class="workflow-step mono-text">01 / Live Map</span>
+                        <h3>Read the city through building archetypes</h3>
+                        <p>
+                            Start with a colored 3D map, filter archetype categories, and inspect the
+                            dataset before committing any model or simulation output.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="workflow-stage" data-workflow-stage>
+                    <div class="workflow-shot">
+                        <div class="workflow-shot-shell">
+                            <img src="image-1.png" alt="Random forest archetype prediction summary interface">
+                            <span class="workflow-scan" aria-hidden="true"></span>
+                            <span class="workflow-hotspot ml" aria-hidden="true"></span>
+                        </div>
+                    </div>
+                    <div class="workflow-note">
+                        <span class="workflow-line" aria-hidden="true"></span>
+                        <span class="workflow-step mono-text">02 / ML API</span>
+                        <h3>Predict unknown labels without leaving the app</h3>
+                        <p>
+                            The local random-forest service trains on known buildings, reports model
+                            quality, and lets you review predictions before syncing them back.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="workflow-stage" data-workflow-stage>
+                    <div class="workflow-shot">
+                        <div class="workflow-shot-shell">
+                            <img src="image-2.png" alt="Building energy simulation selection mode on a city map">
+                            <span class="workflow-scan" aria-hidden="true"></span>
+                            <span class="workflow-hotspot sim" aria-hidden="true"></span>
+                        </div>
+                    </div>
+                    <div class="workflow-note">
+                        <span class="workflow-line" aria-hidden="true"></span>
+                        <span class="workflow-step mono-text">03 / Simulation API</span>
+                        <h3>Select buildings and run EnergyPlus workflows</h3>
+                        <p>
+                            Define targets and context radius, generate simulation inputs, then bring
+                            reviewed outputs back into the same GeoJSON-centered workflow.
+                        </p>
+                    </div>
+                </article>
             </div>
         </div>
     </section>
 
     <section class="container mx-auto px-6 py-24 border-t border-white/5">
-        <div class="grid md:grid-cols-3 gap-12">
+        <div class="grid md:grid-cols-4 gap-12">
             <div>
                 <h3 class="text-[var(--target)] font-bold mb-4 uppercase text-sm tracking-wider">Dynamic Visualization</h3>
                 <p class="text-gray-400 text-sm leading-relaxed">Mapbox-powered 3D extrusion with real-time filtering for GFA, Height, and Archetype categories.</p>
             </div>
             <div>
                 <h3 class="text-[var(--target)] font-bold mb-4 uppercase text-sm tracking-wider">ML Classification</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Built-in random-forest model to handle "unknown" buildings by learning from your existing labeled GeoJSON data.</p>
+                <p class="text-gray-400 text-sm leading-relaxed">Built-in random-forest pipeline for inferring missing archetypes from your own city dataset.</p>
             </div>
             <div>
-                <h3 class="text-[var(--target)] font-bold mb-4 uppercase text-sm tracking-wider">Carbon Analysis</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Integrated workflows for Embodied and Operational carbon visualization based on regional intensity benchmarks.</p>
+                <h3 class="text-[var(--target)] font-bold mb-4 uppercase text-sm tracking-wider">Simulation Workflows</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Optional local EnergyPlus workflows for preparing templates, generating IDFs, and reviewing simulation outputs.</p>
+            </div>
+            <div>
+                <h3 class="text-[var(--target)] font-bold mb-4 uppercase text-sm tracking-wider">Data Synchronization</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Write reviewed predictions, edits, and simulation results back to your active GeoJSON through a secure local API. Keep your dataset synchronized across all applications.</p>
             </div>
         </div>
     </section>
@@ -142,16 +796,305 @@
                 <div class="h-12 w-[1px] bg-white/10 hidden md:block"></div>
                 <div>
                     <div class="text-xs text-gray-500 uppercase tracking-widest mb-1 font-bold mono-text">Developed By</div>
-                    <div class="font-bold text-lg">Yu Qian Ang <span class="text-gray-600 font-normal mx-2">|</span> Pengdi LYu</div>
+                    <div class="font-bold text-lg">Pengdi LYu <span class="text-gray-600 font-normal mx-2">|</span> Yu Qian Ang</div>
                     <a href="https://www.citysyntax.io/" target="_blank" class="text-[var(--target)] text-sm font-medium hover:underline transition">City Syntax Lab</a>
                 </div>
             </div>
-            <div class="text-right">
+            <div class="footer-meta text-right">
                 <p class="text-gray-500 text-sm font-medium">© 2026 buildings.city. MIT Licensed.</p>
                 <p class="text-gray-600 text-xs mt-1 italic leading-relaxed">Lowering the barrier for <br>urban building energy modeling.</p>
             </div>
         </div>
     </footer>
+
+    <script>
+    (function () {
+        const showcase = document.getElementById('workflow-showcase');
+        if (!showcase) return;
+
+        const stages = Array.from(showcase.querySelectorAll('[data-workflow-stage]'));
+        if (!stages.length) return;
+
+        function setActive(activeStage) {
+            stages.forEach((stage) => {
+                stage.classList.toggle('is-active', stage === activeStage);
+            });
+        }
+
+        function smoothstep(value) {
+            const clamped = Math.max(0, Math.min(1, value));
+            return clamped * clamped * (3 - 2 * clamped);
+        }
+
+        function setStageVisual(stage, progress) {
+            const eased = smoothstep(progress);
+            const minOpacity = window.innerWidth <= 900 ? 0.58 : 0.46;
+            const opacity = minOpacity + (1 - minOpacity) * eased;
+            const lift = 16 * (1 - eased);
+            const shadowSize = 26 * eased;
+            const shadowAlpha = 0.28 * eased;
+            const imageOpacity = 0.92 + 0.08 * eased;
+            const imageScale = 1.01 + 0.025 * eased;
+
+            stage.style.setProperty('--stage-progress', eased.toFixed(3));
+            stage.style.setProperty('--stage-opacity', opacity.toFixed(3));
+            stage.style.setProperty('--stage-lift', `${lift.toFixed(2)}px`);
+            stage.style.setProperty('--stage-shadow-size', `${shadowSize.toFixed(2)}px`);
+            stage.style.setProperty('--stage-shadow-alpha', shadowAlpha.toFixed(3));
+            stage.style.setProperty('--image-opacity', imageOpacity.toFixed(3));
+            stage.style.setProperty('--image-scale', imageScale.toFixed(3));
+        }
+
+        function updateActiveStage() {
+            const focusY = window.innerHeight * 0.55;
+            let bestStage = stages[0];
+            let bestDistance = Infinity;
+            let bestProgress = 0;
+            const activeRange = Math.min(window.innerHeight * 0.72, 680);
+
+            stages.forEach((stage) => {
+                const rect = stage.getBoundingClientRect();
+                const stageCenter = rect.top + rect.height / 2;
+                const distance = Math.abs(stageCenter - focusY);
+                const progress = 1 - distance / activeRange;
+
+                setStageVisual(stage, progress);
+
+                if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+
+                if (distance < bestDistance) {
+                    bestDistance = distance;
+                    bestStage = stage;
+                    bestProgress = progress;
+                }
+            });
+
+            setActive(bestStage);
+            setStageVisual(bestStage, Math.max(bestProgress, 0.78));
+        }
+
+        let ticking = false;
+        function requestActiveUpdate() {
+            if (ticking) return;
+            ticking = true;
+            window.requestAnimationFrame(() => {
+                updateActiveStage();
+                ticking = false;
+            });
+        }
+
+        showcase.addEventListener('pointermove', (event) => {
+            const stage = event.target.closest('[data-workflow-stage]');
+            const shot = event.target.closest('.workflow-shot');
+            if (!stage || !shot || !showcase.contains(stage)) return;
+
+            const shotRect = shot.getBoundingClientRect();
+            const x = (event.clientX - shotRect.left) / shotRect.width - 0.5;
+            const y = (event.clientY - shotRect.top) / shotRect.height - 0.5;
+
+            shot.style.setProperty('--tilt-y', `${x * 4.5}deg`);
+            shot.style.setProperty('--tilt-x', `${y * -3.5}deg`);
+            setStageVisual(stage, 1);
+            setActive(stage);
+        });
+
+        stages.forEach((stage) => {
+            stage.addEventListener('pointerenter', () => {
+                setStageVisual(stage, 1);
+                setActive(stage);
+            });
+            stage.addEventListener('pointerleave', () => {
+                const shot = stage.querySelector('.workflow-shot');
+                if (!shot) return;
+                shot.style.setProperty('--tilt-x', '0deg');
+                shot.style.setProperty('--tilt-y', '0deg');
+                requestActiveUpdate();
+            });
+        });
+
+        window.addEventListener('scroll', requestActiveUpdate, { passive: true });
+        window.addEventListener('resize', requestActiveUpdate);
+        updateActiveStage();
+    })();
+
+    (function () {
+        const canvas = document.getElementById('city-canvas');
+        if (!canvas || typeof THREE === 'undefined') return;
+
+        const BG_COLOR = 0x121212;
+        const ACCENT = 0xbbe7ff;
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(BG_COLOR);
+        scene.fog = new THREE.Fog(BG_COLOR, 60, 260);
+
+        const renderer = new THREE.WebGLRenderer({
+            canvas: canvas,
+            antialias: true,
+            alpha: false
+        });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 600);
+        camera.position.set(0, 38, 70);
+        camera.lookAt(0, 8, 0);
+
+        // Lighting — subtle, mostly ambient + a soft cyan rim
+        const ambient = new THREE.AmbientLight(0xffffff, 0.35);
+        scene.add(ambient);
+
+        const keyLight = new THREE.DirectionalLight(0xffffff, 0.55);
+        keyLight.position.set(60, 100, 40);
+        scene.add(keyLight);
+
+        const rimLight = new THREE.DirectionalLight(ACCENT, 0.6);
+        rimLight.position.set(-80, 40, -60);
+        scene.add(rimLight);
+
+        // Ground plane (very dark, blends into bg)
+        const ground = new THREE.Mesh(
+            new THREE.PlaneGeometry(800, 800),
+            new THREE.MeshStandardMaterial({ color: 0x0a0a0a, roughness: 1, metalness: 0 })
+        );
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = 0;
+        scene.add(ground);
+
+        // Subtle grid lines (street feel)
+        const grid = new THREE.GridHelper(400, 80, 0x1f2a33, 0x161616);
+        grid.material.transparent = true;
+        grid.material.opacity = 0.35;
+        grid.position.y = 0.01;
+        scene.add(grid);
+
+        // City buildings
+        const cityGroup = new THREE.Group();
+        scene.add(cityGroup);
+
+        const buildingMat = new THREE.MeshStandardMaterial({
+            color: 0x1a1f24,
+            roughness: 0.85,
+            metalness: 0.15,
+            flatShading: true
+        });
+
+        // Reusable edge material for accent outlines
+        const edgeMat = new THREE.LineBasicMaterial({
+            color: ACCENT,
+            transparent: true,
+            opacity: 0.18
+        });
+
+        // Glow material for occasional highlighted ("active") buildings
+        const glowMat = new THREE.MeshStandardMaterial({
+            color: 0x223240,
+            emissive: ACCENT,
+            emissiveIntensity: 0.55,
+            roughness: 0.6,
+            metalness: 0.2,
+            flatShading: true
+        });
+
+        const GRID_SIZE = 22;       // buildings per side
+        const SPACING = 6;          // distance between building centers
+        const HALF = (GRID_SIZE - 1) * SPACING / 2;
+
+        // Pseudo-random with fixed seed for stable layout
+        let seed = 1337;
+        const rand = () => {
+            seed = (seed * 9301 + 49297) % 233280;
+            return seed / 233280;
+        };
+
+        for (let i = 0; i < GRID_SIZE; i++) {
+            for (let j = 0; j < GRID_SIZE; j++) {
+                // Carve a couple of "avenues" by skipping rows/cols occasionally
+                if (i % 7 === 3 || j % 8 === 4) continue;
+                if (rand() < 0.08) continue; // empty plots
+
+                const x = -HALF + i * SPACING + (rand() - 0.5) * 0.8;
+                const z = -HALF + j * SPACING + (rand() - 0.5) * 0.8;
+
+                // Distance from center → taller buildings near the middle (downtown)
+                const dist = Math.sqrt(x * x + z * z);
+                const downtown = Math.max(0, 1 - dist / 80);
+                const baseHeight = 2 + Math.pow(rand(), 1.6) * 14;
+                const height = baseHeight + downtown * (8 + rand() * 22);
+
+                const w = 2.2 + rand() * 1.8;
+                const d = 2.2 + rand() * 1.8;
+
+                const geom = new THREE.BoxGeometry(w, height, d);
+                const isAccent = rand() < 0.025; // ~2.5% glow buildings
+                const mesh = new THREE.Mesh(geom, isAccent ? glowMat : buildingMat);
+                mesh.position.set(x, height / 2, z);
+                cityGroup.add(mesh);
+
+                // Accent edges for taller buildings (cleaner silhouette)
+                if (height > 10 && !isAccent && rand() < 0.55) {
+                    const edges = new THREE.EdgesGeometry(geom);
+                    const line = new THREE.LineSegments(edges, edgeMat);
+                    line.position.copy(mesh.position);
+                    cityGroup.add(line);
+                }
+            }
+        }
+
+        // Tiny "window" point sprites scattered across taller buildings for life
+        const windowGeom = new THREE.BufferGeometry();
+        const windowCount = 600;
+        const positions = new Float32Array(windowCount * 3);
+        for (let k = 0; k < windowCount; k++) {
+            const angle = rand() * Math.PI * 2;
+            const r = rand() * 70;
+            positions[k * 3 + 0] = Math.cos(angle) * r;
+            positions[k * 3 + 1] = 2 + rand() * 22;
+            positions[k * 3 + 2] = Math.sin(angle) * r;
+        }
+        windowGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const windowMat = new THREE.PointsMaterial({
+            color: ACCENT,
+            size: 0.18,
+            transparent: true,
+            opacity: 0.45,
+            sizeAttenuation: true
+        });
+        scene.add(new THREE.Points(windowGeom, windowMat));
+
+        function resize() {
+            const wrap = canvas.parentElement;
+            const w = wrap.clientWidth;
+            const h = wrap.clientHeight;
+            renderer.setSize(w, h, false);
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+        }
+
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Track pointer for subtle parallax
+        let targetRotX = 0, targetRotY = 0;
+        window.addEventListener('mousemove', (e) => {
+            const nx = (e.clientX / window.innerWidth) * 2 - 1;
+            const ny = (e.clientY / window.innerHeight) * 2 - 1;
+            targetRotY = nx * 0.15;
+            targetRotX = -ny * 0.05;
+        });
+
+        const clock = new THREE.Clock();
+        function animate() {
+            const t = clock.getElapsedTime();
+            // Slow ambient orbit of the city
+            cityGroup.rotation.y = t * 0.04 + targetRotY;
+            cityGroup.rotation.x = targetRotX * 0.5;
+
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+        animate();
+    })();
+    </script>
 
 </body>
 </html>

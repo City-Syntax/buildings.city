@@ -92,7 +92,11 @@ export async function predictArchetypes({
     geojson,
     serviceUrl,
     archetypeProperty = 'building_archetype',
-    heightProperty = 'height'
+    heightProperty = 'height',
+    confidenceThreshold,
+    featureNames,
+    smoteMaxMultiplier,
+    smoteMajorityBoost
 }) {
     const response = await fetch(`${serviceUrl.replace(/\/$/, '')}/predict-archetypes`, {
         method: 'POST',
@@ -103,7 +107,11 @@ export async function predictArchetypes({
         body: JSON.stringify({
             geojson,
             archetype_property: archetypeProperty,
-            height_property: heightProperty
+            height_property: heightProperty,
+            ...(confidenceThreshold !== undefined ? { confidence_threshold: confidenceThreshold } : {}),
+            ...(Array.isArray(featureNames) ? { feature_names: featureNames } : {}),
+            ...(smoteMaxMultiplier !== undefined ? { smote_max_multiplier: smoteMaxMultiplier } : {}),
+            ...(smoteMajorityBoost !== undefined ? { smote_majority_boost: smoteMajorityBoost } : {})
         })
     });
 
@@ -123,7 +131,11 @@ export async function createPredictionJob({
     geojson,
     serviceUrl,
     archetypeProperty = 'building_archetype',
-    heightProperty = 'height'
+    heightProperty = 'height',
+    confidenceThreshold,
+    featureNames,
+    smoteMaxMultiplier,
+    smoteMajorityBoost
 }) {
     let response;
 
@@ -137,7 +149,11 @@ export async function createPredictionJob({
             body: JSON.stringify({
                 geojson,
                 archetype_property: archetypeProperty,
-                height_property: heightProperty
+                height_property: heightProperty,
+                ...(confidenceThreshold !== undefined ? { confidence_threshold: confidenceThreshold } : {}),
+                ...(Array.isArray(featureNames) ? { feature_names: featureNames } : {}),
+                ...(smoteMaxMultiplier !== undefined ? { smote_max_multiplier: smoteMaxMultiplier } : {}),
+                ...(smoteMajorityBoost !== undefined ? { smote_majority_boost: smoteMajorityBoost } : {})
             })
         });
     } catch {

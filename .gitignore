@@ -6,6 +6,12 @@ ml-service/.venv/
 ml-service/app/__pycache__/
 __pycache__/
 *.pyc
+*.log
+*.err.log
+simulation-service/.cache/
+simulation-service/.venv/
+simulation-service/results/
+user-data/
 
 .env
 .DS_Store

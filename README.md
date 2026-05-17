@@ -1,363 +1,368 @@
-# Buildings.city
+# Buildings.city Package V2.0
 
-Buildings.city is a lightweight toolkit developed through Buildings.sg to help cities quickly build interactive Urban Building Energy Modeling (UBEM) platforms using their own building data. Through a simple configuration system and GeoJSON datasets, the package enables cities and researchers to visualize urban buildings, explore energy-related information, and communicate city-scale building data through an interactive map interface.
+<br><br>
 
-In addition to data visualization, the platform can support basic workflows for operational carbon and embodied carbon analysis by connecting user-provided datasets or simulation results. Buildings.city was initially developed as part of a research effort to lower the technical barrier for deploying urban energy platforms and can be adapted by cities and research teams using their own data. For implementation guidance, please refer to the Documentation or explore the Open-source Package.
+## 🏙️ What is Buildings.city?
 
-This repository can also be paired with the optional Python service under `ml-service/` to classify `unknown` building archetypes directly from user GeoJSON files. The frontend sends the GeoJSON to the local service, which extracts geometry-derived features, trains a random-forest classifier from the already labeled buildings, and returns predictions, probabilities, metrics, and feature importance.
+Buildings.city helps cities, researchers, and urban energy teams turn their own building datasets into interactive Urban Building Energy Modeling (UBEM) applications.
 
-In the UI, this workflow is exposed through the **Predict Unknown Archetypes** action. When triggered, the app sends the active GeoJSON to the ML backend, receives inferred labels for unknown buildings, and updates the in-memory dataset used by the map and charts.
+With one GeoJSON file, users can:
 
+- visualize building archetypes, energy metrics, and carbon metrics
+- explore city-scale building patterns through maps, charts, popups, and area analysis
+- predict missing building archetypes with a local ML API
+- run EnergyPlus-based simulations with a local simulation API
+- sync reviewed predictions, building edits, and simulation results back into the dataset
 
-
-## Project Structure
-
-The core project structure is shown below:
-
-```
-buildings.city-package/
-├── index.html                         ## App shell and root DOM structure
-├── public/
-│   └── data/                          ## Local GeoJSON datasets (city building data)
-├── ml-service/                        ## Optional FastAPI ML backend for unknown archetype prediction
-│   ├── app/
-│   │   ├── main.py                    ## API endpoints and async job orchestration
-│   │   ├── ml.py                      ## Feature extraction and prediction pipeline glue
-│   │   ├── random_forest_model.py     ## Random-forest training and inference logic
-│   │   └── schemas.py                 ## Request/response models
-│   ├── requirements.txt               ## Python dependencies for ML service
-│   ├── setup-venv.ps1                 ## Creates/updates local .venv and installs dependencies
-│   ├── start-ml-service.ps1           ## Starts uvicorn service on port 8000
-│   └── README.md                      ## ML service details and API contract
-├── src/
-│   ├── main.js                        ## App bootstrap and cross-module orchestration
-│   ├── mapbox.js                      ## Mapbox map init, layer control, and map filtering
-│   ├── data-processor.js              ## Archetype stats, formatting, and color-map utilities
-│   ├── charts.js                      ## ECharts options, rendering, and chart download logic
-│   ├── panel.js                       ## Result panel interactions and archetype panel UI
-│   ├── popup.js                       ## About popup content and popup event handling
-│   ├── style.css                      ## Global styles, layout, and component visuals
-│   └── config.json                    ## User config (city, token, fields, UBEM inputs)
-├── package.json                       ## npm scripts and dependencies
-└── vite.config.js                     ## Vite dev/build configuration
-```
-
-Users typically only need to modify:
-
-- `src/config.json`
-- the GeoJSON dataset under `public/data/`
-
-If enabling ML prediction for unknown archetypes, also check:
-
-- `src/config.json` (`ml_service_url`, `ml_archetype_property`)
-
-`src/config_example.json` is only a reference template. The running app and the ML prediction flow read the active dataset path from `src/config.json`, specifically `buildings_source.data`.
+Buildings.city is local-first and configurable. The main app runs in the browser through a Vite-powered HTML/JavaScript frontend. Optional Python APIs add ML prediction and EnergyPlus workflows only when users need them. For most city deployments, users work mainly inside `user-data/`; the application code can stay unchanged.
 
 
+![screenshot1](image.png)
 
-## Quick Start
+<br><br>
 
-To create your own city UBEM platform:
+## 🧭 System Architecture
 
-1. Prepare Your Files (updating the configuration in `config.json` & GeoJSON dataset with your own city data)
-2. Prepare archetype simulation data (if you do not have)
-3. Run the platform for your own city
+Buildings.city V2.0 is organized as a local-first UBEM platform rather than a single map page.
 
-If simulation-ready archetypes are not available, this README also outlines how to generate operational and embodied carbon inputs.
-
-
-
-## 1 Prepare Your Files
-
-#### 1.1 Update `config.json`
-
-The `src/config.json` file controls the city-specific settings used by the platform.
-
-Before running a new city deployment, users should review and update this file to match their dataset, map configuration, and UBEM inputs.
-
-The configuration can be understood in four parts.
-
-#### City and project information
-
-These fields control how the platform is labeled in the interface.
-
-- `city_name` — name shown on the map and interface  
-- `projectDescription` — description displayed in the About popup  
-- `country` — country identifier
-
-At minimum, these fields should be updated to reflect your city project.
-
-
-
-#### Map and data source settings
-
-These fields control how the platform loads the map and building dataset.
-
-> Important: To run the example successfully, you should at minimum replace `mapbox_token` in `src/config.json` with your own valid Mapbox token. Otherwise the basemap may fail to load or render incorrectly.
-
-- `mapbox_token` — required for loading Mapbox maps  
-- `map_style` — basemap style definition  
-- `buildings_source.data` — path to the GeoJSON building dataset  
-- `dataset_url` — optional dataset reference
-
-When replacing the example dataset, make sure the file path defined in `buildings_source.data` points to the correct GeoJSON file.
-
-
-
-#### Field mappings and layer IDs
-
-These fields connect the configuration to the dataset and map style.
-
-- `height_field` — property name used for building height  
-- `layers` — layer IDs used by the platform
-
-These values must match the field names in the GeoJSON file and the layer IDs defined in the map style.
-
-
-
-#### UBEM and carbon inputs
-
-These sections define the performance values used by the platform.
-
-- `operational_energy_data` — operational energy intensity by building type  
-- `embodied_carbon_values` — embodied carbon intensity by building type  
-- `archetype_descriptions` — text descriptions shown in the interface
-
-Users should update these values to match their own building archetypes and modeling results.
-
-
-
-#### Common configuration issues
-
-The most common configuration problems are:
-
-- incorrect GeoJSON paths  
-- invalid Mapbox tokens  
-- mismatched property names between `config.json` and the dataset  
-
-
-
-#### 1.2 Replace the GeoJSON dataset
-
-The platform reads building geometry and attributes from a GeoJSON dataset.
-
-By default, the example dataset is stored under:
-
-```
-public/data/
+```text
+Active GeoJSON + config
+        |
+        v
+Frontend web app
+Mapbox + ECharts + Turf + Vite
+        |
+        +-- Main map
+        +-- Archetype prediction mode
+        `-- Building simulation mode
+        |
+        v
+Optional local APIs
+ML API on :8000 + Simulation API on :8010
+        |
+        v
+Synced GeoJSON, templates, IDFs, SQL files, hourly outputs, and summaries
 ```
 
-To deploy the platform for a new city, replace the example dataset with your own GeoJSON file and ensure the path in `config.json` points to the correct location.
+### Frontend Application
+
+The frontend is a local multi-page web app:
+
+- `index.html`: main map, archetype visualization, energy/carbon views, charts, popups, and drawing tools
+- `archetype-prediction.html`: missing archetype diagnostics, ML prediction, and review workflow
+- `energy-simulation.html`: building selection, simulation setup, result review, and sync workflow
+
+### User Data Layer
+
+Project-specific data lives in `user-data/`:
+
+- `user-data/config.json`: city settings, Mapbox token, field mappings, service URLs, energy/carbon assumptions, and EnergyPlus paths
+- `user-data/buildings/`: active building GeoJSON datasets
+- `user-data/simulation/templates.json`: editable simulation template assumptions
+- `user-data/simulation/weather/`: weather inputs for simulation
+
+### Optional API Layer
+
+The frontend can run on its own. Add the APIs when the project needs completion or simulation:
+
+- ML API: predicts unknown building archetypes from partially labeled GeoJSON data.
+- Simulation API: prepares geometry, templates, IDFs, EnergyPlus runs, SQL artifacts, hourly outputs, and simulation summaries.
 
 
+<br><br>
 
-#### Required attributes
+## 🔁 Core Workflow
 
-Each building feature should include the following properties:
+The main workflow is intentionally simple:
 
-- `building_archetype` — building classification used by the platform  
-- `height` — building height used for 3D extrusion  
-- `gross_floor_area` — gross floor area used for energy and carbon calculations  
+```text
+GeoJSON -> Visualization -> Missing Archetype Prediction -> Simulation -> Sync Results Back
+```
 
-The `building_archetype` field links each building to archetype-based values defined in `config.json`.
+### 1. Load a GeoJSON Dataset
 
-Attribute names are **case-sensitive** and must match the configuration exactly.
-
-
-
-#### Example GeoJSON feature
+Place a city building dataset under `user-data/buildings/`, then point `user-data/config.json -> buildings_source.data` to it:
 
 ```json
-{
-  "type": "Feature",
-  "properties": {
-    "id": "relation/1569296",
-    "addr_housenumber": "30",
-    "addr_street": "Jalan Lempeng",
-    "addr_postcode": "128806",
-
-    "building_levels": "7",
-    "building_archetype": "non_ihl",
-
-    "height": 22.4,
-    "building_footprint": 7361.03,
-    "gross_floor_area": 51527.21,
-
-    "greenmark_rating": null,
-
-    "eb_carbon": 31229202.89,
-    "op_carbon": 196819.51
-  },
-  "geometry": {
-    "type": "Polygon",
-    "coordinates": [...]
-  }
+"buildings_source": {
+  "type": "geojson",
+  "data": "/user-data/buildings/jld.geojson"
 }
 ```
 
+This active GeoJSON becomes the shared source for the map, charts, prediction page, and simulation page.
 
+### 2. Visualize and Explore
 
-## 2 If You Do Not Already Have Simulation-Ready Archetypes
+The main map reads the active GeoJSON and config values to render building archetypes, energy/carbon views, EUI breakdowns, charts, selected-building popups, and area analysis.
 
-The platform visualizes building performance using archetype-based energy and carbon data defined in `config.json`.
+This step only needs the frontend, a valid Mapbox token, and a valid GeoJSON file.
 
-If your city dataset does not already contain simulation-ready archetypes, you will first need to generate them using an urban building energy modeling workflow.
+### 3. Complete Missing Archetypes
 
-Archetypes represent groups of buildings with similar characteristics (for example residential towers, offices, or retail buildings). Simulation tools can be used to estimate operational energy use and embodied carbon intensity for each archetype.
+If some buildings have missing or `unknown` archetypes, the prediction mode sends the active GeoJSON to the ML API. The API trains on known examples, predicts missing labels, returns model diagnostics, and lets the user review the results before syncing.
 
-Detailed workflows are available in the documentation:
+![screenshot-ml-mode](image-1.png)
 
-Operational energy simulation  
-https://city-syntax.github.io/buildings.sg/documentation.html##energy
+### 4. Simulate Selected Buildings
 
-Embodied carbon workflow  
-https://city-syntax.github.io/buildings.sg/documentation.html##carbon
+The simulation mode uses the same active GeoJSON for target building selection and context shading. The simulation API resolves building geometry by stable IDs, applies archetype templates, prepares IDF files, runs EnergyPlus when configured, and returns summary, SQL, and hourly outputs.
 
+![screenshot-simulation-mode](image-2.png)
 
+### 5. Sync Results Back
 
-#### Before starting simulations
+Reviewed outputs can be written back to the active GeoJSON through the local Vite sync endpoint:
 
-Before beginning urban or district scale simulations, make sure you have the required tools prepared.
-
-#### Required software
-
-- Rhino3D  
-- Grasshopper with Ladybug and OpenStudio Plugin for Rhino  
-- OpenStudio  
-- EnergyPlus  
-- Python  
-
-#### Required files
-
-- Simulation templates (available from Buildings.sg or GitHub)  
-- Weather files (EPW) for your study area  
-
-#### Optional tools
-
-- Cadmapper — useful for generating 3D building models
-
-For detailed instructions please refer to the documentation links above.
-
-
-
-## 3 Run the Platform Locally
-
-Once `config.json` and the GeoJSON dataset have been prepared, you can run the platform locally.
-
-#### 3.1 Install frontend dependencies
-
+```text
+POST /api/sync-geojson-dataset
 ```
+
+The endpoint only writes to the currently configured `buildings_source.data` file. This keeps the data flow clear: the frontend reads the active GeoJSON, optional APIs return reviewed outputs, and accepted changes are synced back into the same working dataset.
+
+Additional sync support:
+
+- `POST /building-library/reload`: asks the simulation API to reload the updated GeoJSON after sync.
+- `POST /idf-templates/sync`: updates an archetype template and regenerates IDFs.
+
+Users do not need to manually copy results between separate files unless they want to keep backup versions.
+
+
+<br><br>
+
+## ✅ Before You Start
+
+Start with the frontend first. It is the fastest way to confirm that the dataset, Mapbox token, and configuration are working. Add the ML API or Simulation API later when the workflow needs them.
+
+| Need | Required For | Notes |
+| --- | --- | --- |
+| Node.js + npm | Frontend | Installs JavaScript dependencies and runs Vite. |
+| Browser | Frontend | Chrome, Edge, Firefox, or Safari. |
+| Mapbox token | Frontend | Set in `user-data/config.json -> mapbox_token`. |
+| Python 3.10+ | ML API and Simulation API | Runs the local FastAPI services. |
+| Python virtual environment | ML API and Simulation API | Created by `npm run ml:setup` and `npm run simulation:setup`. |
+| EnergyPlus | Simulation API | Required only for EnergyPlus-backed simulation runs. |
+| Weather ZIP | Simulation API | Default path: `user-data/simulation/weather/SGP_SG_Tengah.AP.486870_TMYx.zip`. |
+
+A virtual environment keeps Python dependencies inside each service folder instead of mixing them with the system Python installation. This makes setup safer for beginners and easier to repeat across machines.
+
+For EnergyPlus, update these paths in `user-data/config.json` if your installation is in a different location:
+
+```json
+"energyplus_executable_path": "D:\\energyplus\\...\\energyplus.exe",
+"energyplus_idd_path": "D:\\energyplus\\...\\Energy+.idd"
+```
+
+
+<br><br>
+
+## ⚡ Quick Start
+
+### 1. Run the Frontend
+
+```bash
 npm install
-```
-
-#### 3.2 Start the frontend development server
-
-```
 npm run dev
 ```
 
-The terminal will display a local address such as:
+Open the Vite URL, usually:
 
-```
+```text
 http://localhost:5173
 ```
 
-Open this address in your browser to view the platform.
+Useful pages:
 
-Embodied Carbon view:
+- Main map: `http://localhost:5173/`
+- Archetype prediction: `http://localhost:5173/archetype-prediction.html`
+- Energy simulation: `http://localhost:5173/energy-simulation.html`
 
-![Embodied Carbon view](public/images/screenshot113110.png)
+To use your own city data, place the GeoJSON in `user-data/buildings/` and update:
 
-Operational Carbon view:
-
-![Operational Carbon view](public/images/screenshot113519.png)
-
-#### 3.3 (Optional) Start the ML service for unknown archetype prediction
-
-If you want to use **Predict Unknown Archetypes**, start the Python backend in a second terminal:
-
+```text
+user-data/config.json -> buildings_source.data
 ```
+
+### 2. Run the ML API
+
+Use this only for missing archetype prediction.
+
+```bash
+npm run ml:setup
 npm run ml:start
 ```
 
-This command bootstraps `ml-service/.venv`, installs `ml-service/requirements.txt`, and serves the API at:
+Default URL:
 
-```
+```text
 http://localhost:8000
 ```
 
-Make sure `src/config.json` matches the service URL:
+Set or confirm:
 
-- `ml_service_url`: default `http://localhost:8000`
-- `ml_archetype_property`: target field name (default `building_archetype`)
+```json
+"ml_service_url": "http://localhost:8000",
+"ml_archetype_property": "building_archetype"
+```
 
-If the ML service is not running, the core map and visualization still work; only the unknown-archetype prediction action will be unavailable.
+Main endpoints:
 
+- `GET /health`
+- `POST /predict-archetypes/jobs`
+- `GET /predict-archetypes/jobs/{job_id}`
 
-#### 3.4 Troubleshooting
+### 3. Run the Simulation API
 
-If the platform does not start correctly, check:
+Use this only for EnergyPlus-backed simulation workflows.
 
-- Node.js and npm are installed  
-- dependencies were installed successfully  
-- the GeoJSON path in `config.json` is correct  
-- the Mapbox token is valid  
+```bash
+npm run simulation:setup
+npm run simulation:start
+```
 
-If ML prediction fails, additionally check:
+Default URL:
 
-- `npm run ml:start` was executed without errors
-- port `8000` is free and reachable
-- Python environment was created under `ml-service/.venv`
-- `ml_service_url` in `src/config.json` points to the running backend
+```text
+http://localhost:8010
+```
 
+Main endpoints:
 
-#### Optional ML Feature Explanation
+- `GET /health`
+- `POST /simulation-jobs`
+- `GET /simulation-jobs/{job_id}`
+- `POST /building-library/reload`
+- `POST /idf-templates/sync`
 
-The optional ML module is designed to help datasets where some buildings are labeled as unknown.
+Required simulation inputs:
 
-ML prediction progress overlay example:
-
-![ML prediction progress overlay](public/images/screenshot203444.png)
-
-##### What the ML module does?
-
-- reads the active GeoJSON from the frontend
-- identifies features where `building_archetype` is unknown-like
-- trains a random-forest classifier using already labeled features
-- predicts archetypes and probabilities for unknown features
-- returns model metrics and an updated GeoJSON
-
-##### What users need to prepare?
-
-- keep the archetype target property in GeoJSON (default: `building_archetype`)
-- ensure enough labeled samples exist for at least some classes
-- keep geometry valid so feature extraction can run
-
-##### Where to configure?
-
-- frontend config: `src/config.json`
-  - `ml_service_url`
-  - `ml_archetype_property`
-- backend service: `ml-service/`
-
-##### Where to look when debugging?
-
-- frontend request flow: `src/main.js`, `src/ml-api.js`
-- backend API and jobs: `ml-service/app/main.py`
-- training logic: `ml-service/app/random_forest_model.py`
-- backend setup/start scripts: `ml-service/setup-venv.ps1`, `ml-service/start-ml-service.ps1`
+- active GeoJSON from `user-data/buildings/`
+- `user-data/simulation/templates.json`
+- EnergyPlus executable and IDD paths in `user-data/config.json`
+- weather ZIP under `user-data/simulation/weather/`
 
 
+<br><br>
 
-## Further Documentation
+## ⚙️ Configuration
 
-For full documentation, simulation workflows, and additional resources please visit:
+Most project changes happen in:
 
-Project website  
-https://buildings.sg
+```text
+user-data/config.json
+```
 
-Documentation  
-https://city-syntax.github.io/buildings.sg/documentation.html
+Important fields:
 
-Source repository  
-https://github.com/City-Syntax/buildings.city
+- `city_name`, `country`, `projectDescription`: project identity and About text
+- `mapbox_token`, `map_style`: map access and basemap style
+- `buildings_source.data`: active GeoJSON path
+- `height_field`: building height field used by map, ML diagnostics, and simulation checks
+- `ml_archetype_property`: archetype field used across visualization, ML, and simulation
+- `operational_energy_data`: archetype energy intensity values
+- `embodied_carbon_values`: archetype embodied carbon intensity values
+- `archetype_descriptions`: text shown for selected archetypes
+- `ml_service_url`: ML API URL, default `http://localhost:8000`
+- `simulation_service_url`: simulation API URL, default `http://localhost:8010`
+- `energyplus_executable_path`, `energyplus_idd_path`: local EnergyPlus paths
+
+Editable data folders:
+
+- `user-data/buildings/`: city GeoJSON files
+- `user-data/simulation/templates.json`: archetype simulation templates
+- `user-data/simulation/weather/`: weather files for simulation
+
+Most users should not need to edit `src/`, `ml-service/`, or `simulation-service/` unless they are extending the platform.
+
+
+### GeoJSON Requirements
+
+The active dataset should be a valid GeoJSON `FeatureCollection` with `Polygon` or `MultiPolygon` building geometries.
+
+Recommended properties:
+
+- `building_archetype`: building type or archetype label
+- `height`: building height in meters
+- `building_levels`: number of floors, useful as a height fallback
+- `building_footprint` or `footprint_area`: useful for diagnostics and ML features
+- `gross_floor_area`: useful for energy and carbon calculations
+- `building_id`, `id`, `simulation_uid`, `osm_id`, or `@id`: stable identifiers for sync and simulation lookup
+
+Field names are case-sensitive. If your dataset uses different names, update the matching fields in `user-data/config.json`.
+
+
+<br><br>
+
+## 📁 Repository Structure
+
+```text
+buildings.city-package/
+|-- user-data/
+|   |-- config.json
+|   |-- buildings/
+|   `-- simulation/
+|-- src/
+|   |-- main.js
+|   |-- mapbox.js
+|   |-- archetype-prediction.js
+|   |-- energy-simulation.js
+|   |-- data-sync-api.js
+|   |-- ml-api.js
+|   `-- simulation-api.js
+|-- ml-service/
+|   `-- app/
+|-- simulation-service/
+|   |-- app/
+|   |-- idf/
+|   `-- results/
+|-- index.html
+|-- archetype-prediction.html
+|-- energy-simulation.html
+|-- package.json
+`-- vite.config.js
+```
+
+
+<br><br>
+
+## 🛠️ Common Checks
+
+If the map is blank:
+
+- Check the Mapbox token.
+- Check that `buildings_source.data` points to an existing file under `user-data/buildings/`.
+- Check that the GeoJSON is valid and contains polygon building features.
+
+If archetype charts are empty:
+
+- Check that the GeoJSON contains the configured archetype field.
+- Check that archetype values are not all empty or `unknown`.
+
+If sync fails:
+
+- Confirm the frontend is running with `npm run dev`.
+- Confirm the sync target is exactly the active `buildings_source.data` path.
+- Keep a backup of important datasets before syncing generated results.
+
+If ML prediction fails:
+
+- Confirm `npm run ml:start` is running.
+- Confirm `ml_service_url` points to the ML API, not the frontend.
+- Confirm the dataset has enough known archetypes and at least two known classes.
+
+If simulation fails:
+
+- Confirm `npm run simulation:start` is running.
+- Confirm `simulation_service_url` points to the simulation API.
+- Confirm EnergyPlus paths in `user-data/config.json` are correct.
+- Confirm the weather ZIP and `templates.json` are available.
+- If geometry lookup fails after changing GeoJSON, call `/building-library/reload` or restart the simulation API.
+
+
+<br><br>
+
+## 🔗 Resources
+
+Project website: https://buildings.city
+
+Source repository: https://github.com/City-Syntax/buildings.city

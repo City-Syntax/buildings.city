@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buildings.city | Archetype Prediction Mode</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22/>">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #050505;
+            --panel: #333333;
+            --panel-soft: #f8fafc;
+            --text: #f7f7f7;
+            --muted: #cfd6dd;
+            --ink: #222831;
+            --line: #e6ebef;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            overscroll-behavior: none;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 42px 42px;
+            opacity: 0.65;
+            pointer-events: none;
+        }
+
+        .sync-geojson-btn {
+            min-height: 34px;
+            border: none;
+            border-radius: 999px;
+            padding: 0 16px;
+            background: #333333;
+            color: #fff;
+            font-size: 12px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .sync-geojson-btn:hover {
+            background: #222222;
+            font-weight: 700;
+        }
+
+        .sync-geojson-btn:disabled {
+            opacity: 0.65;
+            cursor: wait;
+        }
+
+        .prediction-layout {
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 340px minmax(0, 1fr);
+            gap: 8px;
+            padding: 12px 10px 30px 12px;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .left-stack {
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr);
+            gap: 8px;
+            min-height: 0;
+        }
+
+        .mode-card,
+        .analysis-card,
+        .summary-card {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22);
+        }
+
+        .mode-card,
+        .analysis-card {
+            background: var(--panel);
+        }
+
+        .mode-card {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            justify-content: flex-start;
+            align-items: stretch;
+            padding: 14px 16px;
+            backdrop-filter: blur(8px);
+        }
+
+        .header-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .back-link {
+            color: #e8edf2;
+            text-decoration: none;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1.45;
+            text-transform: uppercase;
+            letter-spacing: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            width: fit-content;
+            transition: color 0.15s ease;
+        }
+
+        .back-link:hover {
+            color: #bbe7ff;
+        }
+
+        .back-icon {
+            position: relative;
+            width: 14px;
+            height: 14px;
+            color: currentColor;
+            flex: 0 0 auto;
+        }
+
+        .back-icon::before,
+        .back-icon::after {
+            content: '';
+            position: absolute;
+            display: block;
+        }
+
+        .back-icon::before {
+            left: 2px;
+            top: 6px;
+            width: 10px;
+            height: 2px;
+            border-radius: 999px;
+            background: currentColor;
+        }
+
+        .back-icon::after {
+            left: 2px;
+            top: 3px;
+            width: 7px;
+            height: 7px;
+            border-left: 2px solid currentColor;
+            border-bottom: 2px solid currentColor;
+            border-radius: 1px;
+            transform: rotate(45deg);
+        }
+
+        .mode-card h1 {
+            margin: 6px 0 4px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            line-height: 2;
+            text-align: left;
+            letter-spacing: 0;
+        }
+
+        .mode-card p {
+            max-width: none;
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.45;
+            text-align: left;
+            max-width: 400px;
+        }
+
+        .analysis-card {
+            display: flex;
+            min-height: 0;
+            flex-direction: column;
+            padding: 14px 16px;
+            overflow: hidden;
+        }
+
+        .analysis-scroll {
+            min-height: 0;
+            overflow: auto;
+            padding-right: 4px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .analysis-scroll::-webkit-scrollbar,
+        .summary-body::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+            background: transparent;
+        }
+
+        .section {
+            padding: 0 0 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.13);
+            margin-bottom: 12px;
+        }
+
+        .section:last-child {
+            border-bottom: 0;
+        }
+
+        .section-title {
+            margin: 0 0 8px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            color: #ffffff;
+            letter-spacing: 0;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .metric {
+            min-width: 0;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.09);
+            padding: 9px 10px;
+        }
+
+        .metric span {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.35;
+        }
+
+        .metric strong {
+            display: block;
+            margin-top: 6px;
+            color: #fff;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            line-height: 1.15;
+            overflow-wrap: anywhere;
+        }
+
+        .model-control {
+            display: flex;
+            width: 100%;
+            flex-direction: column;
+            gap: 6px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .model-control:not(:last-child) {
+            margin-bottom: 12px;
+        }
+
+        .model-control-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .model-control strong {
+            color: #fff;
+            font-weight: 500;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .model-slider-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .model-control input[type="range"] {
+            width: 100%;
+            accent-color: #f8fafc;
+        }
+
+        .model-reset-btn {
+            min-width: 58px;
+            padding: 5px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #f8fafc;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .model-reset-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-select-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .feature-option {
+            display: grid;
+            grid-template-columns: 18px minmax(0, 1fr);
+            gap: 8px;
+            align-items: center;
+            color: #f8fafc;
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 1.35;
+        }
+
+        .feature-option input {
+            width: 12px;
+            height: 12px;
+            margin: 0;
+            appearance: none;
+            -webkit-appearance: none;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            background: transparent;
+            transition: background 0.15s, border-color 0.15s;
+            cursor: pointer;
+        }
+
+        .feature-option input:checked {
+            background: #f8fafc;
+            border-color: #f8fafc;
+        }
+
+        .feature-option input:focus-visible {
+            outline: 2px solid #bbe7ff;
+            outline-offset: 2px;
+        }
+
+        .feature-option span:last-child {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .type-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .type-row,
+        .detail-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+            color: #f8fafc;
+            font-size: 12px;
+        }
+
+        .type-bar {
+            grid-column: 1 / -1;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.12);
+            overflow: hidden;
+        }
+
+        .type-bar span {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: #f8fafc;
+        }
+
+        .recommendation {
+            border-radius: 10px;
+            padding: 10px;
+            background: rgba(248, 250, 252, 0.12);
+            color: #ffffff;
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .predict-action {
+            flex-shrink: 0;
+            margin-top: 16px;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            border-radius: 999px;
+            padding: 6px 18px;
+            background: #f8fafc;
+            color: #333;
+            font-weight: 500;
+            font-size: 12px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            cursor: pointer;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+        }
+
+        .predict-action:hover {
+            font-weight: 800;
+        }
+
+        .predict-action:disabled {
+            opacity: 0.65;
+            cursor: wait;
+        }
+
+        .summary-card {
+            min-height: 0;
+            height: 100%;
+            margin-top: 0;
+            display: flex;
+            flex-direction: column;
+            background: var(--panel-soft);
+            color: var(--ink);
+            overflow: hidden;
+        }
+
+        .summary-header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 14px 16px 12px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .summary-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .summary-header h2 {
+            margin: 0;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            line-height: 2;
+            letter-spacing: 0;
+            min-width: 0;
+        }
+
+        .summary-message {
+            margin: 0;
+            color: #53606b;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .summary-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: nowrap;
+            justify-content: flex-end;
+            flex-shrink: 0;
+        }
+
+        .summary-actions button {
+            min-height: 30px;
+            border: none;
+            border-radius: 999px;
+            padding: 0 14px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .summary-actions button:hover {
+            font-weight: 700;
+        }
+
+        .secondary-btn {
+            background: #e8edf2;
+            color: #253342;
+        }
+
+        .summary-body {
+            min-height: 0;
+            overflow: auto;
+            padding: 14px 16px 16px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .summary-item {
+            border-radius: 10px;
+            background: #fff;
+            padding: 10px 10px 10px 14px;
+            box-shadow: inset 0 0 0 1px #edf1f4;
+        }
+
+        .summary-label {
+            color: #6d7781;
+            font-size: 12px;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.35;
+            letter-spacing: 0;
+        }
+
+        .summary-item strong {
+            display: block;
+            margin-top: 7px;
+            color: #16212b;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+        }
+
+        .summary-columns {
+            display: grid;
+            grid-template-columns: minmax(240px, 0.8fr) minmax(360px, 1.2fr);
+            gap: 32px;
+        }
+
+        .summary-section {
+            min-width: 0;
+        }
+
+        .summary-section > .summary-label {
+            margin: 0 0 8px;
+            color: #22303d;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            line-height: normal;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .feature-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+            color: #22303d;
+            font-size: 12px;
+        }
+
+        .feature-name,
+        .feature-value {
+            min-width: 0;
+            color: #22303d;
+            font-size: 12px;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .feature-value {
+            text-align: right;
+            color: #5d6874;
+            font-weight: 700;
+        }
+
+        .feature-bar {
+            grid-column: 1 / -1;
+            height: 6px;
+            border-radius: 999px;
+            background: #e8edf2;
+            overflow: hidden;
+        }
+
+        .feature-bar span {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: #22303d;
+        }
+
+        .class-metrics {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 8px;
+            border: 1px solid #eef2f5;
+            border-radius: 10px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .class-metrics:empty {
+            margin-top: 0;
+            border: 0;
+        }
+
+        .class-metrics::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+            background: transparent;
+        }
+
+        .class-metrics-table {
+            width: 100%;
+            min-width: 440px;
+            border-collapse: collapse;
+        }
+
+        .class-metrics-table th,
+        .class-metrics-table td {
+            padding: 8px 14px;
+            border-bottom: 1px solid #eef2f5;
+            color: #333333;
+            font-size: 12px;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            text-align: right;
+        }
+
+        .class-metrics-table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .class-metrics-table-empty td {
+            border-bottom: 0;
+        }
+
+        .class-metrics-table thead {
+            background: #eef2f5;
+        }
+
+        .class-metrics-table th {
+            font-weight: 700;
+            color: #333333;
+        }
+
+        .class-metrics-table th:first-child,
+        .class-metrics-table td:first-child {
+            text-align: left;
+            font-weight: 700;
+            color: #333333;
+            max-width: 190px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .class-metrics-table tbody tr:hover {
+            background: #fbfcfd;
+        }
+
+        .progress-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 120;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(10, 12, 16, 0.58);
+            backdrop-filter: blur(4px);
+        }
+
+        .progress-overlay.show {
+            display: flex;
+        }
+
+        .progress-card {
+            width: min(550px, calc(100vw - 32px));
+            background: #fff;
+            color: #16212b;
+            border-radius: 10px;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
+            padding: 24px;
+        }
+
+        .progress-card h3 {
+            margin: 0 0 10px;
+            font-size: 16px;
+            line-height: 1.2;
+            color: #333333;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .progress-card p {
+            margin: 0;
+            color: #666666;
+            font-size: 14px;
+            line-height: 1.55;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            margin-top: 18px;
+            background: #e6ecf1;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-bar-inner {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #2d7ff9 0%, #4bc78d 100%);
+            transition: width 0.25s ease;
+        }
+
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            color: #627181;
+            font-size: 12px;
+            font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        @media (max-width: 1060px) {
+            .prediction-layout {
+                grid-template-columns: 1fr;
+            height: auto;
+            min-height: 100vh;
+            padding: 12px 10px 18px 12px;
+            }
+
+            .left-stack {
+                grid-template-rows: auto auto;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .summary-card {
+                height: auto;
+                margin-top: 0;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .sync-geojson-btn {
+                top: 14px;
+                right: 14px;
+                max-width: calc(100vw - 28px);
+            }
+
+            .summary-title-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .summary-actions {
+                justify-content: stretch;
+                width: 100%;
+            }
+
+            .summary-actions button {
+                flex: 1 1 100%;
+            }
+
+            .summary-grid,
+            .summary-columns,
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mode-card h1 {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="prediction-layout">
+        <div class="left-stack">
+            <section class="mode-card">
+                <div class="header-top">
+                    <a class="back-link" href="/"><span class="back-icon" aria-hidden="true"></span><span>BACK TO THE MAIN MAP</span></a>
+                </div>
+                <div>
+                    <h1>Archetype Prediction Mode</h1>
+                    <p>Review GeoJSON input quality before running the random forest workflow for unknown building archetypes.</p>
+                </div>
+            </section>
+
+            <section class="analysis-card">
+                <div class="analysis-scroll">
+                    <section class="section">
+                        <h2 class="section-title">Dataset Overview</h2>
+                        <div id="datasetMetrics" class="metric-grid"></div>
+                    </section>
+
+                    <section class="section">
+                        <h2 class="section-title">Archetype Counts</h2>
+                        <div id="archetypeCounts" class="type-list"></div>
+                    </section>
+
+                    <section class="section">
+                        <h2 class="section-title">Input Completeness</h2>
+                        <div id="inputCompleteness" class="type-list"></div>
+                    </section>
+
+                    <section class="section">
+                        <h2 class="section-title">Recommendation</h2>
+                        <div id="recommendation" class="recommendation">Loading dataset diagnostics.</div>
+                    </section>
+
+                    <section class="section">
+                        <h2 class="section-title">Training Controls</h2>
+                        <label class="model-control" for="smoteMultiplierInput">
+                            <span class="model-control-row">
+                                <span>SMOTE multiplier</span>
+                                <strong id="smoteMultiplierValue">10x</strong>
+                            </span>
+                            <span class="model-slider-row">
+                                <input id="smoteMultiplierInput" type="range" min="1" max="20" step="1" value="10" />
+                                <button id="resetSmoteMultiplier" class="model-reset-btn" type="button">Reset</button>
+                            </span>
+                        </label>
+                        <label class="model-control" for="confidenceThresholdInput">
+                            <span class="model-control-row">
+                                <span>Minimum confidence</span>
+                                <strong id="confidenceThresholdValue">20%</strong>
+                            </span>
+                            <span class="model-slider-row">
+                                <input id="confidenceThresholdInput" type="range" min="0" max="100" step="5" value="20" />
+                                <button id="resetConfidenceThreshold" class="model-reset-btn" type="button">Reset</button>
+                            </span>
+                        </label>
+                    </section>
+
+                    <section class="section">
+                        <h2 class="section-title">Input Features</h2>
+                        <div id="featureSelectList" class="feature-select-list"></div>
+                    </section>
+                </div>
+
+                <button id="runPrediction" class="predict-action" type="button">Predict Unknown Archetypes</button>
+            </section>
+        </div>
+
+        <section class="summary-card">
+            <div class="summary-header">
+                <div class="summary-title-row">
+                    <h2>Random Forest Summary</h2>
+                    <div class="summary-actions">
+                        <button id="downloadPrediction" type="button" class="secondary-btn">Download Predicted GeoJSON</button>
+                        <button id="keepCurrentData" type="button" class="secondary-btn">Keep Current Data</button>
+                        <button id="syncGeojsonDataset" class="sync-geojson-btn" type="button">Sync GeoJSON dataset</button>
+                    </div>
+                </div>
+                <p id="summaryMessage" class="summary-message">No prediction run yet. The model summary will appear here after the backend finishes.</p>
+            </div>
+
+            <div class="summary-body">
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <span class="summary-label">Accuracy</span>
+                        <strong id="summaryAccuracy">-</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Known Buildings</span>
+                        <strong id="summaryKnown">-</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Unknown Predicted</span>
+                        <strong id="summaryUnknown">-</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Train / Test</span>
+                        <strong id="summarySplit">-</strong>
+                    </div>
+                </div>
+
+                <div class="summary-columns">
+                    <section class="summary-section">
+                        <div class="summary-label">Feature Importance</div>
+                        <div id="summaryFeatures" class="feature-list"></div>
+                    </section>
+
+                    <section class="summary-section">
+                        <div class="summary-label">Class Metrics</div>
+                        <div id="summaryClasses" class="class-metrics"></div>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="predictionProgressOverlay" class="progress-overlay" aria-hidden="true">
+        <div class="progress-card" role="dialog" aria-modal="true" aria-labelledby="prediction-progress-title">
+            <h3 id="prediction-progress-title">Predicting Unknown Archetypes</h3>
+            <p id="progressMessage">Preparing GeoJSON for backend analysis.</p>
+            <div class="progress-bar">
+                <div id="progressBarInner" class="progress-bar-inner"></div>
+            </div>
+            <div class="progress-meta">
+                <span id="progressPercent">0%</span>
+                <span id="progressStage">Queued</span>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/src/archetype-prediction.js"></script>
+</body>
+
+</html>

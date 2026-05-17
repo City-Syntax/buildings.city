@@ -1,5 +1,5 @@
-﻿      
-import config from './config.json';
+      
+import config from '../user-data/config.json';
 
 const aboutContent = `
 
@@ -45,13 +45,17 @@ const aboutContent = `
             <button
                 style="
                     width: 180px;
-                    padding: 8px 16px;
+                    min-height: 28px;
+                    padding: 0 16px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
                     margin-top: 5px;
                     text-align: center;
                     color: #fff;
                     background-color: #333;
                     border: 0;
-                    border-radius: 10px;
+                    border-radius: 999px;
                     font-family: 'Roboto Mono', Tahoma, Geneva, Verdana, sans-serif;
                     font-size: 12px;
                     box-shadow: 0 5px 10px rgba(0,0,0,0.1);

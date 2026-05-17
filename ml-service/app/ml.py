@@ -1,3 +1,5 @@
-from .random_forest_model import GEOMETRY_FEATURE_NAMES, RF_HYPERPARAMETERS, predict_archetypes
+from .random_forest_model import AVAILABLE_FEATURE_NAMES, MODEL_FEATURE_NAMES, RF_HYPERPARAMETERS, predict_archetypes
 
-__all__ = ["GEOMETRY_FEATURE_NAMES", "RF_HYPERPARAMETERS", "predict_archetypes"]
+GEOMETRY_FEATURE_NAMES = MODEL_FEATURE_NAMES
+
+__all__ = ["AVAILABLE_FEATURE_NAMES", "GEOMETRY_FEATURE_NAMES", "MODEL_FEATURE_NAMES", "RF_HYPERPARAMETERS", "predict_archetypes"]

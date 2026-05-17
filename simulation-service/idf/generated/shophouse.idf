@@ -1,0 +1,3256 @@
+!- Windows Line endings 
+
+Version,
+    24.2;                     !- Version Identifier
+
+SIMULATIONCONTROL,
+    Yes,                      !- Do Zone Sizing Calculation
+    Yes,                      !- Do System Sizing Calculation
+    Yes,                      !- Do Plant Sizing Calculation
+    Yes,                      !- Run Simulation for Sizing Periods
+    Yes,                      !- Run Simulation for Weather File Run Periods
+    Yes,                      !- Do HVAC Sizing Simulation for Sizing Periods
+    2;                        !- Maximum Number of HVAC Sizing Simulation Passes
+
+Building,
+    None,                     !- Name
+    0,                        !- North Axis
+    Suburbs,                  !- Terrain
+    0.04,                     !- Loads Convergence Tolerance Value
+    0.4,                      !- Temperature Convergence Tolerance Value
+    FullInteriorAndExterior,    !- Solar Distribution
+    25,                       !- Maximum Number of Warmup Days
+    6;                        !- Minimum Number of Warmup Days
+
+SurfaceConvectionAlgorithm:Inside,
+    TARP;                     !- Algorithm
+
+SurfaceConvectionAlgorithm:Outside,
+    DOE-2;                    !- Algorithm
+
+HeatBalanceAlgorithm,
+    ConductionTransferFunction,    !- Algorithm
+    200,                      !- Surface Temperature Upper Limit
+    0.1,                      !- Minimum Surface Convection Heat Transfer Coefficient Value
+    1000;                     !- Maximum Surface Convection Heat Transfer Coefficient Value
+
+TIMESTEP,
+    6;                        !- Number of Timesteps per Hour
+
+Site:Location,
+    Tengah.AP_SG_SGP Design_Conditions,    !- Name
+    1.38,                     !- Latitude
+    103.72,                   !- Longitude
+    8,                        !- Time Zone
+    12;                       !- Elevation
+
+SizingPeriod:DesignDay,
+    Tengah.AP Ann Clg 1% Condns DP=>MDB,    !- Name
+    5,                        !- Month
+    21,                       !- Day of Month
+    SummerDesignDay,          !- Day Type
+    32.3,                     !- Maximum DryBulb Temperature
+    3.8,                      !- Daily DryBulb Temperature Range
+    DefaultMultipliers,       !- DryBulb Temperature Range Modifier Type
+    ,                         !- DryBulb Temperature Range Modifier Day Schedule Name
+    Dewpoint,                 !- Humidity Condition Type
+    25.8,                     !- Wetbulb or DewPoint at Maximum DryBulb
+    ,                         !- Humidity Condition Day Schedule Name
+    ,                         !- Humidity Ratio at Maximum DryBulb
+    ,                         !- Enthalpy at Maximum DryBulb
+    ,                         !- Daily WetBulb Temperature Range
+    101181,                   !- Barometric Pressure
+    3.35,                     !- Wind Speed
+    0,                        !- Wind Direction
+    No,                       !- Rain Indicator
+    No,                       !- Snow Indicator
+    No,                       !- Daylight Saving Time Indicator
+    ASHRAEClearSky,           !- Solar Model Indicator
+    ,                         !- Beam Solar Day Schedule Name
+    ,                         !- Diffuse Solar Day Schedule Name
+    ,                         !- ASHRAE Clear Sky Optical Depth for Beam Irradiance taub
+    ,                         !- ASHRAE Clear Sky Optical Depth for Diffuse Irradiance taud
+    1;                        !- Sky Clearness
+
+SizingPeriod:DesignDay,
+    Tengah.AP Ann Htg 99.6% Condns DB,    !- Name
+    5,                        !- Month
+    21,                       !- Day of Month
+    WinterDesignDay,          !- Day Type
+    22.7,                     !- Maximum DryBulb Temperature
+    0,                        !- Daily DryBulb Temperature Range
+    DefaultMultipliers,       !- DryBulb Temperature Range Modifier Type
+    ,                         !- DryBulb Temperature Range Modifier Day Schedule Name
+    Wetbulb,                  !- Humidity Condition Type
+    22.7,                     !- Wetbulb or DewPoint at Maximum DryBulb
+    ,                         !- Humidity Condition Day Schedule Name
+    ,                         !- Humidity Ratio at Maximum DryBulb
+    ,                         !- Enthalpy at Maximum DryBulb
+    ,                         !- Daily WetBulb Temperature Range
+    101181,                   !- Barometric Pressure
+    6.71,                     !- Wind Speed
+    0,                        !- Wind Direction
+    No,                       !- Rain Indicator
+    No,                       !- Snow Indicator
+    No,                       !- Daylight Saving Time Indicator
+    ASHRAEClearSky,           !- Solar Model Indicator
+    ,                         !- Beam Solar Day Schedule Name
+    ,                         !- Diffuse Solar Day Schedule Name
+    ,                         !- ASHRAE Clear Sky Optical Depth for Beam Irradiance taub
+    ,                         !- ASHRAE Clear Sky Optical Depth for Diffuse Irradiance taud
+    0;                        !- Sky Clearness
+
+SizingPeriod:DesignDay,
+    Tengah.AP Ann Clg .4% Condns DP=>MDB,    !- Name
+    5,                        !- Month
+    21,                       !- Day of Month
+    SummerDesignDay,          !- Day Type
+    32.9,                     !- Maximum DryBulb Temperature
+    3.8,                      !- Daily DryBulb Temperature Range
+    DefaultMultipliers,       !- DryBulb Temperature Range Modifier Type
+    ,                         !- DryBulb Temperature Range Modifier Day Schedule Name
+    Dewpoint,                 !- Humidity Condition Type
+    28,                       !- Wetbulb or DewPoint at Maximum DryBulb
+    ,                         !- Humidity Condition Day Schedule Name
+    ,                         !- Humidity Ratio at Maximum DryBulb
+    ,                         !- Enthalpy at Maximum DryBulb
+    ,                         !- Daily WetBulb Temperature Range
+    101181,                   !- Barometric Pressure
+    3.35,                     !- Wind Speed
+    0,                        !- Wind Direction
+    No,                       !- Rain Indicator
+    No,                       !- Snow Indicator
+    No,                       !- Daylight Saving Time Indicator
+    ASHRAEClearSky,           !- Solar Model Indicator
+    ,                         !- Beam Solar Day Schedule Name
+    ,                         !- Diffuse Solar Day Schedule Name
+    ,                         !- ASHRAE Clear Sky Optical Depth for Beam Irradiance taub
+    ,                         !- ASHRAE Clear Sky Optical Depth for Diffuse Irradiance taud
+    1;                        !- Sky Clearness
+
+SizingPeriod:DesignDay,
+    Tengah.AP Ann Htg 99% Condns DB,    !- Name
+    5,                        !- Month
+    21,                       !- Day of Month
+    WinterDesignDay,          !- Day Type
+    23.3,                     !- Maximum DryBulb Temperature
+    0,                        !- Daily DryBulb Temperature Range
+    DefaultMultipliers,       !- DryBulb Temperature Range Modifier Type
+    ,                         !- DryBulb Temperature Range Modifier Day Schedule Name
+    Wetbulb,                  !- Humidity Condition Type
+    23.3,                     !- Wetbulb or DewPoint at Maximum DryBulb
+    ,                         !- Humidity Condition Day Schedule Name
+    ,                         !- Humidity Ratio at Maximum DryBulb
+    ,                         !- Enthalpy at Maximum DryBulb
+    ,                         !- Daily WetBulb Temperature Range
+    101181,                   !- Barometric Pressure
+    6.71,                     !- Wind Speed
+    0,                        !- Wind Direction
+    No,                       !- Rain Indicator
+    No,                       !- Snow Indicator
+    No,                       !- Daylight Saving Time Indicator
+    ASHRAEClearSky,           !- Solar Model Indicator
+    ,                         !- Beam Solar Day Schedule Name
+    ,                         !- Diffuse Solar Day Schedule Name
+    ,                         !- ASHRAE Clear Sky Optical Depth for Beam Irradiance taub
+    ,                         !- ASHRAE Clear Sky Optical Depth for Diffuse Irradiance taud
+    0;                        !- Sky Clearness
+
+SizingPeriod:DesignDay,
+    Tengah.AP Ann Clg 2% Condns DP=>MDB,    !- Name
+    5,                        !- Month
+    21,                       !- Day of Month
+    SummerDesignDay,          !- Day Type
+    31.6,                     !- Maximum DryBulb Temperature
+    3.8,                      !- Daily DryBulb Temperature Range
+    DefaultMultipliers,       !- DryBulb Temperature Range Modifier Type
+    ,                         !- DryBulb Temperature Range Modifier Day Schedule Name
+    Dewpoint,                 !- Humidity Condition Type
+    25.2,                     !- Wetbulb or DewPoint at Maximum DryBulb
+    ,                         !- Humidity Condition Day Schedule Name
+    ,                         !- Humidity Ratio at Maximum DryBulb
+    ,                         !- Enthalpy at Maximum DryBulb
+    ,                         !- Daily WetBulb Temperature Range
+    101181,                   !- Barometric Pressure
+    3.35,                     !- Wind Speed
+    0,                        !- Wind Direction
+    No,                       !- Rain Indicator
+    No,                       !- Snow Indicator
+    No,                       !- Daylight Saving Time Indicator
+    ASHRAEClearSky,           !- Solar Model Indicator
+    ,                         !- Beam Solar Day Schedule Name
+    ,                         !- Diffuse Solar Day Schedule Name
+    ,                         !- ASHRAE Clear Sky Optical Depth for Beam Irradiance taub
+    ,                         !- ASHRAE Clear Sky Optical Depth for Diffuse Irradiance taud
+    1;                        !- Sky Clearness
+
+SizingPeriod:WeatherFileConditionType,
+    No Dry Season,            !- Name
+    NoDrySeason,              !- Period Selection
+    Monday,                   !- Day of Week for Start Day
+    Yes,                      !- Use Weather File Daylight Saving Period
+    Yes;                      !- Use Weather File Rain and Snow Indicators
+
+SizingPeriod:WeatherFileConditionType,
+    Tropical Hot,             !- Name
+    TropicalHot,              !- Period Selection
+    SummerDesignDay,          !- Day of Week for Start Day
+    Yes,                      !- Use Weather File Daylight Saving Period
+    Yes;                      !- Use Weather File Rain and Snow Indicators
+
+SizingPeriod:WeatherFileConditionType,
+    Tropical Cold,            !- Name
+    TropicalCold,             !- Period Selection
+    WinterDesignDay,          !- Day of Week for Start Day
+    Yes,                      !- Use Weather File Daylight Saving Period
+    Yes;                      !- Use Weather File Rain and Snow Indicators
+
+RUNPERIOD,
+    Year,                     !- Name
+    1,                        !- Begin Month
+    1,                        !- Begin Day of Month
+    ,                         !- Begin Year
+    12,                       !- End Month
+    31,                       !- End Day of Month
+    ,                         !- End Year
+    Sunday,                   !- Day of Week for Start Day
+    No,                       !- Use Weather File Holidays and Special Days
+    No,                       !- Use Weather File Daylight Saving Period
+    Yes,                      !- Apply Weekend Holiday Rule
+    No,                       !- Use Weather File Rain Indicators
+    No,                       !- Use Weather File Snow Indicators
+    No,                       !- Treat Weather as Actual
+    Hour24;                   !- First Hour Interpolation Starting Values
+
+SITE:GROUNDTEMPERATURE:BUILDINGSURFACE,
+    27.01,                    !- January Ground Temperature
+    26.67,                    !- February Ground Temperature
+    26.29,                    !- March Ground Temperature
+    26.01,                    !- April Ground Temperature
+    25.63,                    !- May Ground Temperature
+    25.56,                    !- June Ground Temperature
+    25.7,                     !- July Ground Temperature
+    26.03,                    !- August Ground Temperature
+    26.45,                    !- September Ground Temperature
+    26.83,                    !- October Ground Temperature
+    27.1,                     !- November Ground Temperature
+    27.16;                    !- December Ground Temperature
+
+SCHEDULETYPELIMITS,
+    Fraction,                 !- Name
+    0,                        !- Lower Limit Value
+    1,                        !- Upper Limit Value
+    Continuous,               !- Numeric Type
+    Dimensionless;            !- Unit Type
+
+SCHEDULETYPELIMITS,
+    AnyNumber,                !- Name
+    ,                         !- Lower Limit Value
+    ,                         !- Upper Limit Value
+    Continuous,               !- Numeric Type
+    Dimensionless;            !- Unit Type
+
+SCHEDULETYPELIMITS,
+    Temperature,              !- Name
+    -100,                     !- Lower Limit Value
+    100,                      !- Upper Limit Value
+    Continuous,               !- Numeric Type
+    Dimensionless;            !- Unit Type
+
+SCHEDULE:DAY:HOURLY,
+    d_Always_On_00,           !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    1,                        !- Hour 1
+    1,                        !- Hour 2
+    1,                        !- Hour 3
+    1,                        !- Hour 4
+    1,                        !- Hour 5
+    1,                        !- Hour 6
+    1,                        !- Hour 7
+    1,                        !- Hour 8
+    1,                        !- Hour 9
+    1,                        !- Hour 10
+    1,                        !- Hour 11
+    1,                        !- Hour 12
+    1,                        !- Hour 13
+    1,                        !- Hour 14
+    1,                        !- Hour 15
+    1,                        !- Hour 16
+    1,                        !- Hour 17
+    1,                        !- Hour 18
+    1,                        !- Hour 19
+    1,                        !- Hour 20
+    1,                        !- Hour 21
+    1,                        !- Hour 22
+    1,                        !- Hour 23
+    1;                        !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_Always_Off_00,          !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    0,                        !- Hour 1
+    0,                        !- Hour 2
+    0,                        !- Hour 3
+    0,                        !- Hour 4
+    0,                        !- Hour 5
+    0,                        !- Hour 6
+    0,                        !- Hour 7
+    0,                        !- Hour 8
+    0,                        !- Hour 9
+    0,                        !- Hour 10
+    0,                        !- Hour 11
+    0,                        !- Hour 12
+    0,                        !- Hour 13
+    0,                        !- Hour 14
+    0,                        !- Hour 15
+    0,                        !- Hour 16
+    0,                        !- Hour 17
+    0,                        !- Hour 18
+    0,                        !- Hour 19
+    0,                        !- Hour 20
+    0,                        !- Hour 21
+    0,                        !- Hour 22
+    0,                        !- Hour 23
+    0;                        !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_Always On_00,           !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    1,                        !- Hour 1
+    1,                        !- Hour 2
+    1,                        !- Hour 3
+    1,                        !- Hour 4
+    1,                        !- Hour 5
+    1,                        !- Hour 6
+    1,                        !- Hour 7
+    1,                        !- Hour 8
+    1,                        !- Hour 9
+    1,                        !- Hour 10
+    1,                        !- Hour 11
+    1,                        !- Hour 12
+    1,                        !- Hour 13
+    1,                        !- Hour 14
+    1,                        !- Hour 15
+    1,                        !- Hour 16
+    1,                        !- Hour 17
+    1,                        !- Hour 18
+    1,                        !- Hour 19
+    1,                        !- Hour 20
+    1,                        !- Hour 21
+    1,                        !- Hour 22
+    1,                        !- Hour 23
+    1;                        !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_Always Off_00,          !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    0,                        !- Hour 1
+    0,                        !- Hour 2
+    0,                        !- Hour 3
+    0,                        !- Hour 4
+    0,                        !- Hour 5
+    0,                        !- Hour 6
+    0,                        !- Hour 7
+    0,                        !- Hour 8
+    0,                        !- Hour 9
+    0,                        !- Hour 10
+    0,                        !- Hour 11
+    0,                        !- Hour 12
+    0,                        !- Hour 13
+    0,                        !- Hour 14
+    0,                        !- Hour 15
+    0,                        !- Hour 16
+    0,                        !- Hour 17
+    0,                        !- Hour 18
+    0,                        !- Hour 19
+    0,                        !- Hour 20
+    0,                        !- Hour 21
+    0,                        !- Hour 22
+    0,                        !- Hour 23
+    0;                        !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_On_00,                  !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    1,                        !- Hour 1
+    1,                        !- Hour 2
+    1,                        !- Hour 3
+    1,                        !- Hour 4
+    1,                        !- Hour 5
+    1,                        !- Hour 6
+    1,                        !- Hour 7
+    1,                        !- Hour 8
+    1,                        !- Hour 9
+    1,                        !- Hour 10
+    1,                        !- Hour 11
+    1,                        !- Hour 12
+    1,                        !- Hour 13
+    1,                        !- Hour 14
+    1,                        !- Hour 15
+    1,                        !- Hour 16
+    1,                        !- Hour 17
+    1,                        !- Hour 18
+    1,                        !- Hour 19
+    1,                        !- Hour 20
+    1,                        !- Hour 21
+    1,                        !- Hour 22
+    1,                        !- Hour 23
+    1;                        !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_Off_00,                 !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    0,                        !- Hour 1
+    0,                        !- Hour 2
+    0,                        !- Hour 3
+    0,                        !- Hour 4
+    0,                        !- Hour 5
+    0,                        !- Hour 6
+    0,                        !- Hour 7
+    0,                        !- Hour 8
+    0,                        !- Hour 9
+    0,                        !- Hour 10
+    0,                        !- Hour 11
+    0,                        !- Hour 12
+    0,                        !- Hour 13
+    0,                        !- Hour 14
+    0,                        !- Hour 15
+    0,                        !- Hour 16
+    0,                        !- Hour 17
+    0,                        !- Hour 18
+    0,                        !- Hour 19
+    0,                        !- Hour 20
+    0,                        !- Hour 21
+    0,                        !- Hour 22
+    0,                        !- Hour 23
+    0;                        !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_AllOn_00,               !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    1,                        !- Hour 1
+    1,                        !- Hour 2
+    1,                        !- Hour 3
+    1,                        !- Hour 4
+    1,                        !- Hour 5
+    1,                        !- Hour 6
+    1,                        !- Hour 7
+    1,                        !- Hour 8
+    1,                        !- Hour 9
+    1,                        !- Hour 10
+    1,                        !- Hour 11
+    1,                        !- Hour 12
+    1,                        !- Hour 13
+    1,                        !- Hour 14
+    1,                        !- Hour 15
+    1,                        !- Hour 16
+    1,                        !- Hour 17
+    1,                        !- Hour 18
+    1,                        !- Hour 19
+    1,                        !- Hour 20
+    1,                        !- Hour 21
+    1,                        !- Hour 22
+    1,                        !- Hour 23
+    1;                        !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_AllOff_00,              !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    0,                        !- Hour 1
+    0,                        !- Hour 2
+    0,                        !- Hour 3
+    0,                        !- Hour 4
+    0,                        !- Hour 5
+    0,                        !- Hour 6
+    0,                        !- Hour 7
+    0,                        !- Hour 8
+    0,                        !- Hour 9
+    0,                        !- Hour 10
+    0,                        !- Hour 11
+    0,                        !- Hour 12
+    0,                        !- Hour 13
+    0,                        !- Hour 14
+    0,                        !- Hour 15
+    0,                        !- Hour 16
+    0,                        !- Hour 17
+    0,                        !- Hour 18
+    0,                        !- Hour 19
+    0,                        !- Hour 20
+    0,                        !- Hour 21
+    0,                        !- Hour 22
+    0,                        !- Hour 23
+    0;                        !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_AlwaysOn_00,            !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    1,                        !- Hour 1
+    1,                        !- Hour 2
+    1,                        !- Hour 3
+    1,                        !- Hour 4
+    1,                        !- Hour 5
+    1,                        !- Hour 6
+    1,                        !- Hour 7
+    1,                        !- Hour 8
+    1,                        !- Hour 9
+    1,                        !- Hour 10
+    1,                        !- Hour 11
+    1,                        !- Hour 12
+    1,                        !- Hour 13
+    1,                        !- Hour 14
+    1,                        !- Hour 15
+    1,                        !- Hour 16
+    1,                        !- Hour 17
+    1,                        !- Hour 18
+    1,                        !- Hour 19
+    1,                        !- Hour 20
+    1,                        !- Hour 21
+    1,                        !- Hour 22
+    1,                        !- Hour 23
+    1;                        !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_AlwaysOff_00,           !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    0,                        !- Hour 1
+    0,                        !- Hour 2
+    0,                        !- Hour 3
+    0,                        !- Hour 4
+    0,                        !- Hour 5
+    0,                        !- Hour 6
+    0,                        !- Hour 7
+    0,                        !- Hour 8
+    0,                        !- Hour 9
+    0,                        !- Hour 10
+    0,                        !- Hour 11
+    0,                        !- Hour 12
+    0,                        !- Hour 13
+    0,                        !- Hour 14
+    0,                        !- Hour 15
+    0,                        !- Hour 16
+    0,                        !- Hour 17
+    0,                        !- Hour 18
+    0,                        !- Hour 19
+    0,                        !- Hour 20
+    0,                        !- Hour 21
+    0,                        !- Hour 22
+    0,                        !- Hour 23
+    0;                        !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    shophouse_Lighting_Schedule_Weekday,    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    0.05,                     !- Hour 1
+    0.05,                     !- Hour 2
+    0.05,                     !- Hour 3
+    0.05,                     !- Hour 4
+    0.05,                     !- Hour 5
+    0.08,                     !- Hour 6
+    0.18,                     !- Hour 7
+    0.55,                     !- Hour 8
+    0.85,                     !- Hour 9
+    0.95,                     !- Hour 10
+    0.95,                     !- Hour 11
+    0.95,                     !- Hour 12
+    0.85,                     !- Hour 13
+    0.9,                      !- Hour 14
+    0.95,                     !- Hour 15
+    0.95,                     !- Hour 16
+    0.9,                      !- Hour 17
+    0.65,                     !- Hour 18
+    0.35,                     !- Hour 19
+    0.18,                     !- Hour 20
+    0.1,                      !- Hour 21
+    0.07,                     !- Hour 22
+    0.05,                     !- Hour 23
+    0.05;                     !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    shophouse_Lighting_Schedule_Weekend,    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    0.05,                     !- Hour 1
+    0.05,                     !- Hour 2
+    0.05,                     !- Hour 3
+    0.05,                     !- Hour 4
+    0.05,                     !- Hour 5
+    0.05,                     !- Hour 6
+    0.08,                     !- Hour 7
+    0.12,                     !- Hour 8
+    0.25,                     !- Hour 9
+    0.38,                     !- Hour 10
+    0.48,                     !- Hour 11
+    0.52,                     !- Hour 12
+    0.5,                      !- Hour 13
+    0.48,                     !- Hour 14
+    0.45,                     !- Hour 15
+    0.42,                     !- Hour 16
+    0.35,                     !- Hour 17
+    0.25,                     !- Hour 18
+    0.18,                     !- Hour 19
+    0.12,                     !- Hour 20
+    0.08,                     !- Hour 21
+    0.06,                     !- Hour 22
+    0.05,                     !- Hour 23
+    0.05;                     !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Name
+    AnyNumber,                !- Schedule Type Limits Name
+    111.55199999999999,       !- Hour 1
+    111.55199999999999,       !- Hour 2
+    111.55199999999999,       !- Hour 3
+    111.55199999999999,       !- Hour 4
+    111.55199999999999,       !- Hour 5
+    111.55199999999999,       !- Hour 6
+    111.55199999999999,       !- Hour 7
+    111.55199999999999,       !- Hour 8
+    111.55199999999999,       !- Hour 9
+    111.55199999999999,       !- Hour 10
+    111.55199999999999,       !- Hour 11
+    111.55199999999999,       !- Hour 12
+    111.55199999999999,       !- Hour 13
+    111.55199999999999,       !- Hour 14
+    111.55199999999999,       !- Hour 15
+    111.55199999999999,       !- Hour 16
+    111.55199999999999,       !- Hour 17
+    111.55199999999999,       !- Hour 18
+    111.55199999999999,       !- Hour 19
+    111.55199999999999,       !- Hour 20
+    111.55199999999999,       !- Hour 21
+    111.55199999999999,       !- Hour 22
+    111.55199999999999,       !- Hour 23
+    111.55199999999999;       !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    shophouse_Occupancy_Schedule_Weekday,    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    0.05,                     !- Hour 1
+    0.05,                     !- Hour 2
+    0.05,                     !- Hour 3
+    0.05,                     !- Hour 4
+    0.05,                     !- Hour 5
+    0.08,                     !- Hour 6
+    0.18,                     !- Hour 7
+    0.45,                     !- Hour 8
+    0.75,                     !- Hour 9
+    0.9,                      !- Hour 10
+    0.95,                     !- Hour 11
+    0.95,                     !- Hour 12
+    0.85,                     !- Hour 13
+    0.9,                      !- Hour 14
+    0.95,                     !- Hour 15
+    0.95,                     !- Hour 16
+    0.85,                     !- Hour 17
+    0.6,                      !- Hour 18
+    0.35,                     !- Hour 19
+    0.2,                      !- Hour 20
+    0.12,                     !- Hour 21
+    0.08,                     !- Hour 22
+    0.05,                     !- Hour 23
+    0.05;                     !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    shophouse_Occupancy_Schedule_Weekend,    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    0.05,                     !- Hour 1
+    0.05,                     !- Hour 2
+    0.05,                     !- Hour 3
+    0.05,                     !- Hour 4
+    0.05,                     !- Hour 5
+    0.06,                     !- Hour 6
+    0.08,                     !- Hour 7
+    0.15,                     !- Hour 8
+    0.28,                     !- Hour 9
+    0.42,                     !- Hour 10
+    0.55,                     !- Hour 11
+    0.6,                      !- Hour 12
+    0.58,                     !- Hour 13
+    0.55,                     !- Hour 14
+    0.52,                     !- Hour 15
+    0.5,                      !- Hour 16
+    0.45,                     !- Hour 17
+    0.35,                     !- Hour 18
+    0.25,                     !- Hour 19
+    0.18,                     !- Hour 20
+    0.12,                     !- Hour 21
+    0.08,                     !- Hour 22
+    0.05,                     !- Hour 23
+    0.05;                     !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    shophouse_Equipment_Schedule_Weekday,    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    0.1,                      !- Hour 1
+    0.1,                      !- Hour 2
+    0.1,                      !- Hour 3
+    0.1,                      !- Hour 4
+    0.1,                      !- Hour 5
+    0.12,                     !- Hour 6
+    0.2,                      !- Hour 7
+    0.5,                      !- Hour 8
+    0.82,                     !- Hour 9
+    0.95,                     !- Hour 10
+    0.95,                     !- Hour 11
+    0.95,                     !- Hour 12
+    0.9,                      !- Hour 13
+    0.92,                     !- Hour 14
+    0.95,                     !- Hour 15
+    0.95,                     !- Hour 16
+    0.88,                     !- Hour 17
+    0.62,                     !- Hour 18
+    0.35,                     !- Hour 19
+    0.2,                      !- Hour 20
+    0.14,                     !- Hour 21
+    0.12,                     !- Hour 22
+    0.1,                      !- Hour 23
+    0.1;                      !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    shophouse_Equipment_Schedule_Weekend,    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    0.1,                      !- Hour 1
+    0.1,                      !- Hour 2
+    0.1,                      !- Hour 3
+    0.1,                      !- Hour 4
+    0.1,                      !- Hour 5
+    0.1,                      !- Hour 6
+    0.12,                     !- Hour 7
+    0.16,                     !- Hour 8
+    0.25,                     !- Hour 9
+    0.35,                     !- Hour 10
+    0.45,                     !- Hour 11
+    0.5,                      !- Hour 12
+    0.48,                     !- Hour 13
+    0.46,                     !- Hour 14
+    0.44,                     !- Hour 15
+    0.4,                      !- Hour 16
+    0.35,                     !- Hour 17
+    0.28,                     !- Hour 18
+    0.2,                      !- Hour 19
+    0.15,                     !- Hour 20
+    0.12,                     !- Hour 21
+    0.1,                      !- Hour 22
+    0.1,                      !- Hour 23
+    0.1;                      !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    60,                       !- Hour 1
+    60,                       !- Hour 2
+    60,                       !- Hour 3
+    60,                       !- Hour 4
+    60,                       !- Hour 5
+    60,                       !- Hour 6
+    60,                       !- Hour 7
+    60,                       !- Hour 8
+    60,                       !- Hour 9
+    60,                       !- Hour 10
+    60,                       !- Hour 11
+    60,                       !- Hour 12
+    60,                       !- Hour 13
+    60,                       !- Hour 14
+    60,                       !- Hour 15
+    60,                       !- Hour 16
+    60,                       !- Hour 17
+    60,                       !- Hour 18
+    60,                       !- Hour 19
+    60,                       !- Hour 20
+    60,                       !- Hour 21
+    60,                       !- Hour 22
+    60,                       !- Hour 23
+    60;                       !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    15,                       !- Hour 1
+    15,                       !- Hour 2
+    15,                       !- Hour 3
+    15,                       !- Hour 4
+    15,                       !- Hour 5
+    15,                       !- Hour 6
+    15,                       !- Hour 7
+    15,                       !- Hour 8
+    15,                       !- Hour 9
+    15,                       !- Hour 10
+    15,                       !- Hour 11
+    15,                       !- Hour 12
+    15,                       !- Hour 13
+    15,                       !- Hour 14
+    15,                       !- Hour 15
+    15,                       !- Hour 16
+    15,                       !- Hour 17
+    15,                       !- Hour 18
+    15,                       !- Hour 19
+    15,                       !- Hour 20
+    15,                       !- Hour 21
+    15,                       !- Hour 22
+    15,                       !- Hour 23
+    15;                       !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    shophouse_HotWater_Schedule_Weekday,    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    0.05,                     !- Hour 1
+    0.05,                     !- Hour 2
+    0.05,                     !- Hour 3
+    0.05,                     !- Hour 4
+    0.08,                     !- Hour 5
+    0.18,                     !- Hour 6
+    0.45,                     !- Hour 7
+    0.75,                     !- Hour 8
+    0.58,                     !- Hour 9
+    0.35,                     !- Hour 10
+    0.28,                     !- Hour 11
+    0.32,                     !- Hour 12
+    0.45,                     !- Hour 13
+    0.38,                     !- Hour 14
+    0.3,                      !- Hour 15
+    0.32,                     !- Hour 16
+    0.45,                     !- Hour 17
+    0.65,                     !- Hour 18
+    0.55,                     !- Hour 19
+    0.32,                     !- Hour 20
+    0.2,                      !- Hour 21
+    0.12,                     !- Hour 22
+    0.08,                     !- Hour 23
+    0.05;                     !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    shophouse_HotWater_Schedule_Weekend,    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    0.05,                     !- Hour 1
+    0.05,                     !- Hour 2
+    0.05,                     !- Hour 3
+    0.05,                     !- Hour 4
+    0.06,                     !- Hour 5
+    0.1,                      !- Hour 6
+    0.2,                      !- Hour 7
+    0.38,                     !- Hour 8
+    0.55,                     !- Hour 9
+    0.5,                      !- Hour 10
+    0.38,                     !- Hour 11
+    0.32,                     !- Hour 12
+    0.42,                     !- Hour 13
+    0.4,                      !- Hour 14
+    0.32,                     !- Hour 15
+    0.3,                      !- Hour 16
+    0.35,                     !- Hour 17
+    0.48,                     !- Hour 18
+    0.52,                     !- Hour 19
+    0.38,                     !- Hour 20
+    0.24,                     !- Hour 21
+    0.14,                     !- Hour 22
+    0.08,                     !- Hour 23
+    0.05;                     !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    Block shoebox Storey 0_shophouse_Thermostat_THERMOSTAT_HeatingDesignDay,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    20,                       !- Hour 1
+    20,                       !- Hour 2
+    20,                       !- Hour 3
+    20,                       !- Hour 4
+    20,                       !- Hour 5
+    20,                       !- Hour 6
+    20,                       !- Hour 7
+    20,                       !- Hour 8
+    20,                       !- Hour 9
+    20,                       !- Hour 10
+    20,                       !- Hour 11
+    20,                       !- Hour 12
+    20,                       !- Hour 13
+    20,                       !- Hour 14
+    20,                       !- Hour 15
+    20,                       !- Hour 16
+    20,                       !- Hour 17
+    20,                       !- Hour 18
+    20,                       !- Hour 19
+    20,                       !- Hour 20
+    20,                       !- Hour 21
+    20,                       !- Hour 22
+    20,                       !- Hour 23
+    20;                       !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    shophouse_HeatingSetpoint_Schedule_Weekday,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    20,                       !- Hour 1
+    20,                       !- Hour 2
+    20,                       !- Hour 3
+    20,                       !- Hour 4
+    20,                       !- Hour 5
+    20,                       !- Hour 6
+    20,                       !- Hour 7
+    20,                       !- Hour 8
+    20,                       !- Hour 9
+    20,                       !- Hour 10
+    20,                       !- Hour 11
+    20,                       !- Hour 12
+    20,                       !- Hour 13
+    20,                       !- Hour 14
+    20,                       !- Hour 15
+    20,                       !- Hour 16
+    20,                       !- Hour 17
+    20,                       !- Hour 18
+    20,                       !- Hour 19
+    20,                       !- Hour 20
+    20,                       !- Hour 21
+    20,                       !- Hour 22
+    20,                       !- Hour 23
+    20;                       !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    shophouse_HeatingSetpoint_Schedule_Weekend,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    20,                       !- Hour 1
+    20,                       !- Hour 2
+    20,                       !- Hour 3
+    20,                       !- Hour 4
+    20,                       !- Hour 5
+    20,                       !- Hour 6
+    20,                       !- Hour 7
+    20,                       !- Hour 8
+    20,                       !- Hour 9
+    20,                       !- Hour 10
+    20,                       !- Hour 11
+    20,                       !- Hour 12
+    20,                       !- Hour 13
+    20,                       !- Hour 14
+    20,                       !- Hour 15
+    20,                       !- Hour 16
+    20,                       !- Hour 17
+    20,                       !- Hour 18
+    20,                       !- Hour 19
+    20,                       !- Hour 20
+    20,                       !- Hour 21
+    20,                       !- Hour 22
+    20,                       !- Hour 23
+    20;                       !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    Block shoebox Storey 0_shophouse_Thermostat_THERMOSTAT_CoolingDesignDay,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    24,                       !- Hour 1
+    24,                       !- Hour 2
+    24,                       !- Hour 3
+    24,                       !- Hour 4
+    24,                       !- Hour 5
+    24,                       !- Hour 6
+    24,                       !- Hour 7
+    24,                       !- Hour 8
+    24,                       !- Hour 9
+    24,                       !- Hour 10
+    24,                       !- Hour 11
+    24,                       !- Hour 12
+    24,                       !- Hour 13
+    24,                       !- Hour 14
+    24,                       !- Hour 15
+    24,                       !- Hour 16
+    24,                       !- Hour 17
+    24,                       !- Hour 18
+    24,                       !- Hour 19
+    24,                       !- Hour 20
+    24,                       !- Hour 21
+    24,                       !- Hour 22
+    24,                       !- Hour 23
+    24;                       !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    shophouse_CoolingSetpoint_Schedule_Weekday,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    24,                       !- Hour 1
+    24,                       !- Hour 2
+    24,                       !- Hour 3
+    24,                       !- Hour 4
+    24,                       !- Hour 5
+    24,                       !- Hour 6
+    24,                       !- Hour 7
+    24,                       !- Hour 8
+    24,                       !- Hour 9
+    24,                       !- Hour 10
+    24,                       !- Hour 11
+    24,                       !- Hour 12
+    24,                       !- Hour 13
+    24,                       !- Hour 14
+    24,                       !- Hour 15
+    24,                       !- Hour 16
+    24,                       !- Hour 17
+    24,                       !- Hour 18
+    24,                       !- Hour 19
+    24,                       !- Hour 20
+    24,                       !- Hour 21
+    24,                       !- Hour 22
+    24,                       !- Hour 23
+    24;                       !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    shophouse_CoolingSetpoint_Schedule_Weekend,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    24,                       !- Hour 1
+    24,                       !- Hour 2
+    24,                       !- Hour 3
+    24,                       !- Hour 4
+    24,                       !- Hour 5
+    24,                       !- Hour 6
+    24,                       !- Hour 7
+    24,                       !- Hour 8
+    24,                       !- Hour 9
+    24,                       !- Hour 10
+    24,                       !- Hour 11
+    24,                       !- Hour 12
+    24,                       !- Hour 13
+    24,                       !- Hour 14
+    24,                       !- Hour 15
+    24,                       !- Hour 16
+    24,                       !- Hour 17
+    24,                       !- Hour 18
+    24,                       !- Hour 19
+    24,                       !- Hour 20
+    24,                       !- Hour 21
+    24,                       !- Hour 22
+    24,                       !- Hour 23
+    24;                       !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    1,                        !- Hour 1
+    1,                        !- Hour 2
+    1,                        !- Hour 3
+    1,                        !- Hour 4
+    1,                        !- Hour 5
+    1,                        !- Hour 6
+    1,                        !- Hour 7
+    1,                        !- Hour 8
+    1,                        !- Hour 9
+    1,                        !- Hour 10
+    1,                        !- Hour 11
+    1,                        !- Hour 12
+    1,                        !- Hour 13
+    1,                        !- Hour 14
+    1,                        !- Hour 15
+    1,                        !- Hour 16
+    1,                        !- Hour 17
+    1,                        !- Hour 18
+    1,                        !- Hour 19
+    1,                        !- Hour 20
+    1,                        !- Hour 21
+    1,                        !- Hour 22
+    1,                        !- Hour 23
+    1;                        !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Name
+    AnyNumber,                !- Schedule Type Limits Name
+    111.55199999999999,       !- Hour 1
+    111.55199999999999,       !- Hour 2
+    111.55199999999999,       !- Hour 3
+    111.55199999999999,       !- Hour 4
+    111.55199999999999,       !- Hour 5
+    111.55199999999999,       !- Hour 6
+    111.55199999999999,       !- Hour 7
+    111.55199999999999,       !- Hour 8
+    111.55199999999999,       !- Hour 9
+    111.55199999999999,       !- Hour 10
+    111.55199999999999,       !- Hour 11
+    111.55199999999999,       !- Hour 12
+    111.55199999999999,       !- Hour 13
+    111.55199999999999,       !- Hour 14
+    111.55199999999999,       !- Hour 15
+    111.55199999999999,       !- Hour 16
+    111.55199999999999,       !- Hour 17
+    111.55199999999999,       !- Hour 18
+    111.55199999999999,       !- Hour 19
+    111.55199999999999,       !- Hour 20
+    111.55199999999999,       !- Hour 21
+    111.55199999999999,       !- Hour 22
+    111.55199999999999,       !- Hour 23
+    111.55199999999999;       !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    60,                       !- Hour 1
+    60,                       !- Hour 2
+    60,                       !- Hour 3
+    60,                       !- Hour 4
+    60,                       !- Hour 5
+    60,                       !- Hour 6
+    60,                       !- Hour 7
+    60,                       !- Hour 8
+    60,                       !- Hour 9
+    60,                       !- Hour 10
+    60,                       !- Hour 11
+    60,                       !- Hour 12
+    60,                       !- Hour 13
+    60,                       !- Hour 14
+    60,                       !- Hour 15
+    60,                       !- Hour 16
+    60,                       !- Hour 17
+    60,                       !- Hour 18
+    60,                       !- Hour 19
+    60,                       !- Hour 20
+    60,                       !- Hour 21
+    60,                       !- Hour 22
+    60,                       !- Hour 23
+    60;                       !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    15,                       !- Hour 1
+    15,                       !- Hour 2
+    15,                       !- Hour 3
+    15,                       !- Hour 4
+    15,                       !- Hour 5
+    15,                       !- Hour 6
+    15,                       !- Hour 7
+    15,                       !- Hour 8
+    15,                       !- Hour 9
+    15,                       !- Hour 10
+    15,                       !- Hour 11
+    15,                       !- Hour 12
+    15,                       !- Hour 13
+    15,                       !- Hour 14
+    15,                       !- Hour 15
+    15,                       !- Hour 16
+    15,                       !- Hour 17
+    15,                       !- Hour 18
+    15,                       !- Hour 19
+    15,                       !- Hour 20
+    15,                       !- Hour 21
+    15,                       !- Hour 22
+    15,                       !- Hour 23
+    15;                       !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    Block shoebox Storey 1_shophouse_Thermostat_THERMOSTAT_HeatingDesignDay,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    20,                       !- Hour 1
+    20,                       !- Hour 2
+    20,                       !- Hour 3
+    20,                       !- Hour 4
+    20,                       !- Hour 5
+    20,                       !- Hour 6
+    20,                       !- Hour 7
+    20,                       !- Hour 8
+    20,                       !- Hour 9
+    20,                       !- Hour 10
+    20,                       !- Hour 11
+    20,                       !- Hour 12
+    20,                       !- Hour 13
+    20,                       !- Hour 14
+    20,                       !- Hour 15
+    20,                       !- Hour 16
+    20,                       !- Hour 17
+    20,                       !- Hour 18
+    20,                       !- Hour 19
+    20,                       !- Hour 20
+    20,                       !- Hour 21
+    20,                       !- Hour 22
+    20,                       !- Hour 23
+    20;                       !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    Block shoebox Storey 1_shophouse_Thermostat_THERMOSTAT_CoolingDesignDay,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    24,                       !- Hour 1
+    24,                       !- Hour 2
+    24,                       !- Hour 3
+    24,                       !- Hour 4
+    24,                       !- Hour 5
+    24,                       !- Hour 6
+    24,                       !- Hour 7
+    24,                       !- Hour 8
+    24,                       !- Hour 9
+    24,                       !- Hour 10
+    24,                       !- Hour 11
+    24,                       !- Hour 12
+    24,                       !- Hour 13
+    24,                       !- Hour 14
+    24,                       !- Hour 15
+    24,                       !- Hour 16
+    24,                       !- Hour 17
+    24,                       !- Hour 18
+    24,                       !- Hour 19
+    24,                       !- Hour 20
+    24,                       !- Hour 21
+    24,                       !- Hour 22
+    24,                       !- Hour 23
+    24;                       !- Hour 24
+
+SCHEDULE:DAY:HOURLY,
+    d_Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    1,                        !- Hour 1
+    1,                        !- Hour 2
+    1,                        !- Hour 3
+    1,                        !- Hour 4
+    1,                        !- Hour 5
+    1,                        !- Hour 6
+    1,                        !- Hour 7
+    1,                        !- Hour 8
+    1,                        !- Hour 9
+    1,                        !- Hour 10
+    1,                        !- Hour 11
+    1,                        !- Hour 12
+    1,                        !- Hour 13
+    1,                        !- Hour 14
+    1,                        !- Hour 15
+    1,                        !- Hour 16
+    1,                        !- Hour 17
+    1,                        !- Hour 18
+    1,                        !- Hour 19
+    1,                        !- Hour 20
+    1,                        !- Hour 21
+    1,                        !- Hour 22
+    1,                        !- Hour 23
+    1;                        !- Hour 24
+
+SCHEDULE:WEEK:DAILY,
+    w_Always_On_00,           !- Name
+    d_Always_On_00,           !- Sunday ScheduleDay Name
+    d_Always_On_00,           !- Monday ScheduleDay Name
+    d_Always_On_00,           !- Tuesday ScheduleDay Name
+    d_Always_On_00,           !- Wednesday ScheduleDay Name
+    d_Always_On_00,           !- Thursday ScheduleDay Name
+    d_Always_On_00,           !- Friday ScheduleDay Name
+    d_Always_On_00,           !- Saturday ScheduleDay Name
+    d_Always_On_00,           !- Holiday ScheduleDay Name
+    d_Always_On_00,           !- SummerDesignDay ScheduleDay Name
+    d_Always_On_00,           !- WinterDesignDay ScheduleDay Name
+    d_Always_On_00,           !- CustomDay1 ScheduleDay Name
+    d_Always_On_00;           !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_Always_Off_00,          !- Name
+    d_Always_Off_00,          !- Sunday ScheduleDay Name
+    d_Always_Off_00,          !- Monday ScheduleDay Name
+    d_Always_Off_00,          !- Tuesday ScheduleDay Name
+    d_Always_Off_00,          !- Wednesday ScheduleDay Name
+    d_Always_Off_00,          !- Thursday ScheduleDay Name
+    d_Always_Off_00,          !- Friday ScheduleDay Name
+    d_Always_Off_00,          !- Saturday ScheduleDay Name
+    d_Always_Off_00,          !- Holiday ScheduleDay Name
+    d_Always_Off_00,          !- SummerDesignDay ScheduleDay Name
+    d_Always_Off_00,          !- WinterDesignDay ScheduleDay Name
+    d_Always_Off_00,          !- CustomDay1 ScheduleDay Name
+    d_Always_Off_00;          !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_Always On_00,           !- Name
+    d_Always On_00,           !- Sunday ScheduleDay Name
+    d_Always On_00,           !- Monday ScheduleDay Name
+    d_Always On_00,           !- Tuesday ScheduleDay Name
+    d_Always On_00,           !- Wednesday ScheduleDay Name
+    d_Always On_00,           !- Thursday ScheduleDay Name
+    d_Always On_00,           !- Friday ScheduleDay Name
+    d_Always On_00,           !- Saturday ScheduleDay Name
+    d_Always On_00,           !- Holiday ScheduleDay Name
+    d_Always On_00,           !- SummerDesignDay ScheduleDay Name
+    d_Always On_00,           !- WinterDesignDay ScheduleDay Name
+    d_Always On_00,           !- CustomDay1 ScheduleDay Name
+    d_Always On_00;           !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_Always Off_00,          !- Name
+    d_Always Off_00,          !- Sunday ScheduleDay Name
+    d_Always Off_00,          !- Monday ScheduleDay Name
+    d_Always Off_00,          !- Tuesday ScheduleDay Name
+    d_Always Off_00,          !- Wednesday ScheduleDay Name
+    d_Always Off_00,          !- Thursday ScheduleDay Name
+    d_Always Off_00,          !- Friday ScheduleDay Name
+    d_Always Off_00,          !- Saturday ScheduleDay Name
+    d_Always Off_00,          !- Holiday ScheduleDay Name
+    d_Always Off_00,          !- SummerDesignDay ScheduleDay Name
+    d_Always Off_00,          !- WinterDesignDay ScheduleDay Name
+    d_Always Off_00,          !- CustomDay1 ScheduleDay Name
+    d_Always Off_00;          !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_On_00,                  !- Name
+    d_On_00,                  !- Sunday ScheduleDay Name
+    d_On_00,                  !- Monday ScheduleDay Name
+    d_On_00,                  !- Tuesday ScheduleDay Name
+    d_On_00,                  !- Wednesday ScheduleDay Name
+    d_On_00,                  !- Thursday ScheduleDay Name
+    d_On_00,                  !- Friday ScheduleDay Name
+    d_On_00,                  !- Saturday ScheduleDay Name
+    d_On_00,                  !- Holiday ScheduleDay Name
+    d_On_00,                  !- SummerDesignDay ScheduleDay Name
+    d_On_00,                  !- WinterDesignDay ScheduleDay Name
+    d_On_00,                  !- CustomDay1 ScheduleDay Name
+    d_On_00;                  !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_Off_00,                 !- Name
+    d_Off_00,                 !- Sunday ScheduleDay Name
+    d_Off_00,                 !- Monday ScheduleDay Name
+    d_Off_00,                 !- Tuesday ScheduleDay Name
+    d_Off_00,                 !- Wednesday ScheduleDay Name
+    d_Off_00,                 !- Thursday ScheduleDay Name
+    d_Off_00,                 !- Friday ScheduleDay Name
+    d_Off_00,                 !- Saturday ScheduleDay Name
+    d_Off_00,                 !- Holiday ScheduleDay Name
+    d_Off_00,                 !- SummerDesignDay ScheduleDay Name
+    d_Off_00,                 !- WinterDesignDay ScheduleDay Name
+    d_Off_00,                 !- CustomDay1 ScheduleDay Name
+    d_Off_00;                 !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_AllOn_00,               !- Name
+    d_AllOn_00,               !- Sunday ScheduleDay Name
+    d_AllOn_00,               !- Monday ScheduleDay Name
+    d_AllOn_00,               !- Tuesday ScheduleDay Name
+    d_AllOn_00,               !- Wednesday ScheduleDay Name
+    d_AllOn_00,               !- Thursday ScheduleDay Name
+    d_AllOn_00,               !- Friday ScheduleDay Name
+    d_AllOn_00,               !- Saturday ScheduleDay Name
+    d_AllOn_00,               !- Holiday ScheduleDay Name
+    d_AllOn_00,               !- SummerDesignDay ScheduleDay Name
+    d_AllOn_00,               !- WinterDesignDay ScheduleDay Name
+    d_AllOn_00,               !- CustomDay1 ScheduleDay Name
+    d_AllOn_00;               !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_AllOff_00,              !- Name
+    d_AllOff_00,              !- Sunday ScheduleDay Name
+    d_AllOff_00,              !- Monday ScheduleDay Name
+    d_AllOff_00,              !- Tuesday ScheduleDay Name
+    d_AllOff_00,              !- Wednesday ScheduleDay Name
+    d_AllOff_00,              !- Thursday ScheduleDay Name
+    d_AllOff_00,              !- Friday ScheduleDay Name
+    d_AllOff_00,              !- Saturday ScheduleDay Name
+    d_AllOff_00,              !- Holiday ScheduleDay Name
+    d_AllOff_00,              !- SummerDesignDay ScheduleDay Name
+    d_AllOff_00,              !- WinterDesignDay ScheduleDay Name
+    d_AllOff_00,              !- CustomDay1 ScheduleDay Name
+    d_AllOff_00;              !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_AlwaysOn_00,            !- Name
+    d_AlwaysOn_00,            !- Sunday ScheduleDay Name
+    d_AlwaysOn_00,            !- Monday ScheduleDay Name
+    d_AlwaysOn_00,            !- Tuesday ScheduleDay Name
+    d_AlwaysOn_00,            !- Wednesday ScheduleDay Name
+    d_AlwaysOn_00,            !- Thursday ScheduleDay Name
+    d_AlwaysOn_00,            !- Friday ScheduleDay Name
+    d_AlwaysOn_00,            !- Saturday ScheduleDay Name
+    d_AlwaysOn_00,            !- Holiday ScheduleDay Name
+    d_AlwaysOn_00,            !- SummerDesignDay ScheduleDay Name
+    d_AlwaysOn_00,            !- WinterDesignDay ScheduleDay Name
+    d_AlwaysOn_00,            !- CustomDay1 ScheduleDay Name
+    d_AlwaysOn_00;            !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_AlwaysOff_00,           !- Name
+    d_AlwaysOff_00,           !- Sunday ScheduleDay Name
+    d_AlwaysOff_00,           !- Monday ScheduleDay Name
+    d_AlwaysOff_00,           !- Tuesday ScheduleDay Name
+    d_AlwaysOff_00,           !- Wednesday ScheduleDay Name
+    d_AlwaysOff_00,           !- Thursday ScheduleDay Name
+    d_AlwaysOff_00,           !- Friday ScheduleDay Name
+    d_AlwaysOff_00,           !- Saturday ScheduleDay Name
+    d_AlwaysOff_00,           !- Holiday ScheduleDay Name
+    d_AlwaysOff_00,           !- SummerDesignDay ScheduleDay Name
+    d_AlwaysOff_00,           !- WinterDesignDay ScheduleDay Name
+    d_AlwaysOff_00,           !- CustomDay1 ScheduleDay Name
+    d_AlwaysOff_00;           !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    shophouse_Lighting_Schedule_Week,    !- Name
+    shophouse_Lighting_Schedule_Weekend,    !- Sunday ScheduleDay Name
+    shophouse_Lighting_Schedule_Weekday,    !- Monday ScheduleDay Name
+    shophouse_Lighting_Schedule_Weekday,    !- Tuesday ScheduleDay Name
+    shophouse_Lighting_Schedule_Weekday,    !- Wednesday ScheduleDay Name
+    shophouse_Lighting_Schedule_Weekday,    !- Thursday ScheduleDay Name
+    shophouse_Lighting_Schedule_Weekday,    !- Friday ScheduleDay Name
+    shophouse_Lighting_Schedule_Weekend,    !- Saturday ScheduleDay Name
+    shophouse_Lighting_Schedule_Weekend,    !- Holiday ScheduleDay Name
+    d_AllOn_00,               !- SummerDesignDay ScheduleDay Name
+    d_AllOn_00,               !- WinterDesignDay ScheduleDay Name
+    shophouse_Lighting_Schedule_Weekday,    !- CustomDay1 ScheduleDay Name
+    shophouse_Lighting_Schedule_Weekday;    !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Name
+    d_Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Sunday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Monday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Tuesday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Wednesday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Thursday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Friday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Saturday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Holiday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- SummerDesignDay ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- WinterDesignDay ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- CustomDay1 ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule_00;    !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    shophouse_Occupancy_Schedule_Week,    !- Name
+    shophouse_Occupancy_Schedule_Weekend,    !- Sunday ScheduleDay Name
+    shophouse_Occupancy_Schedule_Weekday,    !- Monday ScheduleDay Name
+    shophouse_Occupancy_Schedule_Weekday,    !- Tuesday ScheduleDay Name
+    shophouse_Occupancy_Schedule_Weekday,    !- Wednesday ScheduleDay Name
+    shophouse_Occupancy_Schedule_Weekday,    !- Thursday ScheduleDay Name
+    shophouse_Occupancy_Schedule_Weekday,    !- Friday ScheduleDay Name
+    shophouse_Occupancy_Schedule_Weekend,    !- Saturday ScheduleDay Name
+    shophouse_Occupancy_Schedule_Weekend,    !- Holiday ScheduleDay Name
+    d_AllOn_00,               !- SummerDesignDay ScheduleDay Name
+    d_AllOn_00,               !- WinterDesignDay ScheduleDay Name
+    shophouse_Occupancy_Schedule_Weekday,    !- CustomDay1 ScheduleDay Name
+    shophouse_Occupancy_Schedule_Weekday;    !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    shophouse_Equipment_Schedule_Week,    !- Name
+    shophouse_Equipment_Schedule_Weekend,    !- Sunday ScheduleDay Name
+    shophouse_Equipment_Schedule_Weekday,    !- Monday ScheduleDay Name
+    shophouse_Equipment_Schedule_Weekday,    !- Tuesday ScheduleDay Name
+    shophouse_Equipment_Schedule_Weekday,    !- Wednesday ScheduleDay Name
+    shophouse_Equipment_Schedule_Weekday,    !- Thursday ScheduleDay Name
+    shophouse_Equipment_Schedule_Weekday,    !- Friday ScheduleDay Name
+    shophouse_Equipment_Schedule_Weekend,    !- Saturday ScheduleDay Name
+    shophouse_Equipment_Schedule_Weekend,    !- Holiday ScheduleDay Name
+    d_AllOn_00,               !- SummerDesignDay ScheduleDay Name
+    d_AllOn_00,               !- WinterDesignDay ScheduleDay Name
+    shophouse_Equipment_Schedule_Weekday,    !- CustomDay1 ScheduleDay Name
+    shophouse_Equipment_Schedule_Weekday;    !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Sunday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Monday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Tuesday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Wednesday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Thursday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Friday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Saturday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Holiday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- SummerDesignDay ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- WinterDesignDay ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- CustomDay1 ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00;    !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Sunday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Monday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Tuesday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Wednesday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Thursday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Friday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Saturday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Holiday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- SummerDesignDay ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- WinterDesignDay ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- CustomDay1 ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00;    !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    shophouse_HotWater_Schedule_Week,    !- Name
+    shophouse_HotWater_Schedule_Weekend,    !- Sunday ScheduleDay Name
+    shophouse_HotWater_Schedule_Weekday,    !- Monday ScheduleDay Name
+    shophouse_HotWater_Schedule_Weekday,    !- Tuesday ScheduleDay Name
+    shophouse_HotWater_Schedule_Weekday,    !- Wednesday ScheduleDay Name
+    shophouse_HotWater_Schedule_Weekday,    !- Thursday ScheduleDay Name
+    shophouse_HotWater_Schedule_Weekday,    !- Friday ScheduleDay Name
+    shophouse_HotWater_Schedule_Weekend,    !- Saturday ScheduleDay Name
+    shophouse_HotWater_Schedule_Weekend,    !- Holiday ScheduleDay Name
+    shophouse_HotWater_Schedule_Weekday,    !- SummerDesignDay ScheduleDay Name
+    shophouse_HotWater_Schedule_Weekday,    !- WinterDesignDay ScheduleDay Name
+    shophouse_HotWater_Schedule_Weekday,    !- CustomDay1 ScheduleDay Name
+    shophouse_HotWater_Schedule_Weekday;    !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    shophouse_HeatingSetpoint_Schedule_Week,    !- Name
+    shophouse_HeatingSetpoint_Schedule_Weekend,    !- Sunday ScheduleDay Name
+    shophouse_HeatingSetpoint_Schedule_Weekday,    !- Monday ScheduleDay Name
+    shophouse_HeatingSetpoint_Schedule_Weekday,    !- Tuesday ScheduleDay Name
+    shophouse_HeatingSetpoint_Schedule_Weekday,    !- Wednesday ScheduleDay Name
+    shophouse_HeatingSetpoint_Schedule_Weekday,    !- Thursday ScheduleDay Name
+    shophouse_HeatingSetpoint_Schedule_Weekday,    !- Friday ScheduleDay Name
+    shophouse_HeatingSetpoint_Schedule_Weekend,    !- Saturday ScheduleDay Name
+    shophouse_HeatingSetpoint_Schedule_Weekend,    !- Holiday ScheduleDay Name
+    Block shoebox Storey 0_shophouse_Thermostat_THERMOSTAT_HeatingDesignDay,    !- SummerDesignDay ScheduleDay Name
+    Block shoebox Storey 0_shophouse_Thermostat_THERMOSTAT_HeatingDesignDay,    !- WinterDesignDay ScheduleDay Name
+    shophouse_HeatingSetpoint_Schedule_Weekday,    !- CustomDay1 ScheduleDay Name
+    shophouse_HeatingSetpoint_Schedule_Weekday;    !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    shophouse_CoolingSetpoint_Schedule_Week,    !- Name
+    shophouse_CoolingSetpoint_Schedule_Weekend,    !- Sunday ScheduleDay Name
+    shophouse_CoolingSetpoint_Schedule_Weekday,    !- Monday ScheduleDay Name
+    shophouse_CoolingSetpoint_Schedule_Weekday,    !- Tuesday ScheduleDay Name
+    shophouse_CoolingSetpoint_Schedule_Weekday,    !- Wednesday ScheduleDay Name
+    shophouse_CoolingSetpoint_Schedule_Weekday,    !- Thursday ScheduleDay Name
+    shophouse_CoolingSetpoint_Schedule_Weekday,    !- Friday ScheduleDay Name
+    shophouse_CoolingSetpoint_Schedule_Weekend,    !- Saturday ScheduleDay Name
+    shophouse_CoolingSetpoint_Schedule_Weekend,    !- Holiday ScheduleDay Name
+    Block shoebox Storey 0_shophouse_Thermostat_THERMOSTAT_CoolingDesignDay,    !- SummerDesignDay ScheduleDay Name
+    Block shoebox Storey 0_shophouse_Thermostat_THERMOSTAT_CoolingDesignDay,    !- WinterDesignDay ScheduleDay Name
+    shophouse_CoolingSetpoint_Schedule_Weekday,    !- CustomDay1 ScheduleDay Name
+    shophouse_CoolingSetpoint_Schedule_Weekday;    !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Name
+    d_Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Sunday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Monday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Tuesday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Wednesday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Thursday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Friday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Saturday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Holiday ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- SummerDesignDay ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- WinterDesignDay ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- CustomDay1 ScheduleDay Name
+    d_Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule_00;    !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Name
+    d_Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Sunday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Monday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Tuesday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Wednesday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Thursday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Friday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Saturday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- Holiday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- SummerDesignDay ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- WinterDesignDay ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- CustomDay1 ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule_00;    !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Sunday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Monday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Tuesday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Wednesday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Thursday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Friday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Saturday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- Holiday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- SummerDesignDay ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- WinterDesignDay ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- CustomDay1 ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00;    !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Sunday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Monday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Tuesday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Wednesday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Thursday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Friday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Saturday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- Holiday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- SummerDesignDay ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- WinterDesignDay ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- CustomDay1 ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00;    !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:WEEK:DAILY,
+    w_Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Name
+    d_Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Sunday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Monday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Tuesday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Wednesday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Thursday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Friday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Saturday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- Holiday ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- SummerDesignDay ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- WinterDesignDay ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- CustomDay1 ScheduleDay Name
+    d_Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule_00;    !- CustomDay2 ScheduleDay Name
+
+SCHEDULE:YEAR,
+    Always_On,                !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    w_Always_On_00,           !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    Always_Off,               !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    w_Always_Off_00,          !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    Always On,                !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    w_Always On_00,           !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    Always Off,               !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    w_Always Off_00,          !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    On,                       !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    w_On_00,                  !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    Off,                      !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    w_Off_00,                 !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    AllOn,                    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    w_AllOn_00,               !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    AllOff,                   !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    w_AllOff_00,              !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    AlwaysOn,                 !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    w_AlwaysOn_00,            !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    AlwaysOff,                !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    w_AlwaysOff_00,           !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    shophouse_Lighting_Schedule,    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    shophouse_Lighting_Schedule_Week,    !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    1,                        !- End Month 1
+    31,                       !- End Day 1
+    shophouse_Lighting_Schedule_Week,    !- ScheduleWeek Name 2
+    2,                        !- Start Month 2
+    1,                        !- Start Day 2
+    2,                        !- End Month 2
+    28,                       !- End Day 2
+    shophouse_Lighting_Schedule_Week,    !- ScheduleWeek Name 3
+    3,                        !- Start Month 3
+    1,                        !- Start Day 3
+    3,                        !- End Month 3
+    31,                       !- End Day 3
+    shophouse_Lighting_Schedule_Week,    !- ScheduleWeek Name 4
+    4,                        !- Start Month 4
+    1,                        !- Start Day 4
+    4,                        !- End Month 4
+    30,                       !- End Day 4
+    shophouse_Lighting_Schedule_Week,    !- ScheduleWeek Name 5
+    5,                        !- Start Month 5
+    1,                        !- Start Day 5
+    5,                        !- End Month 5
+    31,                       !- End Day 5
+    shophouse_Lighting_Schedule_Week,    !- ScheduleWeek Name 6
+    6,                        !- Start Month 6
+    1,                        !- Start Day 6
+    6,                        !- End Month 6
+    30,                       !- End Day 6
+    shophouse_Lighting_Schedule_Week,    !- ScheduleWeek Name 7
+    7,                        !- Start Month 7
+    1,                        !- Start Day 7
+    7,                        !- End Month 7
+    31,                       !- End Day 7
+    shophouse_Lighting_Schedule_Week,    !- ScheduleWeek Name 8
+    8,                        !- Start Month 8
+    1,                        !- Start Day 8
+    8,                        !- End Month 8
+    31,                       !- End Day 8
+    shophouse_Lighting_Schedule_Week,    !- ScheduleWeek Name 9
+    9,                        !- Start Month 9
+    1,                        !- Start Day 9
+    9,                        !- End Month 9
+    30,                       !- End Day 9
+    shophouse_Lighting_Schedule_Week,    !- ScheduleWeek Name 10
+    10,                       !- Start Month 10
+    1,                        !- Start Day 10
+    10,                       !- End Month 10
+    31,                       !- End Day 10
+    shophouse_Lighting_Schedule_Week,    !- ScheduleWeek Name 11
+    11,                       !- Start Month 11
+    1,                        !- Start Day 11
+    11,                       !- End Month 11
+    30,                       !- End Day 11
+    shophouse_Lighting_Schedule_Week,    !- ScheduleWeek Name 12
+    12,                       !- Start Month 12
+    1,                        !- Start Day 12
+    12,                       !- End Month 12
+    31;                       !- End Day 12
+
+SCHEDULE:YEAR,
+    Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule,    !- Name
+    AnyNumber,                !- Schedule Type Limits Name
+    w_Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    shophouse_Occupancy_Schedule,    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    shophouse_Occupancy_Schedule_Week,    !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    1,                        !- End Month 1
+    31,                       !- End Day 1
+    shophouse_Occupancy_Schedule_Week,    !- ScheduleWeek Name 2
+    2,                        !- Start Month 2
+    1,                        !- Start Day 2
+    2,                        !- End Month 2
+    28,                       !- End Day 2
+    shophouse_Occupancy_Schedule_Week,    !- ScheduleWeek Name 3
+    3,                        !- Start Month 3
+    1,                        !- Start Day 3
+    3,                        !- End Month 3
+    31,                       !- End Day 3
+    shophouse_Occupancy_Schedule_Week,    !- ScheduleWeek Name 4
+    4,                        !- Start Month 4
+    1,                        !- Start Day 4
+    4,                        !- End Month 4
+    30,                       !- End Day 4
+    shophouse_Occupancy_Schedule_Week,    !- ScheduleWeek Name 5
+    5,                        !- Start Month 5
+    1,                        !- Start Day 5
+    5,                        !- End Month 5
+    31,                       !- End Day 5
+    shophouse_Occupancy_Schedule_Week,    !- ScheduleWeek Name 6
+    6,                        !- Start Month 6
+    1,                        !- Start Day 6
+    6,                        !- End Month 6
+    30,                       !- End Day 6
+    shophouse_Occupancy_Schedule_Week,    !- ScheduleWeek Name 7
+    7,                        !- Start Month 7
+    1,                        !- Start Day 7
+    7,                        !- End Month 7
+    31,                       !- End Day 7
+    shophouse_Occupancy_Schedule_Week,    !- ScheduleWeek Name 8
+    8,                        !- Start Month 8
+    1,                        !- Start Day 8
+    8,                        !- End Month 8
+    31,                       !- End Day 8
+    shophouse_Occupancy_Schedule_Week,    !- ScheduleWeek Name 9
+    9,                        !- Start Month 9
+    1,                        !- Start Day 9
+    9,                        !- End Month 9
+    30,                       !- End Day 9
+    shophouse_Occupancy_Schedule_Week,    !- ScheduleWeek Name 10
+    10,                       !- Start Month 10
+    1,                        !- Start Day 10
+    10,                       !- End Month 10
+    31,                       !- End Day 10
+    shophouse_Occupancy_Schedule_Week,    !- ScheduleWeek Name 11
+    11,                       !- Start Month 11
+    1,                        !- Start Day 11
+    11,                       !- End Month 11
+    30,                       !- End Day 11
+    shophouse_Occupancy_Schedule_Week,    !- ScheduleWeek Name 12
+    12,                       !- Start Month 12
+    1,                        !- Start Day 12
+    12,                       !- End Month 12
+    31;                       !- End Day 12
+
+SCHEDULE:YEAR,
+    shophouse_Equipment_Schedule,    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    shophouse_Equipment_Schedule_Week,    !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    1,                        !- End Month 1
+    31,                       !- End Day 1
+    shophouse_Equipment_Schedule_Week,    !- ScheduleWeek Name 2
+    2,                        !- Start Month 2
+    1,                        !- Start Day 2
+    2,                        !- End Month 2
+    28,                       !- End Day 2
+    shophouse_Equipment_Schedule_Week,    !- ScheduleWeek Name 3
+    3,                        !- Start Month 3
+    1,                        !- Start Day 3
+    3,                        !- End Month 3
+    31,                       !- End Day 3
+    shophouse_Equipment_Schedule_Week,    !- ScheduleWeek Name 4
+    4,                        !- Start Month 4
+    1,                        !- Start Day 4
+    4,                        !- End Month 4
+    30,                       !- End Day 4
+    shophouse_Equipment_Schedule_Week,    !- ScheduleWeek Name 5
+    5,                        !- Start Month 5
+    1,                        !- Start Day 5
+    5,                        !- End Month 5
+    31,                       !- End Day 5
+    shophouse_Equipment_Schedule_Week,    !- ScheduleWeek Name 6
+    6,                        !- Start Month 6
+    1,                        !- Start Day 6
+    6,                        !- End Month 6
+    30,                       !- End Day 6
+    shophouse_Equipment_Schedule_Week,    !- ScheduleWeek Name 7
+    7,                        !- Start Month 7
+    1,                        !- Start Day 7
+    7,                        !- End Month 7
+    31,                       !- End Day 7
+    shophouse_Equipment_Schedule_Week,    !- ScheduleWeek Name 8
+    8,                        !- Start Month 8
+    1,                        !- Start Day 8
+    8,                        !- End Month 8
+    31,                       !- End Day 8
+    shophouse_Equipment_Schedule_Week,    !- ScheduleWeek Name 9
+    9,                        !- Start Month 9
+    1,                        !- Start Day 9
+    9,                        !- End Month 9
+    30,                       !- End Day 9
+    shophouse_Equipment_Schedule_Week,    !- ScheduleWeek Name 10
+    10,                       !- Start Month 10
+    1,                        !- Start Day 10
+    10,                       !- End Month 10
+    31,                       !- End Day 10
+    shophouse_Equipment_Schedule_Week,    !- ScheduleWeek Name 11
+    11,                       !- Start Month 11
+    1,                        !- Start Day 11
+    11,                       !- End Month 11
+    30,                       !- End Day 11
+    shophouse_Equipment_Schedule_Week,    !- ScheduleWeek Name 12
+    12,                       !- Start Month 12
+    1,                        !- Start Day 12
+    12,                       !- End Month 12
+    31;                       !- End Day 12
+
+SCHEDULE:YEAR,
+    Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    w_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    w_Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    shophouse_HotWater_Schedule,    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    shophouse_HotWater_Schedule_Week,    !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    1,                        !- End Month 1
+    31,                       !- End Day 1
+    shophouse_HotWater_Schedule_Week,    !- ScheduleWeek Name 2
+    2,                        !- Start Month 2
+    1,                        !- Start Day 2
+    2,                        !- End Month 2
+    28,                       !- End Day 2
+    shophouse_HotWater_Schedule_Week,    !- ScheduleWeek Name 3
+    3,                        !- Start Month 3
+    1,                        !- Start Day 3
+    3,                        !- End Month 3
+    31,                       !- End Day 3
+    shophouse_HotWater_Schedule_Week,    !- ScheduleWeek Name 4
+    4,                        !- Start Month 4
+    1,                        !- Start Day 4
+    4,                        !- End Month 4
+    30,                       !- End Day 4
+    shophouse_HotWater_Schedule_Week,    !- ScheduleWeek Name 5
+    5,                        !- Start Month 5
+    1,                        !- Start Day 5
+    5,                        !- End Month 5
+    31,                       !- End Day 5
+    shophouse_HotWater_Schedule_Week,    !- ScheduleWeek Name 6
+    6,                        !- Start Month 6
+    1,                        !- Start Day 6
+    6,                        !- End Month 6
+    30,                       !- End Day 6
+    shophouse_HotWater_Schedule_Week,    !- ScheduleWeek Name 7
+    7,                        !- Start Month 7
+    1,                        !- Start Day 7
+    7,                        !- End Month 7
+    31,                       !- End Day 7
+    shophouse_HotWater_Schedule_Week,    !- ScheduleWeek Name 8
+    8,                        !- Start Month 8
+    1,                        !- Start Day 8
+    8,                        !- End Month 8
+    31,                       !- End Day 8
+    shophouse_HotWater_Schedule_Week,    !- ScheduleWeek Name 9
+    9,                        !- Start Month 9
+    1,                        !- Start Day 9
+    9,                        !- End Month 9
+    30,                       !- End Day 9
+    shophouse_HotWater_Schedule_Week,    !- ScheduleWeek Name 10
+    10,                       !- Start Month 10
+    1,                        !- Start Day 10
+    10,                       !- End Month 10
+    31,                       !- End Day 10
+    shophouse_HotWater_Schedule_Week,    !- ScheduleWeek Name 11
+    11,                       !- Start Month 11
+    1,                        !- Start Day 11
+    11,                       !- End Month 11
+    30,                       !- End Day 11
+    shophouse_HotWater_Schedule_Week,    !- ScheduleWeek Name 12
+    12,                       !- Start Month 12
+    1,                        !- Start Day 12
+    12,                       !- End Month 12
+    31;                       !- End Day 12
+
+SCHEDULE:YEAR,
+    shophouse_HeatingSetpoint_Schedule,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    shophouse_HeatingSetpoint_Schedule_Week,    !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    1,                        !- End Month 1
+    31,                       !- End Day 1
+    shophouse_HeatingSetpoint_Schedule_Week,    !- ScheduleWeek Name 2
+    2,                        !- Start Month 2
+    1,                        !- Start Day 2
+    2,                        !- End Month 2
+    28,                       !- End Day 2
+    shophouse_HeatingSetpoint_Schedule_Week,    !- ScheduleWeek Name 3
+    3,                        !- Start Month 3
+    1,                        !- Start Day 3
+    3,                        !- End Month 3
+    31,                       !- End Day 3
+    shophouse_HeatingSetpoint_Schedule_Week,    !- ScheduleWeek Name 4
+    4,                        !- Start Month 4
+    1,                        !- Start Day 4
+    4,                        !- End Month 4
+    30,                       !- End Day 4
+    shophouse_HeatingSetpoint_Schedule_Week,    !- ScheduleWeek Name 5
+    5,                        !- Start Month 5
+    1,                        !- Start Day 5
+    5,                        !- End Month 5
+    31,                       !- End Day 5
+    shophouse_HeatingSetpoint_Schedule_Week,    !- ScheduleWeek Name 6
+    6,                        !- Start Month 6
+    1,                        !- Start Day 6
+    6,                        !- End Month 6
+    30,                       !- End Day 6
+    shophouse_HeatingSetpoint_Schedule_Week,    !- ScheduleWeek Name 7
+    7,                        !- Start Month 7
+    1,                        !- Start Day 7
+    7,                        !- End Month 7
+    31,                       !- End Day 7
+    shophouse_HeatingSetpoint_Schedule_Week,    !- ScheduleWeek Name 8
+    8,                        !- Start Month 8
+    1,                        !- Start Day 8
+    8,                        !- End Month 8
+    31,                       !- End Day 8
+    shophouse_HeatingSetpoint_Schedule_Week,    !- ScheduleWeek Name 9
+    9,                        !- Start Month 9
+    1,                        !- Start Day 9
+    9,                        !- End Month 9
+    30,                       !- End Day 9
+    shophouse_HeatingSetpoint_Schedule_Week,    !- ScheduleWeek Name 10
+    10,                       !- Start Month 10
+    1,                        !- Start Day 10
+    10,                       !- End Month 10
+    31,                       !- End Day 10
+    shophouse_HeatingSetpoint_Schedule_Week,    !- ScheduleWeek Name 11
+    11,                       !- Start Month 11
+    1,                        !- Start Day 11
+    11,                       !- End Month 11
+    30,                       !- End Day 11
+    shophouse_HeatingSetpoint_Schedule_Week,    !- ScheduleWeek Name 12
+    12,                       !- Start Month 12
+    1,                        !- Start Day 12
+    12,                       !- End Month 12
+    31;                       !- End Day 12
+
+SCHEDULE:YEAR,
+    shophouse_CoolingSetpoint_Schedule,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    shophouse_CoolingSetpoint_Schedule_Week,    !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    1,                        !- End Month 1
+    31,                       !- End Day 1
+    shophouse_CoolingSetpoint_Schedule_Week,    !- ScheduleWeek Name 2
+    2,                        !- Start Month 2
+    1,                        !- Start Day 2
+    2,                        !- End Month 2
+    28,                       !- End Day 2
+    shophouse_CoolingSetpoint_Schedule_Week,    !- ScheduleWeek Name 3
+    3,                        !- Start Month 3
+    1,                        !- Start Day 3
+    3,                        !- End Month 3
+    31,                       !- End Day 3
+    shophouse_CoolingSetpoint_Schedule_Week,    !- ScheduleWeek Name 4
+    4,                        !- Start Month 4
+    1,                        !- Start Day 4
+    4,                        !- End Month 4
+    30,                       !- End Day 4
+    shophouse_CoolingSetpoint_Schedule_Week,    !- ScheduleWeek Name 5
+    5,                        !- Start Month 5
+    1,                        !- Start Day 5
+    5,                        !- End Month 5
+    31,                       !- End Day 5
+    shophouse_CoolingSetpoint_Schedule_Week,    !- ScheduleWeek Name 6
+    6,                        !- Start Month 6
+    1,                        !- Start Day 6
+    6,                        !- End Month 6
+    30,                       !- End Day 6
+    shophouse_CoolingSetpoint_Schedule_Week,    !- ScheduleWeek Name 7
+    7,                        !- Start Month 7
+    1,                        !- Start Day 7
+    7,                        !- End Month 7
+    31,                       !- End Day 7
+    shophouse_CoolingSetpoint_Schedule_Week,    !- ScheduleWeek Name 8
+    8,                        !- Start Month 8
+    1,                        !- Start Day 8
+    8,                        !- End Month 8
+    31,                       !- End Day 8
+    shophouse_CoolingSetpoint_Schedule_Week,    !- ScheduleWeek Name 9
+    9,                        !- Start Month 9
+    1,                        !- Start Day 9
+    9,                        !- End Month 9
+    30,                       !- End Day 9
+    shophouse_CoolingSetpoint_Schedule_Week,    !- ScheduleWeek Name 10
+    10,                       !- Start Month 10
+    1,                        !- Start Day 10
+    10,                       !- End Month 10
+    31,                       !- End Day 10
+    shophouse_CoolingSetpoint_Schedule_Week,    !- ScheduleWeek Name 11
+    11,                       !- Start Month 11
+    1,                        !- Start Day 11
+    11,                       !- End Month 11
+    30,                       !- End Day 11
+    shophouse_CoolingSetpoint_Schedule_Week,    !- ScheduleWeek Name 12
+    12,                       !- Start Month 12
+    1,                        !- Start Day 12
+    12,                       !- End Month 12
+    31;                       !- End Day 12
+
+SCHEDULE:YEAR,
+    Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule,    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    w_Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule,    !- Name
+    AnyNumber,                !- Schedule Type Limits Name
+    w_Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule_00,    !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    w_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch_00,    !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch,    !- Name
+    Temperature,              !- Schedule Type Limits Name
+    w_Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch_00,    !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+SCHEDULE:YEAR,
+    Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule,    !- Name
+    Fraction,                 !- Schedule Type Limits Name
+    w_Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule_00,    !- ScheduleWeek Name 1
+    1,                        !- Start Month 1
+    1,                        !- Start Day 1
+    12,                       !- End Month 1
+    31;                       !- End Day 1
+
+MATERIAL,
+    DefaultMaterial,          !- Name
+    Rough,                    !- Roughness
+    0.1,                      !- Thickness
+    0.1,                      !- Conductivity
+    1000,                     !- Density
+    1000,                     !- Specific Heat
+    0.9,                      !- Thermal Absorptance
+    0.7,                      !- Solar Absorptance
+    0.7;                      !- Visible Absorptance
+
+MATERIAL,
+    shophouse_FlatRoof_Material_0.28571428571428575m,    !- Name
+    MediumRough,              !- Roughness
+    2.857143e-01,             !- Thickness
+    0.1,                      !- Conductivity
+    1800,                     !- Density
+    900,                      !- Specific Heat
+    0.9,                      !- Thermal Absorptance
+    0.7,                      !- Solar Absorptance
+    0.7;                      !- Visible Absorptance
+
+MATERIAL,
+    shophouse_Facade_Material_0.16666666666666669m,    !- Name
+    MediumRough,              !- Roughness
+    1.666667e-01,             !- Thickness
+    0.1,                      !- Conductivity
+    1800,                     !- Density
+    900,                      !- Specific Heat
+    0.9,                      !- Thermal Absorptance
+    0.7,                      !- Solar Absorptance
+    0.7;                      !- Visible Absorptance
+
+MATERIAL,
+    shophouse_Partition_Material_0.16666666666666669m,    !- Name
+    MediumRough,              !- Roughness
+    1.666667e-01,             !- Thickness
+    0.1,                      !- Conductivity
+    1800,                     !- Density
+    900,                      !- Specific Heat
+    0.9,                      !- Thermal Absorptance
+    0.7,                      !- Solar Absorptance
+    0.7;                      !- Visible Absorptance
+
+MATERIAL,
+    shophouse_FloorCeiling_Material_0.2m,    !- Name
+    MediumRough,              !- Roughness
+    0.2,                      !- Thickness
+    0.1,                      !- Conductivity
+    1800,                     !- Density
+    900,                      !- Specific Heat
+    0.9,                      !- Thermal Absorptance
+    0.7,                      !- Solar Absorptance
+    0.7;                      !- Visible Absorptance
+
+MATERIAL,
+    shophouse_GroundSlab_Material_0.2m,    !- Name
+    MediumRough,              !- Roughness
+    0.2,                      !- Thickness
+    0.1,                      !- Conductivity
+    1800,                     !- Density
+    900,                      !- Specific Heat
+    0.9,                      !- Thermal Absorptance
+    0.7,                      !- Solar Absorptance
+    0.7;                      !- Visible Absorptance
+
+MATERIAL,
+    shophouse_GroundWall_Material_0.16666666666666669m,    !- Name
+    MediumRough,              !- Roughness
+    1.666667e-01,             !- Thickness
+    0.1,                      !- Conductivity
+    1800,                     !- Density
+    900,                      !- Specific Heat
+    0.9,                      !- Thermal Absorptance
+    0.7,                      !- Solar Absorptance
+    0.7;                      !- Visible Absorptance
+
+WINDOWMATERIAL:SIMPLEGLAZINGSYSTEM,
+    DefaultGlazing,           !- Name
+    2.7,                      !- UFactor
+    0.763,                    !- Solar Heat Gain Coefficient
+    0.8;                      !- Visible Transmittance
+
+WINDOWMATERIAL:SIMPLEGLAZINGSYSTEM,
+    shophouse_Window,         !- Name
+    2.8,                      !- UFactor
+    0.35,                     !- Solar Heat Gain Coefficient
+    0.6;                      !- Visible Transmittance
+
+CONSTRUCTION,
+    Project Wall,             !- Name
+    DefaultMaterial;          !- Outside Layer
+
+CONSTRUCTION,
+    Project Partition,        !- Name
+    DefaultMaterial;          !- Outside Layer
+
+CONSTRUCTION,
+    Project Floor,            !- Name
+    DefaultMaterial;          !- Outside Layer
+
+CONSTRUCTION,
+    Project Flat Roof,        !- Name
+    DefaultMaterial;          !- Outside Layer
+
+CONSTRUCTION,
+    Project Ceiling,          !- Name
+    DefaultMaterial;          !- Outside Layer
+
+CONSTRUCTION,
+    Project Door,             !- Name
+    DefaultMaterial;          !- Outside Layer
+
+CONSTRUCTION,
+    Project External Window,    !- Name
+    DefaultGlazing;           !- Outside Layer
+
+CONSTRUCTION,
+    shophouse_FlatRoof,       !- Name
+    shophouse_FlatRoof_Material_0.28571428571428575m;    !- Outside Layer
+
+CONSTRUCTION,
+    shophouse_Facade,         !- Name
+    shophouse_Facade_Material_0.16666666666666669m;    !- Outside Layer
+
+CONSTRUCTION,
+    shophouse_Partition,      !- Name
+    shophouse_Partition_Material_0.16666666666666669m;    !- Outside Layer
+
+CONSTRUCTION,
+    shophouse_FloorCeiling_Reversed,    !- Name
+    shophouse_FloorCeiling_Material_0.2m;    !- Outside Layer
+
+CONSTRUCTION,
+    shophouse_FloorCeiling,    !- Name
+    shophouse_FloorCeiling_Material_0.2m;    !- Outside Layer
+
+CONSTRUCTION,
+    shophouse_GroundSlab,     !- Name
+    shophouse_GroundSlab_Material_0.2m;    !- Outside Layer
+
+CONSTRUCTION,
+    shophouse_GroundWall,     !- Name
+    shophouse_GroundWall_Material_0.16666666666666669m;    !- Outside Layer
+
+CONSTRUCTION,
+    shophouse_Window,         !- Name
+    shophouse_Window;         !- Outside Layer
+
+GlobalGeometryRules,
+    UpperLeftCorner,          !- Starting Vertex Position
+    CounterClockWise,         !- Vertex Entry Direction
+    World;                    !- Coordinate System
+
+ZONE,
+    Block shoebox Storey 0,    !- Name
+    0,                        !- Direction of Relative North
+    0,                        !- X Origin
+    0,                        !- Y Origin
+    0,                        !- Z Origin
+    1,                        !- Type
+    1,                        !- Multiplier
+    autocalculate,            !- Ceiling Height
+    autocalculate,            !- Volume
+    autocalculate,            !- Floor Area
+    ,                         !- Zone Inside Convection Algorithm
+    ,                         !- Zone Outside Convection Algorithm
+    Yes;                      !- Part of Total Floor Area
+
+ZONE,
+    Block shoebox Storey 1,    !- Name
+    0,                        !- Direction of Relative North
+    0,                        !- X Origin
+    0,                        !- Y Origin
+    0,                        !- Z Origin
+    1,                        !- Type
+    1,                        !- Multiplier
+    autocalculate,            !- Ceiling Height
+    autocalculate,            !- Volume
+    autocalculate,            !- Floor Area
+    ,                         !- Zone Inside Convection Algorithm
+    ,                         !- Zone Outside Convection Algorithm
+    Yes;                      !- Part of Total Floor Area
+
+ZONELIST,
+    Conditioned_Zones,        !- Name
+    Block shoebox Storey 0,    !- Zone 1 Name
+    Block shoebox Storey 1;    !- Zone 2 Name
+
+ZONELIST,
+    All_Zones,                !- Name
+    Block shoebox Storey 0,    !- Zone 1 Name
+    Block shoebox Storey 1;    !- Zone 2 Name
+
+BUILDINGSURFACE:DETAILED,
+    Block shoebox Storey 0 Wall 0001,    !- Name
+    wall,                     !- Surface Type
+    shophouse_Facade,         !- Construction Name
+    Block shoebox Storey 0,    !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    0,                        !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    3.5,                      !- Vertex 1 Zcoordinate
+    0,                        !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    20,                       !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    20,                       !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    3.5;                      !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block shoebox Storey 0 Wall 0002,    !- Name
+    wall,                     !- Surface Type
+    shophouse_Facade,         !- Construction Name
+    Block shoebox Storey 0,    !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    20,                       !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    3.5,                      !- Vertex 1 Zcoordinate
+    20,                       !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    20,                       !- Vertex 3 Xcoordinate
+    15,                       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    20,                       !- Vertex 4 Xcoordinate
+    15,                       !- Vertex 4 Ycoordinate
+    3.5;                      !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block shoebox Storey 0 Wall 0003,    !- Name
+    wall,                     !- Surface Type
+    shophouse_Facade,         !- Construction Name
+    Block shoebox Storey 0,    !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    20,                       !- Vertex 1 Xcoordinate
+    15,                       !- Vertex 1 Ycoordinate
+    3.5,                      !- Vertex 1 Zcoordinate
+    20,                       !- Vertex 2 Xcoordinate
+    15,                       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    15,                       !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    15,                       !- Vertex 4 Ycoordinate
+    3.5;                      !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block shoebox Storey 0 Wall 0004,    !- Name
+    wall,                     !- Surface Type
+    shophouse_Facade,         !- Construction Name
+    Block shoebox Storey 0,    !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    0,                        !- Vertex 1 Xcoordinate
+    15,                       !- Vertex 1 Ycoordinate
+    3.5,                      !- Vertex 1 Zcoordinate
+    0,                        !- Vertex 2 Xcoordinate
+    15,                       !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    3.5;                      !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block shoebox Storey 0 Floor 0001,    !- Name
+    floor,                    !- Surface Type
+    shophouse_GroundSlab,     !- Construction Name
+    Block shoebox Storey 0,    !- Zone Name
+    ,                         !- Space Name
+    ground,                   !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    20,                       !- Vertex 1 Xcoordinate
+    15,                       !- Vertex 1 Ycoordinate
+    0,                        !- Vertex 1 Zcoordinate
+    20,                       !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    0,                        !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    0,                        !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    15,                       !- Vertex 4 Ycoordinate
+    0;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block shoebox Storey 1 Wall 0001,    !- Name
+    wall,                     !- Surface Type
+    shophouse_Facade,         !- Construction Name
+    Block shoebox Storey 1,    !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    0,                        !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    7,                        !- Vertex 1 Zcoordinate
+    0,                        !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    3.5,                      !- Vertex 2 Zcoordinate
+    20,                       !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    3.5,                      !- Vertex 3 Zcoordinate
+    20,                       !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    7;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block shoebox Storey 1 Wall 0002,    !- Name
+    wall,                     !- Surface Type
+    shophouse_Facade,         !- Construction Name
+    Block shoebox Storey 1,    !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    20,                       !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    7,                        !- Vertex 1 Zcoordinate
+    20,                       !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    3.5,                      !- Vertex 2 Zcoordinate
+    20,                       !- Vertex 3 Xcoordinate
+    15,                       !- Vertex 3 Ycoordinate
+    3.5,                      !- Vertex 3 Zcoordinate
+    20,                       !- Vertex 4 Xcoordinate
+    15,                       !- Vertex 4 Ycoordinate
+    7;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block shoebox Storey 1 Wall 0003,    !- Name
+    wall,                     !- Surface Type
+    shophouse_Facade,         !- Construction Name
+    Block shoebox Storey 1,    !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    20,                       !- Vertex 1 Xcoordinate
+    15,                       !- Vertex 1 Ycoordinate
+    7,                        !- Vertex 1 Zcoordinate
+    20,                       !- Vertex 2 Xcoordinate
+    15,                       !- Vertex 2 Ycoordinate
+    3.5,                      !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    15,                       !- Vertex 3 Ycoordinate
+    3.5,                      !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    15,                       !- Vertex 4 Ycoordinate
+    7;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block shoebox Storey 1 Wall 0004,    !- Name
+    wall,                     !- Surface Type
+    shophouse_Facade,         !- Construction Name
+    Block shoebox Storey 1,    !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    0,                        !- Vertex 1 Xcoordinate
+    15,                       !- Vertex 1 Ycoordinate
+    7,                        !- Vertex 1 Zcoordinate
+    0,                        !- Vertex 2 Xcoordinate
+    15,                       !- Vertex 2 Ycoordinate
+    3.5,                      !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    3.5,                      !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    7;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block shoebox Storey 1 Roof 0001,    !- Name
+    roof,                     !- Surface Type
+    shophouse_FlatRoof,       !- Construction Name
+    Block shoebox Storey 1,    !- Zone Name
+    ,                         !- Space Name
+    outdoors,                 !- Outside Boundary Condition
+    ,                         !- Outside Boundary Condition Object
+    SunExposed,               !- Sun Exposure
+    WindExposed,              !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    20,                       !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    7,                        !- Vertex 1 Zcoordinate
+    20,                       !- Vertex 2 Xcoordinate
+    15,                       !- Vertex 2 Ycoordinate
+    7,                        !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    15,                       !- Vertex 3 Ycoordinate
+    7,                        !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    7;                        !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block shoebox Storey 0 Ceiling 0001_1,    !- Name
+    ceiling,                  !- Surface Type
+    shophouse_FloorCeiling,    !- Construction Name
+    Block shoebox Storey 0,    !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block shoebox Storey 1 Floor 0001_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    20,                       !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    3.5,                      !- Vertex 1 Zcoordinate
+    20,                       !- Vertex 2 Xcoordinate
+    15,                       !- Vertex 2 Ycoordinate
+    3.5,                      !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    15,                       !- Vertex 3 Ycoordinate
+    3.5,                      !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    3.5;                      !- Vertex 4 Zcoordinate
+
+BUILDINGSURFACE:DETAILED,
+    Block shoebox Storey 1 Floor 0001_1,    !- Name
+    floor,                    !- Surface Type
+    shophouse_FloorCeiling_Reversed,    !- Construction Name
+    Block shoebox Storey 1,    !- Zone Name
+    ,                         !- Space Name
+    surface,                  !- Outside Boundary Condition
+    Block shoebox Storey 0 Ceiling 0001_1,    !- Outside Boundary Condition Object
+    NoSun,                    !- Sun Exposure
+    NoWind,                   !- Wind Exposure
+    autocalculate,            !- View Factor to Ground
+    autocalculate,            !- Number of Vertices
+    20,                       !- Vertex 1 Xcoordinate
+    15,                       !- Vertex 1 Ycoordinate
+    3.5,                      !- Vertex 1 Zcoordinate
+    20,                       !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    3.5,                      !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    3.5,                      !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    15,                       !- Vertex 4 Ycoordinate
+    3.5;                      !- Vertex 4 Zcoordinate
+
+FENESTRATIONSURFACE:DETAILED,
+    Block shoebox Storey 0 Wall 0003 window,    !- Name
+    Window,                   !- Surface Type
+    shophouse_Window,         !- Construction Name
+    Block shoebox Storey 0 Wall 0003,    !- Building Surface Name
+    ,                         !- Outside Boundary Condition Object
+    autocalculate,            !- View Factor to Ground
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    autocalculate,            !- Number of Vertices
+    19.990000000000002,       !- Vertex 1 Xcoordinate
+    15,                       !- Vertex 1 Ycoordinate
+    2.3625,                   !- Vertex 1 Zcoordinate
+    19.990000000000002,       !- Vertex 2 Xcoordinate
+    15,                       !- Vertex 2 Ycoordinate
+    1.1375000000000002,       !- Vertex 2 Zcoordinate
+    1.000000e-02,             !- Vertex 3 Xcoordinate
+    15,                       !- Vertex 3 Ycoordinate
+    1.1375000000000002,       !- Vertex 3 Zcoordinate
+    1.000000e-02,             !- Vertex 4 Xcoordinate
+    15,                       !- Vertex 4 Ycoordinate
+    2.3625;                   !- Vertex 4 Zcoordinate
+
+FENESTRATIONSURFACE:DETAILED,
+    Block shoebox Storey 1 Wall 0003 window,    !- Name
+    Window,                   !- Surface Type
+    shophouse_Window,         !- Construction Name
+    Block shoebox Storey 1 Wall 0003,    !- Building Surface Name
+    ,                         !- Outside Boundary Condition Object
+    autocalculate,            !- View Factor to Ground
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    autocalculate,            !- Number of Vertices
+    19.990000000000002,       !- Vertex 1 Xcoordinate
+    15,                       !- Vertex 1 Ycoordinate
+    5.8625,                   !- Vertex 1 Zcoordinate
+    19.990000000000002,       !- Vertex 2 Xcoordinate
+    15,                       !- Vertex 2 Ycoordinate
+    4.6375,                   !- Vertex 2 Zcoordinate
+    1.000000e-02,             !- Vertex 3 Xcoordinate
+    15,                       !- Vertex 3 Ycoordinate
+    4.6375,                   !- Vertex 3 Zcoordinate
+    1.000000e-02,             !- Vertex 4 Xcoordinate
+    15,                       !- Vertex 4 Ycoordinate
+    5.8625;                   !- Vertex 4 Zcoordinate
+
+FENESTRATIONSURFACE:DETAILED,
+    Block shoebox Storey 0 Wall 0002 window,    !- Name
+    Window,                   !- Surface Type
+    shophouse_Window,         !- Construction Name
+    Block shoebox Storey 0 Wall 0002,    !- Building Surface Name
+    ,                         !- Outside Boundary Condition Object
+    autocalculate,            !- View Factor to Ground
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    autocalculate,            !- Number of Vertices
+    20,                       !- Vertex 1 Xcoordinate
+    7.500000e-03,             !- Vertex 1 Ycoordinate
+    2.3625,                   !- Vertex 1 Zcoordinate
+    20,                       !- Vertex 2 Xcoordinate
+    7.500000e-03,             !- Vertex 2 Ycoordinate
+    1.1375000000000002,       !- Vertex 2 Zcoordinate
+    20,                       !- Vertex 3 Xcoordinate
+    14.9925,                  !- Vertex 3 Ycoordinate
+    1.1375000000000002,       !- Vertex 3 Zcoordinate
+    20,                       !- Vertex 4 Xcoordinate
+    14.9925,                  !- Vertex 4 Ycoordinate
+    2.3625;                   !- Vertex 4 Zcoordinate
+
+FENESTRATIONSURFACE:DETAILED,
+    Block shoebox Storey 1 Wall 0002 window,    !- Name
+    Window,                   !- Surface Type
+    shophouse_Window,         !- Construction Name
+    Block shoebox Storey 1 Wall 0002,    !- Building Surface Name
+    ,                         !- Outside Boundary Condition Object
+    autocalculate,            !- View Factor to Ground
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    autocalculate,            !- Number of Vertices
+    20,                       !- Vertex 1 Xcoordinate
+    7.500000e-03,             !- Vertex 1 Ycoordinate
+    5.8625,                   !- Vertex 1 Zcoordinate
+    20,                       !- Vertex 2 Xcoordinate
+    7.500000e-03,             !- Vertex 2 Ycoordinate
+    4.6375,                   !- Vertex 2 Zcoordinate
+    20,                       !- Vertex 3 Xcoordinate
+    14.9925,                  !- Vertex 3 Ycoordinate
+    4.6375,                   !- Vertex 3 Zcoordinate
+    20,                       !- Vertex 4 Xcoordinate
+    14.9925,                  !- Vertex 4 Ycoordinate
+    5.8625;                   !- Vertex 4 Zcoordinate
+
+FENESTRATIONSURFACE:DETAILED,
+    Block shoebox Storey 0 Wall 0001 window,    !- Name
+    Window,                   !- Surface Type
+    shophouse_Window,         !- Construction Name
+    Block shoebox Storey 0 Wall 0001,    !- Building Surface Name
+    ,                         !- Outside Boundary Condition Object
+    autocalculate,            !- View Factor to Ground
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    autocalculate,            !- Number of Vertices
+    1.000000e-02,             !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    2.3625,                   !- Vertex 1 Zcoordinate
+    1.000000e-02,             !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    1.1375000000000002,       !- Vertex 2 Zcoordinate
+    19.990000000000002,       !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    1.1375000000000002,       !- Vertex 3 Zcoordinate
+    19.990000000000002,       !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    2.3625;                   !- Vertex 4 Zcoordinate
+
+FENESTRATIONSURFACE:DETAILED,
+    Block shoebox Storey 1 Wall 0001 window,    !- Name
+    Window,                   !- Surface Type
+    shophouse_Window,         !- Construction Name
+    Block shoebox Storey 1 Wall 0001,    !- Building Surface Name
+    ,                         !- Outside Boundary Condition Object
+    autocalculate,            !- View Factor to Ground
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    autocalculate,            !- Number of Vertices
+    1.000000e-02,             !- Vertex 1 Xcoordinate
+    0,                        !- Vertex 1 Ycoordinate
+    5.8625,                   !- Vertex 1 Zcoordinate
+    1.000000e-02,             !- Vertex 2 Xcoordinate
+    0,                        !- Vertex 2 Ycoordinate
+    4.6375,                   !- Vertex 2 Zcoordinate
+    19.990000000000002,       !- Vertex 3 Xcoordinate
+    0,                        !- Vertex 3 Ycoordinate
+    4.6375,                   !- Vertex 3 Zcoordinate
+    19.990000000000002,       !- Vertex 4 Xcoordinate
+    0,                        !- Vertex 4 Ycoordinate
+    5.8625;                   !- Vertex 4 Zcoordinate
+
+FENESTRATIONSURFACE:DETAILED,
+    Block shoebox Storey 0 Wall 0004 window,    !- Name
+    Window,                   !- Surface Type
+    shophouse_Window,         !- Construction Name
+    Block shoebox Storey 0 Wall 0004,    !- Building Surface Name
+    ,                         !- Outside Boundary Condition Object
+    autocalculate,            !- View Factor to Ground
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    autocalculate,            !- Number of Vertices
+    0,                        !- Vertex 1 Xcoordinate
+    14.9925,                  !- Vertex 1 Ycoordinate
+    2.3625,                   !- Vertex 1 Zcoordinate
+    0,                        !- Vertex 2 Xcoordinate
+    14.9925,                  !- Vertex 2 Ycoordinate
+    1.1375000000000002,       !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    7.500000e-03,             !- Vertex 3 Ycoordinate
+    1.1375000000000002,       !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    7.500000e-03,             !- Vertex 4 Ycoordinate
+    2.3625;                   !- Vertex 4 Zcoordinate
+
+FENESTRATIONSURFACE:DETAILED,
+    Block shoebox Storey 1 Wall 0004 window,    !- Name
+    Window,                   !- Surface Type
+    shophouse_Window,         !- Construction Name
+    Block shoebox Storey 1 Wall 0004,    !- Building Surface Name
+    ,                         !- Outside Boundary Condition Object
+    autocalculate,            !- View Factor to Ground
+    ,                         !- Frame and Divider Name
+    1.0,                      !- Multiplier
+    autocalculate,            !- Number of Vertices
+    0,                        !- Vertex 1 Xcoordinate
+    14.9925,                  !- Vertex 1 Ycoordinate
+    5.8625,                   !- Vertex 1 Zcoordinate
+    0,                        !- Vertex 2 Xcoordinate
+    14.9925,                  !- Vertex 2 Ycoordinate
+    4.6375,                   !- Vertex 2 Zcoordinate
+    0,                        !- Vertex 3 Xcoordinate
+    7.500000e-03,             !- Vertex 3 Ycoordinate
+    4.6375,                   !- Vertex 3 Zcoordinate
+    0,                        !- Vertex 4 Xcoordinate
+    7.500000e-03,             !- Vertex 4 Ycoordinate
+    5.8625;                   !- Vertex 4 Zcoordinate
+
+PEOPLE,
+    Block shoebox Storey 0_shophouse_Occupancy_PEOPLE,    !- Name
+    Block shoebox Storey 0,    !- Zone or ZoneList or Space or SpaceList Name
+    shophouse_Occupancy_Schedule,    !- Number of People Schedule Name
+    People/Area,              !- Number of People Calculation Method
+    ,                         !- Number of People
+    0.08,                     !- People per Floor Area
+    ,                         !- Floor Area per Person
+    0.3,                      !- Fraction Radiant
+    autocalculate,            !- Sensible Heat Fraction
+    Block shoebox Storey 0_shophouse_Occupancy_PEOPLE_Activity_Schedule,    !- Activity Level Schedule Name
+    3.82e-08,                 !- Carbon Dioxide Generation Rate
+    No,                       !- Enable ASHRAE 55 Comfort Warnings
+    EnclosureAveraged,             !- Mean Radiant Temperature Calculation Type
+    ,                         !- Surface NameAngle Factor List Name
+    ,                         !- Work Efficiency Schedule Name
+    ClothingInsulationSchedule,    !- Clothing Insulation Calculation Method
+    ,                         !- Clothing Insulation Calculation Method Schedule Name
+    ,                         !- Clothing Insulation Schedule Name
+    ,                         !- Air Velocity Schedule Name
+    ,                         !- Thermal Comfort Model 1 Type
+    ,                         !- Thermal Comfort Model 2 Type
+    ,                         !- Thermal Comfort Model 3 Type
+    ,                         !- Thermal Comfort Model 4 Type
+    ,                         !- Thermal Comfort Model 5 Type
+    ,                         !- Thermal Comfort Model 6 Type
+    ,                         !- Thermal Comfort Model 7 Type
+    ,                         !- Ankle Level Air Velocity Schedule Name
+    15.56,                    !- Cold Stress Temperature Threshold
+    30;                       !- Heat Stress Temperature Threshold
+
+PEOPLE,
+    Block shoebox Storey 1_shophouse_Occupancy_PEOPLE,    !- Name
+    Block shoebox Storey 1,    !- Zone or ZoneList or Space or SpaceList Name
+    shophouse_Occupancy_Schedule,    !- Number of People Schedule Name
+    People/Area,              !- Number of People Calculation Method
+    ,                         !- Number of People
+    0.08,                     !- People per Floor Area
+    ,                         !- Floor Area per Person
+    0.3,                      !- Fraction Radiant
+    autocalculate,            !- Sensible Heat Fraction
+    Block shoebox Storey 1_shophouse_Occupancy_PEOPLE_Activity_Schedule,    !- Activity Level Schedule Name
+    3.82e-08,                 !- Carbon Dioxide Generation Rate
+    No,                       !- Enable ASHRAE 55 Comfort Warnings
+    EnclosureAveraged,             !- Mean Radiant Temperature Calculation Type
+    ,                         !- Surface NameAngle Factor List Name
+    ,                         !- Work Efficiency Schedule Name
+    ClothingInsulationSchedule,    !- Clothing Insulation Calculation Method
+    ,                         !- Clothing Insulation Calculation Method Schedule Name
+    ,                         !- Clothing Insulation Schedule Name
+    ,                         !- Air Velocity Schedule Name
+    ,                         !- Thermal Comfort Model 1 Type
+    ,                         !- Thermal Comfort Model 2 Type
+    ,                         !- Thermal Comfort Model 3 Type
+    ,                         !- Thermal Comfort Model 4 Type
+    ,                         !- Thermal Comfort Model 5 Type
+    ,                         !- Thermal Comfort Model 6 Type
+    ,                         !- Thermal Comfort Model 7 Type
+    ,                         !- Ankle Level Air Velocity Schedule Name
+    15.56,                    !- Cold Stress Temperature Threshold
+    30;                       !- Heat Stress Temperature Threshold
+
+LIGHTS,
+    Block shoebox Storey 0_shophouse_Lighting_LIGHTS,    !- Name
+    Block shoebox Storey 0,    !- Zone or ZoneList or Space or SpaceList Name
+    shophouse_Lighting_Schedule,    !- Schedule Name
+    Watts/Area,               !- Design Level Calculation Method
+    ,                         !- Lighting Level
+    8,                        !- Watts per Zone Floor Area
+    ,                         !- Watts per Person
+    0,                        !- Return Air Fraction
+    0.42,                     !- Fraction Radiant
+    0.18,                     !- Fraction Visible
+    1,                        !- Fraction Replaceable
+    ,                         !- EndUse Subcategory
+    No,                       !- Return Air Fraction Calculated from Plenum Temperature
+    0,                        !- Return Air Fraction Function of Plenum Temperature Coefficient 1
+    0;                        !- Return Air Fraction Function of Plenum Temperature Coefficient 2
+
+LIGHTS,
+    Block shoebox Storey 1_shophouse_Lighting_LIGHTS,    !- Name
+    Block shoebox Storey 1,    !- Zone or ZoneList or Space or SpaceList Name
+    shophouse_Lighting_Schedule,    !- Schedule Name
+    Watts/Area,               !- Design Level Calculation Method
+    ,                         !- Lighting Level
+    8,                        !- Watts per Zone Floor Area
+    ,                         !- Watts per Person
+    0,                        !- Return Air Fraction
+    0.42,                     !- Fraction Radiant
+    0.18,                     !- Fraction Visible
+    1,                        !- Fraction Replaceable
+    ,                         !- EndUse Subcategory
+    No,                       !- Return Air Fraction Calculated from Plenum Temperature
+    0,                        !- Return Air Fraction Function of Plenum Temperature Coefficient 1
+    0;                        !- Return Air Fraction Function of Plenum Temperature Coefficient 2
+
+ELECTRICEQUIPMENT,
+    Block shoebox Storey 0_shophouse_Equipment_EQUIPMENT,    !- Name
+    Block shoebox Storey 0,    !- Zone or ZoneList or Space or SpaceList Name
+    shophouse_Equipment_Schedule,    !- Schedule Name
+    Watts/Area,               !- Design Level Calculation Method
+    ,                         !- Design Level
+    12,                       !- Watts per Zone Floor Area
+    ,                         !- Watts per Person
+    0,                        !- Fraction Latent
+    0.2,                      !- Fraction Radiant
+    0,                        !- Fraction Lost
+    ;                         !- EndUse Subcategory
+
+ELECTRICEQUIPMENT,
+    Block shoebox Storey 1_shophouse_Equipment_EQUIPMENT,    !- Name
+    Block shoebox Storey 1,    !- Zone or ZoneList or Space or SpaceList Name
+    shophouse_Equipment_Schedule,    !- Schedule Name
+    Watts/Area,               !- Design Level Calculation Method
+    ,                         !- Design Level
+    12,                       !- Watts per Zone Floor Area
+    ,                         !- Watts per Person
+    0,                        !- Fraction Latent
+    0.2,                      !- Fraction Radiant
+    0,                        !- Fraction Lost
+    ;                         !- EndUse Subcategory
+
+ZONEINFILTRATION:DESIGNFLOWRATE,
+    Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION,    !- Name
+    Block shoebox Storey 0,    !- Zone or ZoneList or Space or SpaceList Name
+    Block shoebox Storey 0_shophouse_Infiltration_INFILTRATION_Schedule,    !- Schedule Name
+    AirChanges/Hour,          !- Design Flow Rate Calculation Method
+    ,                         !- Design Flow Rate
+    ,                         !- Flow Rate per Floor Area
+    0,                        !- Flow Rate per Exterior Surface Area
+    0.35,                     !- Air Changes per Hour
+    1,                        !- Constant Term Coefficient
+    0,                        !- Temperature Term Coefficient
+    0,                        !- Velocity Term Coefficient
+    0;                        !- Velocity Squared Term Coefficient
+
+ZONEINFILTRATION:DESIGNFLOWRATE,
+    Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION,    !- Name
+    Block shoebox Storey 1,    !- Zone or ZoneList or Space or SpaceList Name
+    Block shoebox Storey 1_shophouse_Infiltration_INFILTRATION_Schedule,    !- Schedule Name
+    AirChanges/Hour,          !- Design Flow Rate Calculation Method
+    ,                         !- Design Flow Rate
+    ,                         !- Flow Rate per Floor Area
+    0,                        !- Flow Rate per Exterior Surface Area
+    0.35,                     !- Air Changes per Hour
+    1,                        !- Constant Term Coefficient
+    0,                        !- Temperature Term Coefficient
+    0,                        !- Velocity Term Coefficient
+    0;                        !- Velocity Squared Term Coefficient
+
+HVACTEMPLATE:THERMOSTAT,
+    Block shoebox Storey 0_shophouse_Thermostat_THERMOSTAT,    !- Name
+    shophouse_HeatingSetpoint_Schedule,    !- Heating Setpoint Schedule Name
+    ,                         !- Constant Heating Setpoint
+    shophouse_CoolingSetpoint_Schedule,    !- Cooling Setpoint Schedule Name
+    ;                         !- Constant Cooling Setpoint
+
+HVACTEMPLATE:THERMOSTAT,
+    Block shoebox Storey 1_shophouse_Thermostat_THERMOSTAT,    !- Name
+    shophouse_HeatingSetpoint_Schedule,    !- Heating Setpoint Schedule Name
+    ,                         !- Constant Heating Setpoint
+    shophouse_CoolingSetpoint_Schedule,    !- Cooling Setpoint Schedule Name
+    ;                         !- Constant Cooling Setpoint
+
+HVACTEMPLATE:ZONE:IDEALLOADSAIRSYSTEM,
+    Block shoebox Storey 0,    !- Zone Name
+    Block shoebox Storey 0_shophouse_Thermostat_THERMOSTAT,    !- Template Thermostat Name
+    ,                         !- System Availability Schedule Name
+    30,                       !- Maximum Heating Supply Air Temperature
+    13,                       !- Minimum Cooling Supply Air Temperature
+    0.0156,                   !- Maximum Heating Supply Air Humidity Ratio
+    0.0077,                   !- Minimum Cooling Supply Air Humidity Ratio
+    LimitFlowRateAndCapacity,    !- Heating Limit
+    autosize,                 !- Maximum Heating Air Flow Rate
+    autosize,                 !- Maximum Sensible Heating Capacity
+    LimitFlowRateAndCapacity,    !- Cooling Limit
+    autosize,                 !- Maximum Cooling Air Flow Rate
+    autosize,                 !- Maximum Total Cooling Capacity
+    AlwaysOff,                !- Heating Availability Schedule Name
+    ,                         !- Cooling Availability Schedule Name
+    None,                     !- Dehumidification Control Type
+    0.7,                      !- Cooling Sensible Heat Ratio
+    60,                       !- Dehumidification Setpoint
+    None,                     !- Humidification Control Type
+    30,                       !- Humidification Setpoint
+    Sum,                      !- Outdoor Air Method
+    0.004,                    !- Outdoor Air Flow Rate per Person
+    0,                        !- Outdoor Air Flow Rate per Zone Floor Area
+    0,                        !- Outdoor Air Flow Rate per Zone
+    ,                         !- Design Specification Outdoor Air Object Name
+    None,                     !- Demand Controlled Ventilation Type
+    NoEconomizer,             !- Outdoor Air Economizer Type
+    None,                     !- Heat Recovery Type
+    0.7,                      !- Sensible Heat Recovery Effectiveness
+    0.65;                     !- Latent Heat Recovery Effectiveness
+
+HVACTEMPLATE:ZONE:IDEALLOADSAIRSYSTEM,
+    Block shoebox Storey 1,    !- Zone Name
+    Block shoebox Storey 1_shophouse_Thermostat_THERMOSTAT,    !- Template Thermostat Name
+    ,                         !- System Availability Schedule Name
+    30,                       !- Maximum Heating Supply Air Temperature
+    13,                       !- Minimum Cooling Supply Air Temperature
+    0.0156,                   !- Maximum Heating Supply Air Humidity Ratio
+    0.0077,                   !- Minimum Cooling Supply Air Humidity Ratio
+    LimitFlowRateAndCapacity,    !- Heating Limit
+    autosize,                 !- Maximum Heating Air Flow Rate
+    autosize,                 !- Maximum Sensible Heating Capacity
+    LimitFlowRateAndCapacity,    !- Cooling Limit
+    autosize,                 !- Maximum Cooling Air Flow Rate
+    autosize,                 !- Maximum Total Cooling Capacity
+    AlwaysOff,                !- Heating Availability Schedule Name
+    ,                         !- Cooling Availability Schedule Name
+    None,                     !- Dehumidification Control Type
+    0.7,                      !- Cooling Sensible Heat Ratio
+    60,                       !- Dehumidification Setpoint
+    None,                     !- Humidification Control Type
+    30,                       !- Humidification Setpoint
+    Sum,                      !- Outdoor Air Method
+    0.004,                    !- Outdoor Air Flow Rate per Person
+    0,                        !- Outdoor Air Flow Rate per Zone Floor Area
+    0,                        !- Outdoor Air Flow Rate per Zone
+    ,                         !- Design Specification Outdoor Air Object Name
+    None,                     !- Demand Controlled Ventilation Type
+    NoEconomizer,             !- Outdoor Air Economizer Type
+    None,                     !- Heat Recovery Type
+    0.7,                      !- Sensible Heat Recovery Effectiveness
+    0.65;                     !- Latent Heat Recovery Effectiveness
+
+SIZING:PARAMETERS,
+    1.15,                     !- Heating Sizing Factor
+    1.15;                     !- Cooling Sizing Factor
+
+WATERUSE:EQUIPMENT,
+    Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER,    !- Name
+    Domestic Hot Water,       !- EndUse Subcategory
+    3.392202e-05,             !- Peak Flow Rate
+    shophouse_HotWater_Schedule,    !- Flow Rate Fraction Schedule Name
+    Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch,    !- Target Temperature Schedule Name
+    Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch,    !- Hot Water Supply Temperature Schedule Name
+    Block shoebox Storey 0_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch,    !- Cold Water Supply Temperature Schedule Name
+    Block shoebox Storey 0,    !- Zone Name
+    ,                         !- Sensible Fraction Schedule Name
+    ;                         !- Latent Fraction Schedule Name
+
+WATERUSE:EQUIPMENT,
+    Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER,    !- Name
+    Domestic Hot Water,       !- EndUse Subcategory
+    3.392202e-05,             !- Peak Flow Rate
+    shophouse_HotWater_Schedule,    !- Flow Rate Fraction Schedule Name
+    Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch,    !- Target Temperature Schedule Name
+    Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_TargetWaterTemperatureSch,    !- Hot Water Supply Temperature Schedule Name
+    Block shoebox Storey 1_shophouse_WaterUse_shophouse_DHW_WATER_InletWaterTemperatureSch,    !- Cold Water Supply Temperature Schedule Name
+    Block shoebox Storey 1,    !- Zone Name
+    ,                         !- Sensible Fraction Schedule Name
+    ;                         !- Latent Fraction Schedule Name
+
+Output:VariableDictionary,
+    Regular;                  !- Key Field
+
+OUTPUT:VARIABLEDICTIONARY,
+    IDF;                      !- Key Field
+
+OUTPUT:SCHEDULES,
+    Hourly;                   !- Key Field
+
+OUTPUT:TABLE:SUMMARYREPORTS,
+    AllSummary;               !- Report 1 Name
+
+OUTPUTCONTROL:TABLE:STYLE,
+    CommaAndHTML,             !- Column Separator
+    None;                     !- Unit Conversion
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Air System Outdoor Air Minimum Flow Fraction,    !- Variable Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Air System Total Cooling Energy,    !- Variable Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Air System Total Heating Energy,    !- Variable Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Heat Exchanger Latent Effectiveness,    !- Variable Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Heat Exchanger Sensible Effectiveness,    !- Variable Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Heat Exchanger Total Heating Rate,    !- Variable Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Site Outdoor Air Drybulb Temperature,    !- Variable Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Water Heater Heating Energy,    !- Variable Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Zone Air Relative Humidity,    !- Variable Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Zone Ideal Loads Zone Total Cooling Energy,    !- Variable Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Zone Ideal Loads Zone Total Heating Energy,    !- Variable Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Zone Mean Air Temperature,    !- Variable Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Zone Thermostat Cooling Setpoint Temperature,    !- Variable Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:VARIABLE,
+    *,                        !- Key Value
+    Zone Thermostat Heating Setpoint Temperature,    !- Variable Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:METER,
+    Baseboard:EnergyTransfer,    !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    Cooling:DistrictCooling,    !- Key Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:METER,
+    Cooling:DistrictCooling,    !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    Cooling:Electricity,      !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    Cooling:EnergyTransfer,    !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    Cooling:Gas,              !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    CoolingCoils:EnergyTransfer,    !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    Electricity:Facility,     !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    Fans:Electricity,         !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    Gas:Facility,             !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    HeatRejection:Electricity,    !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    HeatRejection:EnergyTransfer,    !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    Heating:DistrictHeating,    !- Key Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:METER,
+    Heating:DistrictHeating,    !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    Heating:Electricity,      !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    Heating:EnergyTransfer,    !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    Heating:Gas,              !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    HeatingCoils:EnergyTransfer,    !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    InteriorEquipment:Electricity,    !- Key Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:METER,
+    InteriorEquipment:Electricity,    !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    InteriorLights:Electricity,    !- Key Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:METER,
+    InteriorLights:Electricity,    !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    Pumps:Electricity,        !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    Refrigeration:Electricity,    !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    Refrigeration:EnergyTransfer,    !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    WaterSystems:DistrictHeating,    !- Key Name
+    Hourly;                   !- Reporting Frequency
+
+OUTPUT:METER,
+    WaterSystems:DistrictHeating,    !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    WaterSystems:Electricity,    !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:METER,
+    WaterSystems:EnergyTransfer,    !- Key Name
+    Monthly;                  !- Reporting Frequency
+
+OUTPUT:SQLITE,
+    SimpleAndTabular,         !- Option Type
+    UseOutputControlTableStyle;    !- Unit Conversion for Tabular Data

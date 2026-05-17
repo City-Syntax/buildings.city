@@ -1,19 +1,68 @@
 import './style.css';
 import { UBEMViewer } from './mapbox.js';
-import config from './config.json';
+import config from '../user-data/config.json';
 import * as Charts from './charts.js';
-import { formatArchetypeName, processArchetypeData, processArchetypeGeoJSON } from './data-processor.js';
-import { createPredictionJob, fetchGeoJSON, getPredictionJob } from './ml-api.js';
+import { formatArchetypeName, processArchetypeData } from './data-processor.js';
 import * as XLSX from 'xlsx';
 import * as echarts from 'echarts';
 import './popup.js';
+import idfTemplateLibrary from '../user-data/simulation/templates.json';
 
 // 模块级viewer实例，供 initArchetypeData 访问
 let viewer = null;
-let currentGeoJSONPath = '';
-let pendingMlPrediction = null;
-let currentGeoJSONName = '';
 const DESCRIPTIONS = config.archetype_descriptions || {};
+const idfTemplateMap = Object.fromEntries(
+    idfTemplateLibrary
+        .filter(item => item?.archetype && item?.simulation_parameters)
+        .map(item => [item.archetype, item.simulation_parameters])
+);
+const PARAMETER_SECTIONS = [
+    {
+        title: 'Envelope',
+        fields: [
+            { key: 'wwr', label: 'Window to wall ratio' },
+            { key: 'u_roof', label: 'Roof U-value', unit: 'W/m²K' },
+            { key: 'u_wall', label: 'Wall U-value', unit: 'W/m²K' },
+            { key: 'u_floor', label: 'Floor U-value', unit: 'W/m²K' },
+            { key: 'u_win', label: 'Window U-value', unit: 'W/m²K' },
+            { key: 'shgc', label: 'Solar Heat Gain Coefficient' },
+            { key: 'ach', label: 'Air Changes per Hour', unit: '1/hr' }
+        ]
+    },
+    {
+        title: 'Internal Loads',
+        fields: [
+            { key: 'occ', label: 'Occupancy density', unit: 'person/m²' },
+            { key: 'epd', label: 'Equipment power density', unit: 'W/m²' },
+            { key: 'lpd', label: 'Lighting power density', unit: 'W/m²' },
+            { key: 'hw_lppd', label: 'Hot Water per person', unit: 'L/person/day' }
+        ]
+    },
+    {
+        title: 'HVAC',
+        fields: [
+            { key: 'hvac_system', label: 'HVAC System' },
+            { key: 'cop_cool', label: 'Cooling COP' },
+            { key: 't_cool', label: 'Cooling Setpoint', unit: 'C' }
+        ]
+    }
+];
+const SCHEDULE_PAIR_CHARTS = [
+    { key: 'occupancy', title: 'Occupancy' },
+    { key: 'lighting', title: 'Lighting' },
+    { key: 'equipment', title: 'Equipment' },
+    { key: 'hotwater', title: 'Hot Water' }
+];
+const DEFAULT_SCHEDULES = {
+    occupancy_weekday: [0.05, 0.05, 0.05, 0.05, 0.05, 0.08, 0.18, 0.45, 0.75, 0.9, 0.95, 0.95, 0.85, 0.9, 0.95, 0.95, 0.85, 0.6, 0.35, 0.2, 0.12, 0.08, 0.05, 0.05],
+    occupancy_weekend: [0.05, 0.05, 0.05, 0.05, 0.05, 0.06, 0.08, 0.15, 0.28, 0.42, 0.55, 0.6, 0.58, 0.55, 0.52, 0.5, 0.45, 0.35, 0.25, 0.18, 0.12, 0.08, 0.05, 0.05],
+    lighting_weekday: [0.05, 0.05, 0.05, 0.05, 0.05, 0.08, 0.18, 0.55, 0.85, 0.95, 0.95, 0.95, 0.85, 0.9, 0.95, 0.95, 0.9, 0.65, 0.35, 0.18, 0.1, 0.07, 0.05, 0.05],
+    lighting_weekend: [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.08, 0.12, 0.25, 0.38, 0.48, 0.52, 0.5, 0.48, 0.45, 0.42, 0.35, 0.25, 0.18, 0.12, 0.08, 0.06, 0.05, 0.05],
+    equipment_weekday: [0.1, 0.1, 0.1, 0.1, 0.1, 0.12, 0.2, 0.5, 0.82, 0.95, 0.95, 0.95, 0.9, 0.92, 0.95, 0.95, 0.88, 0.62, 0.35, 0.2, 0.14, 0.12, 0.1, 0.1],
+    equipment_weekend: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.12, 0.16, 0.25, 0.35, 0.45, 0.5, 0.48, 0.46, 0.44, 0.4, 0.35, 0.28, 0.2, 0.15, 0.12, 0.1, 0.1, 0.1],
+    hotwater_weekday: [0.05, 0.05, 0.05, 0.05, 0.08, 0.18, 0.45, 0.75, 0.58, 0.35, 0.28, 0.32, 0.45, 0.38, 0.3, 0.32, 0.45, 0.65, 0.55, 0.32, 0.2, 0.12, 0.08, 0.05],
+    hotwater_weekend: [0.05, 0.05, 0.05, 0.05, 0.06, 0.1, 0.2, 0.38, 0.55, 0.5, 0.38, 0.32, 0.42, 0.4, 0.32, 0.3, 0.35, 0.48, 0.52, 0.38, 0.24, 0.14, 0.08, 0.05]
+};
 
 function getConfiguredGeoJSONPath() {
     const geojsonPath = config.buildings_source?.data;
@@ -109,6 +158,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         archetypeSelect.addEventListener('change', (e) => {
             viewer.filterByArchetype(e.target.value);
             Charts.updateArchetypeBarHighlight(e.target.value);
+            renderOperationalCarbonPanel(e.target.value);
             updateArchetypeDescription(e.target.value);
         });
     }
@@ -118,12 +168,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (archetypeSelect) archetypeSelect.value = '';
         viewer.filterByArchetype('');
         Charts.updateArchetypeBarHighlight('');
+        renderOperationalCarbonPanel('');
         updateArchetypeDescription('');
     });
 
     // --- 6. 初始化UI控件 (不依赖颜色) ---
     Charts.initSunburstUI();
-    setupMlPredictionUI();
+    updateModuleActionButtons('type');
 
     // --- 7. 其它 UI 控制 (2D, 关闭面板等) ---
     
@@ -152,8 +203,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function initArchetypeData() {
     try {
         const geojsonPath = getConfiguredGeoJSONPath();
-        currentGeoJSONPath = geojsonPath;
-        currentGeoJSONName = geojsonPath.split('/').pop() || 'buildings.geojson';
         const result = await processArchetypeData(geojsonPath);
         applyArchetypeResult(result);
 
@@ -198,8 +247,8 @@ function applyArchetypeResult(result) {
     }
 
     Charts.initCarbonBarChart(config);
-    Charts.initEnergyBarChart(config);
     Charts.updateArchetypeBarHighlight(document.getElementById('archetype')?.value || '');
+    renderOperationalCarbonPanel(document.getElementById('archetype')?.value || '');
     updateArchetypeDescription(document.getElementById('archetype')?.value || '');
     renderDynamicArchetypeSuncharts();
 }
@@ -213,183 +262,295 @@ function updateArchetypeDescription(selectedArchetype) {
     descriptionEl.textContent = DESCRIPTIONS[selectedArchetype] || 'Select a type or an archetype to view the description.';
 }
 
-async function runMlArchetypePrediction() {
-    const serviceUrl = config.ml_service_url;
-    if (!serviceUrl) {
-        throw new Error('Missing ml_service_url in config');
-    }
-
-    window.dispatchEvent(new CustomEvent('ml-job-progress', {
-        detail: {
-            progress: 14,
-            stage: 'loading_data',
-            message: 'Loading the active GeoJSON from the configured data source.'
-        }
-    }));
-    const activeGeoJSON = await getActiveGeoJSON();
-
-    window.dispatchEvent(new CustomEvent('ml-job-progress', {
-        detail: {
-            progress: 24,
-            stage: 'submitting',
-            message: 'Submitting GeoJSON to the backend service.'
-        }
-    }));
-    const job = await createPredictionJob({
-        geojson: activeGeoJSON,
-        serviceUrl,
-        archetypeProperty: config.ml_archetype_property || 'building_archetype',
-        heightProperty: config.height_field || 'height'
-    });
-
-    window.dispatchEvent(new CustomEvent('ml-job-progress', {
-        detail: {
-            progress: 30,
-            stage: job.stage || 'queued',
-            message: job.message || 'Prediction job queued on the backend.'
-        }
-    }));
-
-    return pollMlPredictionJob(job.job_id, serviceUrl);
-}
-
-async function pollMlPredictionJob(jobId, serviceUrl) {
-    while (true) {
-        const job = await getPredictionJob({ jobId, serviceUrl });
-        window.dispatchEvent(new CustomEvent('ml-job-progress', { detail: job }));
-
-        if (job.status === 'completed') {
-            return job.result;
-        }
-
-        if (job.status === 'failed') {
-            throw new Error(job.error || job.message || 'Prediction job failed');
-        }
-
-        await new Promise(resolve => window.setTimeout(resolve, 700));
-    }
-}
-
-function setupMlPredictionUI() {
-    const triggerBtn = document.getElementById('run-ml-prediction');
-    const progressOverlay = document.getElementById('mlProgressOverlay');
-    const summaryOverlay = document.getElementById('mlSummaryOverlay');
-    const progressBar = document.getElementById('mlProgressBarInner');
-    const progressPercent = document.getElementById('mlProgressPercent');
-    const progressStage = document.getElementById('mlProgressStage');
-    const progressMessage = document.getElementById('mlProgressMessage');
-    const confirmBtn = document.getElementById('mlConfirmApply');
-    const cancelBtn = document.getElementById('mlCancelApply');
-    const downloadBtn = document.getElementById('mlDownloadPrediction');
-
-    if (!triggerBtn || !progressOverlay || !summaryOverlay) {
+function renderOperationalCarbonPanel(selectedArchetype) {
+    const container = document.getElementById('energy-underselect');
+    if (!container) {
         return;
     }
 
-    const setProgressState = ({ progress = 0, stage = 'Queued', message = 'Preparing request' } = {}) => {
-        if (progressBar) progressBar.style.width = `${Math.max(0, Math.min(100, progress))}%`;
-        if (progressPercent) progressPercent.textContent = `${Math.round(progress)}%`;
-        if (progressStage) progressStage.textContent = formatMlStage(stage);
-        if (progressMessage) progressMessage.textContent = message;
-    };
-
-    const showProgressOverlay = () => {
-        summaryOverlay.classList.remove('show');
-        progressOverlay.classList.add('show');
-        progressOverlay.setAttribute('aria-hidden', 'false');
-    };
-
-    const hideProgressOverlay = () => {
-        progressOverlay.classList.remove('show');
-        progressOverlay.setAttribute('aria-hidden', 'true');
-    };
-
-    const showSummaryOverlay = () => {
-        summaryOverlay.classList.add('show');
-        summaryOverlay.setAttribute('aria-hidden', 'false');
-    };
-
-    const hideSummaryOverlay = () => {
-        summaryOverlay.classList.remove('show');
-        summaryOverlay.setAttribute('aria-hidden', 'true');
-    };
-
-    window.addEventListener('ml-job-progress', event => {
-        const detail = event.detail || {};
-        setProgressState({
-            progress: detail.progress,
-            stage: detail.stage,
-            message: detail.message
-        });
-    });
-
-    triggerBtn.addEventListener('click', async () => {
-        triggerBtn.disabled = true;
-        triggerBtn.textContent = 'Predicting...';
-        pendingMlPrediction = null;
-
-        try {
-            setProgressState({ progress: 6, stage: 'preparing', message: 'Preparing the prediction request.' });
-            showProgressOverlay();
-
-            const result = await runMlArchetypePrediction();
-            pendingMlPrediction = result;
-            hideProgressOverlay();
-            populateMlSummary(result);
-            showSummaryOverlay();
-        } catch (error) {
-            hideProgressOverlay();
-            window.alert(error.message || 'Prediction failed');
-        } finally {
-            triggerBtn.disabled = false;
-            triggerBtn.textContent = 'Predict Unknown Archetypes';
-        }
-    });
-
-    confirmBtn?.addEventListener('click', () => {
-        if (!pendingMlPrediction?.geojson) {
-            hideSummaryOverlay();
-            return;
-        }
-
-        const processed = processArchetypeGeoJSON(pendingMlPrediction.geojson);
-        applyArchetypeResult(processed);
-        window.lastMlPrediction = pendingMlPrediction;
-        pendingMlPrediction = null;
-        hideSummaryOverlay();
-    });
-
-    cancelBtn?.addEventListener('click', () => {
-        pendingMlPrediction = null;
-        hideSummaryOverlay();
-    });
-
-    downloadBtn?.addEventListener('click', () => {
-        if (!pendingMlPrediction?.geojson) {
-            return;
-        }
-
-        downloadGeoJSON(pendingMlPrediction.geojson, buildPredictionFilename());
-    });
-}
-
-async function getActiveGeoJSON() {
-    if (window.currentBuildingGeoJSON) {
-        return JSON.parse(JSON.stringify(window.currentBuildingGeoJSON));
+    const selected = selectedArchetype || '';
+    if (!selected) {
+        container.classList.remove('operational-carbon-panel');
+        container.innerHTML = `
+            <h4>Energy Use Intensity (kWh/m²)</h4>
+            <div id="downloadEnergyBar" class="downloadBar">Download</div>
+            <div id="energyChartContainer" class="ChartContainer"></div>
+        `;
+        Charts.initEnergyBarChart(config);
+        Charts.updateArchetypeBarHighlight('');
+        return;
     }
 
-    const geojsonPath = currentGeoJSONPath || getConfiguredGeoJSONPath();
-    const geojson = await fetchGeoJSON(geojsonPath);
-    return JSON.parse(JSON.stringify(geojson));
+    const templateKey = findMatchingKey(Object.keys(idfTemplateMap), selected);
+    const template = idfTemplateMap[templateKey] || idfTemplateMap.unknown;
+    const displayName = selected || 'All archetypes';
+    const stats = window.archetypeStats?.[selected];
+    const energyData = getOperationalEnergyData(selected);
+
+    container.classList.add('operational-carbon-panel');
+    container.innerHTML = `
+        <section class="operational-carbon-module">
+            <div class="operational-carbon-module-header">
+                <h4>Archetype Template</h4>
+                <span>${escapeHtml(formatArchetypeName(templateKey || selected || 'unknown'))}</span>
+            </div>
+            ${selected ? renderTemplateSections(template) : '<p class="operational-carbon-empty">Select an archetype to view its template parameters.</p>'}
+            ${selected ? renderScheduleSection(template?.schedules || DEFAULT_SCHEDULES, selected) : ''}
+        </section>
+        <section class="operational-carbon-module">
+            <div class="operational-carbon-module-header">
+                <h4>Feature Results</h4>
+                <span>${escapeHtml(displayName)}</span>
+            </div>
+            ${renderFeatureResults(stats, energyData)}
+        </section>
+        ${selected ? renderTemplateDownloadActions() : ''}
+    `;
+
+    if (selected) {
+        window.requestAnimationFrame(() => {
+            container.querySelectorAll('[data-schedule-pair-canvas]').forEach(canvas => {
+                const key = canvas.getAttribute('data-schedule-pair-canvas');
+                drawSchedulePairCanvas(canvas, template?.schedules || DEFAULT_SCHEDULES, key);
+            });
+
+            const downloadJsonButton = container.querySelector('[data-template-download="json"]');
+            downloadJsonButton?.addEventListener('click', () => {
+                triggerDownload(
+                    JSON.stringify({
+                        archetype: selected,
+                        simulation_parameters: template
+                    }, null, 2),
+                    `template_${sanitizeFilename(selected)}_parameters.json`,
+                    'application/json'
+                );
+            });
+
+            const downloadIdfButton = container.querySelector('[data-template-download="idf"]');
+            downloadIdfButton?.addEventListener('click', () => {
+                void downloadGeneratedTemplateIdf(templateKey || selected);
+            });
+        });
+    }
 }
 
-function buildPredictionFilename() {
-    const baseName = (currentGeoJSONName || 'buildings.geojson').replace(/\.geojson$|\.json$/i, '');
-    return `${baseName}_predicted.geojson`;
+async function downloadGeneratedTemplateIdf(archetype) {
+    const slug = slugifyArchetype(archetype || 'unknown');
+    const candidates = [
+        `${(config.simulation_service_url || 'http://localhost:8010').replace(/\/$/, '')}/idf-templates/file/${encodeURIComponent(archetype || 'unknown')}`
+    ];
+
+    let lastError = null;
+    for (const url of candidates) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            const text = await response.text();
+            if (!text.trim()) {
+                throw new Error('IDF file is empty.');
+            }
+            triggerDownload(text, `template_${slug}.idf`, 'text/plain');
+            return;
+        } catch (error) {
+            lastError = error;
+        }
+    }
+
+    window.alert(lastError?.message || `Unable to download generated IDF for ${archetype}.`);
 }
 
-function downloadGeoJSON(geojson, filename) {
-    const blob = new Blob([JSON.stringify(geojson, null, 2)], { type: 'application/geo+json' });
+function slugifyArchetype(value) {
+    return String(value || 'unknown')
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '') || 'unknown';
+}
+
+function renderTemplateDownloadActions() {
+    return `
+        <div class="operational-template-actions">
+            <button type="button" data-template-download="json">Download template json</button>
+            <button type="button" data-template-download="idf">Download template idf</button>
+        </div>
+    `;
+}
+
+function renderTemplateSections(template) {
+    return PARAMETER_SECTIONS.map(section => `
+        <div class="operational-template-section">
+            <div class="operational-template-title">${escapeHtml(section.title)}</div>
+            <div class="operational-template-rows">
+                ${section.fields.map(field => renderMetricRow(field.label, formatParameterValue(field, template?.[field.key]))).join('')}
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderScheduleSection(schedules, selectedArchetype) {
+    return `
+        <div class="operational-template-section">
+            <div class="operational-template-title">Schedule</div>
+            <div class="operational-schedule-grid">
+                ${SCHEDULE_PAIR_CHARTS.map(chart => `
+                    <div class="operational-schedule-card">
+                        <div class="operational-schedule-header">
+                            <span>${escapeHtml(chart.title)}</span>
+                            <div class="operational-schedule-legend">
+                                <span><i class="weekday-line"></i>Workday</span>
+                                <span><i class="weekend-line"></i>Weekend</span>
+                            </div>
+                        </div>
+                        <canvas class="operational-schedule-canvas" data-schedule-pair-canvas="${escapeHtml(chart.key)}" aria-label="${escapeHtml(`${selectedArchetype} ${chart.title} schedule`)}"></canvas>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function renderFeatureResults(stats, energyData) {
+    const columns = config.operational_energy_data?.columns || [];
+    const energyRows = energyData
+        ? columns.map((column, index) => renderMetricRow(formatColumnLabel(column), formatMetricValue(energyData[index], 'kWh/m²/yr'))).join('')
+        : renderMetricRow('Operational energy data', 'No matching value');
+
+    return `
+        <div class="operational-template-section">
+            <div class="operational-template-title">GeoJSON Features</div>
+            <div class="operational-template-rows">
+                ${renderMetricRow('Building count', stats ? formatInteger(stats.count) : '0')}
+                ${renderMetricRow('Total footprint', stats ? formatMetricValue(stats.footprintArea, 'm²') : '0 m²')}
+            </div>
+        </div>
+        <div class="operational-template-section">
+            <div class="operational-template-title">Energy Use Intensity</div>
+            <div class="operational-template-rows">${energyRows}</div>
+        </div>
+    `;
+}
+
+function renderMetricRow(label, value) {
+    return `
+        <div class="operational-metric-row">
+            <span>${escapeHtml(label)}</span>
+            <strong>${escapeHtml(value)}</strong>
+        </div>
+    `;
+}
+
+function getOperationalEnergyData(selectedArchetype) {
+    const data = config.operational_energy_data?.data || {};
+    const key = findMatchingKey(Object.keys(data), selectedArchetype);
+    return key ? data[key] : null;
+}
+
+function findMatchingKey(keys, selectedArchetype) {
+    if (!selectedArchetype) {
+        return keys.includes('unknown') ? 'unknown' : '';
+    }
+
+    const selectedNorm = normalizeMatchKey(selectedArchetype);
+    return keys.find(key => normalizeMatchKey(key) === selectedNorm)
+        || keys.find(key => normalizeMatchKey(formatArchetypeName(key)) === selectedNorm)
+        || keys.find(key => selectedNorm.includes(normalizeMatchKey(key)) || normalizeMatchKey(key).includes(selectedNorm))
+        || '';
+}
+
+function drawSchedulePairCanvas(canvas, schedules, groupKey) {
+    const weekday = normalizeScheduleArray(schedules?.[`${groupKey}_weekday`] || DEFAULT_SCHEDULES[`${groupKey}_weekday`]);
+    const weekend = normalizeScheduleArray(schedules?.[`${groupKey}_weekend`] || DEFAULT_SCHEDULES[`${groupKey}_weekend`]);
+    const rect = canvas.getBoundingClientRect();
+    const pixelRatio = window.devicePixelRatio || 1;
+    const width = Math.max(1, Math.floor(rect.width || canvas.parentElement?.clientWidth || 320));
+    const height = Math.max(1, Math.floor(rect.height || 140));
+
+    if (canvas.width !== Math.floor(width * pixelRatio) || canvas.height !== Math.floor(height * pixelRatio)) {
+        canvas.width = Math.floor(width * pixelRatio);
+        canvas.height = Math.floor(height * pixelRatio);
+    }
+
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, width, height);
+
+    const plot = { left: 20, top: 12, right: width - 10, bottom: height - 22 };
+    plot.width = Math.max(1, plot.right - plot.left);
+    plot.height = Math.max(1, plot.bottom - plot.top);
+
+    ctx.strokeStyle = '#e8edf2';
+    ctx.lineWidth = 1;
+    [0, 0.25, 0.5, 0.75, 1].forEach(value => {
+        const y = plot.bottom - value * plot.height;
+        ctx.beginPath();
+        ctx.moveTo(plot.left, y);
+        ctx.lineTo(plot.right, y);
+        ctx.stroke();
+    });
+
+    ctx.fillStyle = '#777777';
+    ctx.font = '10px "Segoe UI", Tahoma, Geneva, Verdana, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    [0, 0.5, 1].forEach(value => {
+        ctx.fillText(value.toFixed(1), plot.left - 7, plot.bottom - value * plot.height);
+    });
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    [0, 6, 12, 18, 23].forEach(hour => {
+        const x = plot.left + (hour / 23) * plot.width;
+        ctx.fillText(String(hour), x, plot.bottom + 8);
+    });
+
+    drawScheduleLine(ctx, plot, weekend, '#b8bec6', true);
+    drawScheduleLine(ctx, plot, weekday, '#333333', false);
+}
+
+function drawScheduleLine(ctx, plot, values, color, solidPoints) {
+    const points = values.map((value, hour) => [
+        plot.left + (hour / 23) * plot.width,
+        plot.bottom - clamp01(value) * plot.height
+    ]);
+
+    ctx.beginPath();
+    points.forEach(([x, y], index) => {
+        if (index === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = color;
+    ctx.lineWidth = solidPoints ? 1.7 : 2.2;
+    ctx.stroke();
+
+    points.forEach(([x, y]) => {
+        ctx.beginPath();
+        ctx.arc(x, y, solidPoints ? 2.9 : 3.1, 0, Math.PI * 2);
+        ctx.fillStyle = solidPoints ? color : '#ffffff';
+        ctx.fill();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+    });
+}
+
+function normalizeScheduleArray(values) {
+    const source = Array.isArray(values) && values.length ? values : [];
+    return Array.from({ length: 24 }, (_, index) => {
+        const raw = Number(source[index] ?? source[source.length - 1] ?? 0);
+        return clamp01(Number.isFinite(raw) ? raw : 0);
+    });
+}
+
+function clamp01(value) {
+    return Math.max(0, Math.min(1, Number(value) || 0));
+}
+
+function triggerDownload(content, filename, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -400,81 +561,61 @@ function downloadGeoJSON(geojson, filename) {
     URL.revokeObjectURL(url);
 }
 
-function formatMlStage(stage) {
-    return String(stage || 'queued')
-        .replace(/_/g, ' ')
-        .replace(/\b\w/g, match => match.toUpperCase());
+function formatMetricValue(value, unit = '') {
+    if (value === undefined || value === null || value === '') {
+        return unit ? `-- ${unit}` : '--';
+    }
+
+    if (typeof value === 'number') {
+        const formatted = Math.abs(value) >= 1000 ? formatInteger(value) : Number(value.toFixed(3)).toString();
+        return unit ? `${formatted} ${unit}` : formatted;
+    }
+
+    return unit ? `${value} ${unit}` : String(value);
 }
 
-function populateMlSummary(result) {
-    const metrics = result?.metrics || {};
-    const featureImportances = result?.feature_importance || [];
-    const classMetrics = Object.entries(metrics.classification_report || {}).filter(([label, value]) => (
-        typeof value === 'object' &&
-        label !== 'macro avg' &&
-        label !== 'weighted avg'
-    ));
-
-    const accuracyEl = document.getElementById('mlSummaryAccuracy');
-    const knownEl = document.getElementById('mlSummaryKnown');
-    const unknownEl = document.getElementById('mlSummaryUnknown');
-    const splitEl = document.getElementById('mlSummarySplit');
-    const messageEl = document.getElementById('mlSummaryMessage');
-    const featuresEl = document.getElementById('mlSummaryFeatures');
-    const classesEl = document.getElementById('mlSummaryClasses');
-
-    if (accuracyEl) accuracyEl.textContent = typeof metrics.accuracy === 'number' ? `${(metrics.accuracy * 100).toFixed(1)}%` : '-';
-    if (knownEl) knownEl.textContent = `${metrics.labeled_count ?? 0}`;
-    if (unknownEl) unknownEl.textContent = `${metrics.predicted_count ?? metrics.unknown_count ?? 0}`;
-    if (splitEl) splitEl.textContent = `${metrics.train_count ?? 0} / ${metrics.test_count ?? 0}`;
-    if (messageEl) {
-        const appliedCount = metrics.predicted_count ?? metrics.unknown_count ?? 0;
-        const retainedCount = metrics.retained_unknown_count ?? 0;
-        const thresholdPercent = typeof metrics.confidence_threshold === 'number' ? `${Math.round(metrics.confidence_threshold * 100)}%` : '20%';
-        messageEl.textContent = `The backend trained a random forest on the known archetypes, evaluated it on an 80/20 split, applied ${appliedCount} predictions for unknown buildings, and kept ${retainedCount} buildings as unknown when confidence stayed below ${thresholdPercent}. Apply the updated GeoJSON if the summary looks acceptable.`;
+function formatParameterValue(field, value) {
+    if (field.key === 'hvac_system' && typeof value === 'string') {
+        return value
+            .split('_')
+            .filter(Boolean)
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
     }
 
-    if (featuresEl) {
-        featuresEl.innerHTML = '';
-        featureImportances.forEach(feature => {
-            const row = document.createElement('div');
-            row.className = 'ml-feature-row';
-            row.innerHTML = `<span class="ml-feature-name">${feature.feature}</span><span class="ml-feature-value">${feature.importance.toFixed(3)}</span>`;
-            featuresEl.appendChild(row);
-        });
-
-        if (!featureImportances.length) {
-            featuresEl.innerHTML = '<div class="ml-feature-name">No feature importance available.</div>';
-        }
-    }
-
-    if (classesEl) {
-        classesEl.innerHTML = '';
-
-        if (classMetrics.length) {
-            const header = document.createElement('div');
-            header.className = 'ml-class-row ml-class-header';
-            header.innerHTML = '<span class="ml-class-name">Class</span><span class="ml-class-metric">Precision</span><span class="ml-class-metric">Recall</span><span class="ml-class-metric">F1</span>';
-            classesEl.appendChild(header);
-
-            classMetrics.slice(0, 8).forEach(([label, values]) => {
-                const row = document.createElement('div');
-                row.className = 'ml-class-row';
-                row.innerHTML = `
-                    <span class="ml-class-name">${formatArchetypeName(label)}</span>
-                    <span class="ml-class-metric">${(values.precision ?? 0).toFixed(2)}</span>
-                    <span class="ml-class-metric">${(values.recall ?? 0).toFixed(2)}</span>
-                    <span class="ml-class-metric">${(values['f1-score'] ?? 0).toFixed(2)}</span>
-                `;
-                classesEl.appendChild(row);
-            });
-        } else {
-            classesEl.innerHTML = '<div class="ml-feature-name">No class metrics available.</div>';
-        }
-    }
+    return formatMetricValue(value, field.unit);
 }
 
-window.runMlArchetypePrediction = runMlArchetypePrediction;
+function formatInteger(value) {
+    return Math.round(Number(value) || 0).toLocaleString();
+}
+
+function formatColumnLabel(column) {
+    return String(column || '')
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
+function normalizeMatchKey(value) {
+    return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
+function sanitizeFilename(value) {
+    return String(value || 'export')
+        .replace(/[^a-z0-9_-]+/gi, '_')
+        .replace(/^_+|_+$/g, '')
+        .slice(0, 80) || 'export';
+}
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
 
 /**
  * 生成动态Archetype Sunburst图表
@@ -518,6 +659,11 @@ function updatePanelUI(activeLayer) {
         }
     });
 
+    const energyBreakdownLegend = document.querySelector('.energy-breakdown-container');
+    if (energyBreakdownLegend) {
+        energyBreakdownLegend.classList.toggle('active', activeLayer === 'energy');
+    }
+
     // 2. 更新侧边栏内容显示
     const carbonContainer = document.getElementById('carbon-container');
     const energyContainer = document.getElementById('energy-container');
@@ -538,8 +684,7 @@ function updatePanelUI(activeLayer) {
         if (archetypeCharts) archetypeCharts.style.display = 'none';
         if (carbonContainer) carbonContainer.style.display = 'none';
         if (energyContainer) energyContainer.style.display = 'block';
-        const energyChart = echarts.getInstanceByDom(document.getElementById('energyChartContainer'));
-        if (energyChart) energyChart.resize();
+        renderOperationalCarbonPanel(document.getElementById('archetype')?.value || '');
     }
 
     // 3. 更新面板标题
@@ -548,7 +693,30 @@ function updatePanelUI(activeLayer) {
         if (el) el.style.display = k === activeLayer ? 'block' : 'none';
     });
 
+    updateModuleActionButtons(activeLayer);
+
     // 4. 显示面板
     const resultPanel = document.querySelector('.result-panel');
-    if (resultPanel) resultPanel.classList.add('show');
+    if (resultPanel) {
+        resultPanel.style.display = '';
+        resultPanel.classList.add('show');
+    }
+}
+
+function updateModuleActionButtons(activeLayer) {
+    const predictBtn = document.getElementById('open-archetype-prediction-floating');
+    const openModeBtn = document.getElementById('open-energy-simulation-floating');
+
+    if (!predictBtn || !openModeBtn) {
+        return;
+    }
+
+    if (activeLayer === 'energy') {
+        predictBtn.style.display = 'none';
+        openModeBtn.style.display = 'inline-flex';
+        return;
+    }
+
+    predictBtn.style.display = activeLayer === 'type' ? 'inline-flex' : 'none';
+    openModeBtn.style.display = 'none';
 }

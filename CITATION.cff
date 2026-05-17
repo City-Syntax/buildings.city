@@ -1,32 +1,35 @@
 cff-version: 1.2.0
-title: "Buildings.city: A Lightweight Toolkit for Urban Building Energy Modeling Platforms"
-message: "If you use this toolkit in research or projects, please cite it as follows."
+title: "Buildings.city: A Local-First Urban Building Energy Modeling Platform"
+message: "If you use Buildings.city in research, teaching, public-sector work, or project development, please cite it using this metadata."
 type: software
 
 authors:
-  - family-names: "City Syntax Lab"
-    given-names: "Buildings.sg Project"
+  - name: "City Syntax Lab"
 
-repository-code: "https://github.com/City-Syntax/buildings.sg"
-url: "https://buildings.sg"
+repository-code: "https://github.com/City-Syntax/buildings.city"
+url: "https://buildings.city"
 
 abstract: >
-  Buildings.city is a lightweight toolkit for building interactive
-  Urban Building Energy Modeling (UBEM) platforms using city-scale
-  building datasets. The platform enables cities and researchers
-  to visualize building data, explore operational and embodied
-  carbon information, and communicate urban energy insights
-  through an interactive map interface.
+  Buildings.city is a local-first software platform for creating interactive
+  Urban Building Energy Modeling (UBEM) applications from city-scale building
+  datasets. Version 2.0 supports data-driven building visualization, configurable
+  energy and carbon metrics, missing archetype prediction through a local ML API,
+  EnergyPlus-backed simulation workflows through a local simulation API, and
+  synchronization of reviewed outputs back into the active GeoJSON dataset.
 
 keywords:
-  - urban energy modeling
+  - urban building energy modeling
   - UBEM
-  - building energy
+  - local-first software
+  - building energy simulation
+  - EnergyPlus
+  - archetype prediction
+  - GeoJSON
+  - Mapbox
   - urban analytics
-  - geojson
-  - mapbox
-  - urban sustainability
+  - embodied carbon
+  - operational energy
 
 license: MIT
-version: 1.0.0
-date-released: 2026-03-16
+version: 2.0.0
+date-released: 2026-05-16

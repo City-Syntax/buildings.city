@@ -33,18 +33,34 @@ export class UBEMViewer {
             carbon: {
                 layerId: this.carbonLayerId,
                 fields: ['eb_carbon'],
+                minValue: 10,
                 colors: ['#2bf3a9', '#0fb89f', '#275fa0', '#df80e0', '#f0004c'],
                 legendBarSelector: '.legend-container.carbon .legend-bar-carbon',
                 legendLabelsId: 'carbon-legend-labels'
             },
             energy: {
                 layerId: this.energyLayerId,
-                fields: ['op_carbon'],
-                colors: ['#0d9c6c', '#57f46c', '#f5ed0f', '#f59a0f', '#f56b0f'],
+                fields: ['simulation_total_eui_kwh_m2'],
+                minValue: 0.000001,
+                fallbackOpacity: 0.8,
+                colors: ['#d8fff4', '#a9f7df', '#72ebc9', '#35d7ad', '#00b894'],
                 legendBarSelector: '.legend-container.energy .legend-bar-energy',
-                legendLabelsId: 'energy-legend-labels'
+                legendLabelsId: 'energy-legend-labels',
+                legendNameSelector: '.legend-container.energy .legend-name',
+                categories: [
+                    { key: 'total', label: 'Total', color: '#55efc4', fields: ['simulation_total_eui_kwh_m2'], colors: ['#d8fff4', '#a9f7df', '#72ebc9', '#35d7ad', '#00b894'] },
+                    { key: 'cooling', label: 'Cooling', color: '#A5F3FC', fields: ['simulation_cooling_eui_kwh_m2'], colors: ['#e8fbff', '#bdf2fb', '#84dff0', '#42bfd4', '#128aa0'] },
+                    { key: 'heating', label: 'Heating', color: '#ef441e', fields: ['simulation_heating_eui_kwh_m2'], colors: ['#ffe4dc', '#ffbba8', '#ff8d70', '#ec5c3c', '#c0392b'] },
+                    { key: 'lighting', label: 'Lighting', color: '#FFFF00', fields: ['simulation_lighting_eui_kwh_m2'], colors: ['#fffbd1', '#fff38a', '#ffe84d', '#f2cf1d', '#c9a100'] },
+                    { key: 'equipment', label: 'Equipment', color: '#E0E0E0', fields: ['simulation_equipment_eui_kwh_m2'], colors: ['#f7f7f7', '#dedede', '#c0c4c5', '#9da6a8', '#788486'] },
+                    { key: 'hot_water', label: 'Hot Water', color: '#8a4b22', fields: ['simulation_hot_water_eui_kwh_m2'], colors: ['#f3dfd1', '#dfb995', '#c98d59', '#aa6533', '#7b3f1d'] }
+                ],
+                activeCategoryKey: 'total',
+                unitLabel: 'kWh/m²·yr'
             }
         };
+        this.currentGeoJSON = null;
+        this.hasFitToGeoJSON = false;
     }
 
     async init() {
@@ -125,6 +141,7 @@ export class UBEMViewer {
     _bindEvents() {
         this.map.on('load', () => {
             this._setupSourcesAndLayers();
+            this._setupEnergyBreakdownLegend();
             this._setupClickAndHover();
         });
     }
@@ -137,7 +154,7 @@ export class UBEMViewer {
 
         this.map.addSource('buildings_all', {
             type: type, // 'geojson'
-            data: data, // '/data/sg_buildings_v5.geojson'
+            data: data, // '/user-data/buildings/sg_buildings_v5.geojson'
             generateId: true
         });
 
@@ -181,6 +198,7 @@ export class UBEMViewer {
     }
 
     updateBuildingData(geojson) {
+        this.currentGeoJSON = geojson;
         const source = this.map?.getSource('buildings_all');
         if (source) {
             source.setData(geojson);
@@ -188,6 +206,29 @@ export class UBEMViewer {
 
         if (geojson) {
             this._updateMetricRampsFromGeoJSON(geojson);
+            this._fitToGeoJSONOnce(geojson);
+        }
+    }
+
+    _fitToGeoJSONOnce(geojson) {
+        if (this.hasFitToGeoJSON || !this.map || !geojson?.features?.length) {
+            return;
+        }
+
+        try {
+            const [minX, minY, maxX, maxY] = turf.bbox(geojson);
+            if ([minX, minY, maxX, maxY].every(Number.isFinite)) {
+                this.map.easeTo({
+                    center: [(minX + maxX) / 2, (minY + maxY) / 2],
+                    zoom: this.config.map_view?.zoom ?? 13.4,
+                    pitch: this.config.map_view?.pitch ?? 50,
+                    bearing: this.config.map_view?.bearing ?? 20,
+                    duration: 900
+                });
+                this.hasFitToGeoJSON = true;
+            }
+        } catch (error) {
+            console.warn('Unable to fit map to GeoJSON bounds:', error);
         }
     }
 
@@ -197,8 +238,8 @@ export class UBEMViewer {
             3.2,
             [
                 "coalesce",
-                ["to-number", ["get", hField]],
-                ["*", ["coalesce", ["to-number", ["get", "building_levels"]], ["to-number", ["get", "building:levels"]], 0], 3.2],
+                ["to-number", ["get", hField], 0],
+                ["*", ["coalesce", ["to-number", ["get", "building_levels"], 0], ["to-number", ["get", "building:levels"], 0], 0], 3.2],
                 0
             ]
         ];
@@ -211,30 +252,30 @@ export class UBEMViewer {
     }
 
     _applyMetricRamp(metricConfig, geojson) {
-        const values = this._collectMetricValues(geojson, metricConfig.fields);
+        const values = this._collectMetricValues(geojson, metricConfig.fields, metricConfig.minValue ?? 10);
         const { rawStops, renderStops } = this._computeQuantileStops(values, metricConfig.colors.length);
         const valueExpr = ["to-number", ...metricConfig.fields.map(field => ["get", field]), -1];
         const colorExpr = [
             "case",
-            [">=", valueExpr, 10],
+            [">=", valueExpr, metricConfig.minValue ?? 10],
             ["interpolate", ["linear"], valueExpr, ...this._flattenStops(renderStops, metricConfig.colors)],
             "#333333"
         ];
-        const opacityExpr = ["case", [">=", valueExpr, 10], 0.8, 0.35];
+        const opacityExpr = ["case", [">=", valueExpr, metricConfig.minValue ?? 10], 0.8, metricConfig.fallbackOpacity ?? 0.35];
 
         this.map.setPaintProperty(metricConfig.layerId, "fill-extrusion-color", colorExpr);
         this.map.setPaintProperty(metricConfig.layerId, "fill-extrusion-opacity", opacityExpr);
         this._updateMetricLegend(metricConfig, rawStops);
     }
 
-    _collectMetricValues(geojson, fields) {
+    _collectMetricValues(geojson, fields, minValue = 10) {
         const features = geojson?.features || [];
         return features
             .map(feature => {
                 const properties = feature?.properties || {};
                 for (const field of fields) {
                     const value = Number(properties[field]);
-                    if (Number.isFinite(value) && value >= 10) {
+                    if (Number.isFinite(value) && value >= minValue) {
                         return value;
                     }
                 }
@@ -303,15 +344,89 @@ export class UBEMViewer {
                 .map((value, index) => `<span>${this._formatLegendValue(value, index)}</span>`)
                 .join('');
         }
+
+        if (metricConfig.legendNameSelector) {
+            const legendName = document.querySelector(metricConfig.legendNameSelector);
+            const activeCategory = this._getActiveMetricCategory(metricConfig);
+            if (legendName && activeCategory) {
+                legendName.textContent = `EUI · ${activeCategory.label} (${metricConfig.unitLabel || 'kWh/m²·yr'})`;
+            }
+        }
     }
 
     _formatLegendValue(value, index = 0) {
         if (!Number.isFinite(value)) return '-';
 
+        const absValue = Math.abs(value);
+        if (absValue < 10) {
+            return new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(value);
+        }
+
+        if (absValue < 1000) {
+            return new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 }).format(value);
+        }
+
         const steps = [10, 100, 1000, 10000, 100000];
         const step = steps[Math.min(index, steps.length - 1)];
         const rounded = Math.round(value / step) * step;
         return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(rounded);
+    }
+
+    _setupEnergyBreakdownLegend() {
+        const metricConfig = this.metricRampConfig.energy;
+        const container = document.getElementById('energy-breakdown-legend');
+        if (!container || !metricConfig?.categories?.length) return;
+
+        container.innerHTML = '';
+        const slider = document.createElement('div');
+        slider.className = 'energy-breakdown-slider';
+        container.appendChild(slider);
+
+        metricConfig.categories.forEach(category => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = `energy-breakdown-item${category.key === metricConfig.activeCategoryKey ? ' active' : ''}`;
+            button.dataset.energyMetric = category.key;
+            button.style.setProperty('--energy-breakdown-color', category.color || '#f1f1f1');
+            button.textContent = category.label;
+            button.addEventListener('click', () => this.setEnergyMetric(category.key));
+            container.appendChild(button);
+        });
+        this._updateEnergyBreakdownSlider(metricConfig);
+    }
+
+    _getActiveMetricCategory(metricConfig) {
+        return metricConfig?.categories?.find(category => category.key === metricConfig.activeCategoryKey);
+    }
+
+    setEnergyMetric(categoryKey) {
+        const metricConfig = this.metricRampConfig.energy;
+        const category = metricConfig.categories.find(item => item.key === categoryKey);
+        if (!category) return;
+
+        metricConfig.activeCategoryKey = category.key;
+        metricConfig.fields = category.fields;
+        metricConfig.colors = category.colors || metricConfig.colors;
+
+        document.querySelectorAll('.energy-breakdown-item').forEach(item => {
+            item.classList.toggle('active', item.dataset.energyMetric === category.key);
+        });
+
+        this._updateEnergyBreakdownSlider(metricConfig);
+
+        if (this.currentGeoJSON) {
+            this._applyMetricRamp(metricConfig, this.currentGeoJSON);
+        }
+    }
+
+    _updateEnergyBreakdownSlider(metricConfig) {
+        const container = document.getElementById('energy-breakdown-legend');
+        const category = this._getActiveMetricCategory(metricConfig);
+        const index = metricConfig.categories.findIndex(item => item.key === metricConfig.activeCategoryKey);
+        if (!container || !category || index < 0) return;
+
+        container.style.setProperty('--energy-breakdown-index', index);
+        container.style.setProperty('--energy-breakdown-color', category.color || '#ffffff');
     }
 
     /**
@@ -369,6 +484,40 @@ export class UBEMViewer {
         this.activeLayer = newLayer;
     }
 
+    _getSimulationResultEntries(properties = {}) {
+        const unit = 'kWh/m²';
+        const fields = [
+            { key: 'simulation_total_eui_kwh_m2', label: 'Simulation Total EUI' },
+            { key: 'simulation_cooling_eui_kwh_m2', label: 'Simulation Cooling EUI' },
+            { key: 'simulation_heating_eui_kwh_m2', label: 'Simulation Heating EUI' },
+            { key: 'simulation_lighting_eui_kwh_m2', label: 'Simulation Lighting EUI' },
+            { key: 'simulation_equipment_eui_kwh_m2', label: 'Simulation Equipment EUI' },
+            { key: 'simulation_hot_water_eui_kwh_m2', label: 'Simulation Hot Water EUI' }
+        ];
+
+        const directEntries = fields
+            .map(field => {
+                const value = Number(properties[field.key]);
+                return Number.isFinite(value) ? [field.label, `${value.toFixed(2)} ${unit}`] : null;
+            })
+            .filter(Boolean);
+
+        return directEntries;
+    }
+
+    _formatPopupKey(key) {
+        return String(key || '')
+            .replace(/[:_]+/g, ' ')
+            .split(' ')
+            .filter(Boolean)
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+    }
+
+    _normalizePopupMatchKey(value) {
+        return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+    }
+
     _setupClickAndHover() {
         const layers = Object.values(this.layerVisibilityMap);
         const map = this.map;
@@ -407,6 +556,7 @@ export class UBEMViewer {
             map.clickedFeatureId = featureId;
             // 过滤有效信息
             let validEntries;
+            const simulationResultEntries = this._getSimulationResultEntries(properties);
             if (this.config.city_name === 'Singapore') {
                 // Singapore 专用版本：固定字段映射
                 validEntries = Object.entries({
@@ -444,6 +594,7 @@ export class UBEMViewer {
                     return capitalizeFirst(v);
                 };
                 validEntries = Object.entries(properties)
+                    .filter(([k]) => !k.startsWith('simulation_'))
                     .map(([k, v]) => {
                         if (k === 'eb_carbon' || k === 'op_carbon') {
                             const num = Number(v);
@@ -471,6 +622,7 @@ export class UBEMViewer {
                     })
                     .filter(([key, value]) => value !== null && value !== undefined && value !== '' && value !== "None" && value !== "0");
             }
+            validEntries = [...validEntries, ...simulationResultEntries];
             if (validEntries.length > 0) {
                 const popupHTML = `
                     <h3>Building Information</h3>

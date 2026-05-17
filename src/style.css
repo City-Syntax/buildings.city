@@ -1,4 +1,4 @@
-.header {
+﻿.header {
     margin-left: 5px;
     margin-right: 0;
     background-color: #333;
@@ -49,7 +49,7 @@
 }
 
 
-/* 弹出框样式 */
+/* 寮瑰嚭妗嗘牱寮?*/
 .popup {
     position: fixed;
     top: 55px;
@@ -153,7 +153,8 @@
 #data-sub-buttons button {
     width: 100px;
     text-align: center;
-    padding: 5px 10px;
+    min-height: 28px;
+    padding: 6px 10px;
     margin-top: 5px;
     color: #fff;
     background-color: #333;
@@ -257,21 +258,21 @@
 .download-item:hover .download-label {
     opacity: 0;
 }
-
 #close-btn {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 12px;
     margin: 20px auto;
-    padding: 8px 12px;
+    min-height: 28px;
+    padding: 0 12px;
     background-color: #333;
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 999px;
     cursor: pointer;
     text-align: center;
 }
-
-
 .calculation-box {
     width: 230px;
     position: absolute;
@@ -322,7 +323,7 @@
     border: none;
 }
 
-/* BCA 下拉按钮 */
+/* BCA 涓嬫媺鎸夐挳 */
 .buttons-container {
     display: none;
     flex-direction: column;
@@ -342,7 +343,8 @@
 .buttons-container button {
     width: 165px;
     text-align: center;
-    padding: 5px 10px;
+    min-height: 28px;
+    padding: 6px 10px;
     margin-top: 5px;
     color: #fff;
     background-color: #333;
@@ -365,7 +367,7 @@
     font-weight: bold;
 }
 
-/* 图例容器的样式 */
+/* 鍥句緥瀹瑰櫒鐨勬牱寮?*/
 .legend-container-bca {
     display: none;
     opacity: 0;
@@ -388,7 +390,7 @@
     margin-bottom: 10px;
 }
 
-/* 图例内容的隐藏样式 */
+/* 鍥句緥鍐呭鐨勯殣钘忔牱寮?*/
 .legend-content {
     position: fixed;
     width: 220px;
@@ -450,7 +452,7 @@
     margin-right: 40px;
 }
 
-/* Green Mark 颜色定义 */
+/* Green Mark 棰滆壊瀹氫箟 */
 .greenmark-goldplus {
     background-color: #fff457;
 }
@@ -562,6 +564,92 @@
     white-space: nowrap;
 }
 
+.energy-breakdown-container {
+    position: fixed;
+    width: 120px;
+    bottom: 165px;
+    right: 10px;
+    display: none;
+    background-color: rgba(20, 20, 20, 0.4);
+    color: #636e72;
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    z-index: 20;
+    box-sizing: border-box;
+}
+
+.energy-breakdown-container.active {
+    display: block;
+}
+
+.energy-breakdown-legend {
+    --energy-breakdown-index: 0;
+    --energy-breakdown-color: #ffffff;
+    --energy-breakdown-item-height: 26px;
+    --energy-breakdown-gap: 5px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--energy-breakdown-gap);
+    max-height: none;
+    overflow: visible;
+    padding: 2px 3px;
+    margin: 0;
+    background: transparent;
+    border-radius: 0;
+    box-sizing: border-box;
+}
+
+.energy-breakdown-slider {
+    position: absolute;
+    left: 3px;
+    right: 3px;
+    top: 2px;
+    height: var(--energy-breakdown-item-height);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--energy-breakdown-color) 32%, rgba(255, 255, 255, 0.12));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 4px 10px rgba(0, 0, 0, 0.16);
+    transform: translateY(calc(var(--energy-breakdown-index) * (var(--energy-breakdown-item-height) + var(--energy-breakdown-gap))));
+    transition: transform 0.28s ease, background 0.28s ease;
+    pointer-events: none;
+}
+
+.energy-breakdown-item {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #636e72;
+    cursor: pointer;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1.2;
+    height: var(--energy-breakdown-item-height);
+    padding: 0 10px;
+    text-align: center;
+    transition: color 0.2s ease;
+}
+
+.energy-breakdown-item:hover,
+.energy-breakdown-item.active {
+    background: transparent;
+    font-weight: bold;
+}
+
+.energy-breakdown-item:hover {
+    color: #f0f0f0;
+}
+
+.energy-breakdown-item.active {
+    color: #fff;
+}
+
 .legend-grid {
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
@@ -590,7 +678,7 @@
     border-radius: 10px;
 }
 
-/* Archetypes 颜色定义*/
+/* Archetypes 棰滆壊瀹氫箟*/
 .legend-public-housing {
     background-color: #1abc9c;
 }
@@ -673,6 +761,8 @@
     display: none;
     overflow-y: auto;
     overflow-x: hidden;
+    overscroll-behavior: none;
+    scrollbar-width: none;
 }
 
 .result-panel.show {
@@ -686,10 +776,12 @@
     background-color: #333;
     color: #fff;
     border: 0px;
-    border-radius: 10px;
-    padding: 5px 10px;
+    border-radius: 999px;
+    min-height: 28px;
+    padding: 0 10px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     font-size: 12px;
+    line-height: 28px;
 }
 
 .result-panel select option {
@@ -697,14 +789,22 @@
     background-color: #fff;
     color: #333;
     border-color: #fff;
-    border-radius: 10px;
-    padding: 5px 10px;
+    border-radius: 999px;
+    min-height: 28px;
+    padding: 0 10px;
     font-size: 12px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 
 .result-panel select:hover {
     background-color: #333;
+}
+
+.result-panel select:focus,
+.result-panel select:focus-visible {
+    outline: none;
+    border: none;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 
 .result-panel select::-ms-expand {
@@ -728,11 +828,16 @@
     background-color: #333;
     color: #fff;
     border: none;
-    border-radius: 10px;
-    padding: 5px 10.5px;
+    border-radius: 999px;
+    min-height: 28px;
+    padding: 0 10.5px;
     cursor: pointer;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     font-size: 12px;
+    line-height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .result-panel .clear-btn:hover {
@@ -808,11 +913,18 @@
 
 .ml-predict-btn:hover {
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
 }
 
 .ml-predict-btn:disabled {
     opacity: 0.65;
     cursor: wait;
+}
+
+.energy-mode-btn {
+    display: none;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(244, 247, 250, 1));
+    color: #111827;
 }
 
 .visit-example-btn {
@@ -906,9 +1018,17 @@
     padding: 50px 10px 30px 12px;
 }
 
-.ml-progress-card,
+.ml-progress-card {
+    box-sizing: border-box;
+    width: min(550px, calc(100vw - 32px));
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
+    padding: 24px;
+}
+
 .ml-summary-card {
-    width: min(560px, calc(100vw - 32px));
+    width: min(550px, calc(100vw - 32px));
     background: #fff;
     border-radius: 20px;
     box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
@@ -1149,7 +1269,7 @@
 
 .ml-primary-btn,
 .ml-secondary-btn {
-    min-height: 30px;
+    min-height: 28px;
     padding: 0 16px;
     border-radius: 999px;
     border: none;
@@ -1216,7 +1336,7 @@
     }
 }
 
-/* 关闭按钮样式 */
+/* 鍏抽棴鎸夐挳鏍峰紡 */
 .panel-close-btn {
     position: absolute;
     top: 7px;
@@ -1283,11 +1403,12 @@
     display: flex;
     align-items: center;
     background: #ddd;
-    border-radius: 11px;
+    border-radius: 999px;
     border: 1.5px solid #ddd;
-    padding: 5px;
+    min-height: 30px;
+    padding: 0 6px;
     width: 280px;
-    height: 26px;
+    height: 30px;
     position: relative;
     top: -5px;
     left: 10px;
@@ -1299,7 +1420,11 @@
 #archetype-charts .toggle-option {
     flex: 1;
     text-align: center;
-    line-height: 25px;
+    line-height: 1;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 12px;
     font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
     color: #fff;
@@ -1314,9 +1439,9 @@
 #archetype-charts .toggle-slider {
     position: absolute;
     width: 142px;
-    height: 23px;
+    height: 27.5px;
     background: #333;
-    border-radius: 10px;
+    border-radius: 999px;
     transition: 0.3s;
     top: 0px;
     left: 0px;
@@ -1326,20 +1451,28 @@
     position: relative;
     left: 10px;
     top: -5px;
-    height: 25px;
+    min-height: 28px;
+    height: 28px;
     width: 83px;
-    line-height: 25px;
+    line-height: 1;
+    padding: 0 0;
     text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     color: #fff;
     font-size: 12px;
     font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
     background: #333;
+    border: 0;
+    box-sizing: border-box;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    border-radius: 999px;
     cursor: pointer;
 }
 
 #downloadSunChart:hover {
+    background: #333;
     font-weight: bold;
 }
 
@@ -1402,16 +1535,64 @@
     flex: 1;
     min-width: 90px;
     max-width: 90px;
-    height: 25px;
-    line-height: 25px;
+    min-height: 28px;
+    height: 28px;
+    line-height: 1;
+    padding: 0 0;
     text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     color: #fff;
     font-size: 12px;
     font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
     background: #333;
+    border: 0;
+    box-sizing: border-box;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    border-radius: 999px;
     cursor: pointer;
+}
+
+.downloadBar:hover {
+    background: #333;
+    font-weight: bold;
+}
+
+.energy-simulation-cta {
+    flex-basis: 100%;
+    margin: 0 10px 8px 0;
+    padding: 12px;
+    border-radius: 12px;
+    background: #f6f8fa;
+    border: 1px solid #e2e8f0;
+}
+
+.energy-simulation-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    border-radius: 999px;
+    background: #17212b;
+    color: #fff;
+    text-decoration: none;
+    font-size: 12px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.energy-simulation-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(23, 33, 43, 0.18);
+}
+
+.energy-simulation-note {
+    margin: 10px 0 0;
+    color: #4b5563;
+    font-size: 12px;
+    line-height: 1.45;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 #carbonChartContainer {
@@ -1472,6 +1653,196 @@
     z-index: 90;
     animation: showIcon 0.5s;
     animation-delay: 0s;
+}
+
+.operational-carbon-panel {
+    display: block;
+    width: 420px;
+    margin-top: 10px;
+    padding: 0 10px 14px;
+    box-sizing: border-box;
+}
+
+.operational-carbon-module {
+    width: 100%;
+    margin: 0 0 14px;
+    padding: 0;
+    border-top: 1px solid #e8edf2;
+}
+
+.operational-carbon-module:first-child {
+    border-top: 0;
+}
+
+.operational-carbon-module-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 5px 6px;
+}
+
+.operational-carbon-module-header h4 {
+    min-width: 0;
+    margin: 0;
+    color: #333;
+    font-size: 12px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.operational-carbon-module-header span {
+    color: #68717a;
+    font-size: 11px;
+    text-align: right;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.operational-template-section {
+    padding: 4px 5px 10px;
+}
+
+.operational-template-actions {
+    display: flex;
+    gap: 10px;
+    padding: 0 5px 2px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.operational-template-actions button {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 28px;
+    padding: 0 10px;
+    border-radius: 999px;
+    border: 0;
+    background: #333;
+    color: #fff;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 28px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    white-space: nowrap;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.operational-template-actions button:hover {
+    background: #333;
+    font-weight: 700;
+}
+
+.operational-template-title {
+    margin: 0 0 7px;
+    color: #007cbf;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    text-align: left;
+}
+
+.operational-template-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.operational-metric-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(96px, auto);
+    gap: 12px;
+    align-items: baseline;
+    min-height: 20px;
+    padding: 2px 0;
+}
+
+.operational-metric-row span {
+    min-width: 0;
+    color: #333;
+    font-size: 12px;
+    line-height: 1.25;
+    text-align: left;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.operational-metric-row strong {
+    color: #1f2933;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: right;
+    overflow-wrap: anywhere;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.operational-carbon-empty {
+    margin: 0 5px 8px;
+    color: #68717a;
+    font-size: 12px;
+    line-height: 1.45;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.operational-schedule-legend {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin: 0;
+    color: #555;
+    font-size: 10px;
+    font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
+    flex-shrink: 0;
+}
+
+.operational-schedule-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.operational-schedule-legend i {
+    display: inline-block;
+    width: 18px;
+    height: 0;
+    border-top: 2px solid #333;
+}
+
+.operational-schedule-legend .weekend-line {
+    border-top-color: #b8bec6;
+}
+
+.operational-schedule-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.operational-schedule-card {
+    width: 100%;
+}
+
+.operational-schedule-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 3px;
+    color: #333;
+    font-size: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.operational-schedule-header > span {
+    min-width: 0;
+}
+
+.operational-schedule-canvas {
+    display: block;
+    width: 100%;
+    height: 118px;
+    border: 0;
+    border-radius: 0;
+    background: #fff;
+    box-sizing: border-box;
 }
 
 .result-content {
@@ -1696,7 +2067,7 @@
     z-index: 9;
 }
 
-/* 基础面板样式*/
+/* 鍩虹闈㈡澘鏍峰紡*/
 .bench-panel {
     position: fixed;
     top: 50px;
@@ -1735,7 +2106,7 @@
 
 .bench-panel.show {
     display: block;
-    /* 显示面板 */
+    /* 鏄剧ず闈㈡澘 */
 }
 
 .bench-panel select {
@@ -1843,7 +2214,7 @@
 }
 
 
-/* 顶部控制区的容器样式 */
+/* 椤堕儴鎺у埗鍖虹殑瀹瑰櫒鏍峰紡 */
 .controls-container {
     display: flex;
     flex-wrap: wrap;
@@ -1906,7 +2277,7 @@
     min-width: 80px;
 }
 
-/* 结果区样式 */
+/* 缁撴灉鍖烘牱寮?*/
 .results-container {
     display: flex;
     flex-wrap: nowrap;
@@ -1915,7 +2286,7 @@
     gap: 20px;
 }
 
-/* 单个图表和解析组的样式 (4个指标横向排列) */
+/* 鍗曚釜鍥捐〃鍜岃В鏋愮粍鐨勬牱寮?(4涓寚鏍囨í鍚戞帓鍒? */
 .chart-analysis-group {
     min-width: calc(100% - 15px);
     display: flex;
@@ -1923,7 +2294,7 @@
     margin-top: 10px;
 }
 
-/* 核心：Grid 布局容器 */
+/* 鏍稿績锛欸rid 甯冨眬瀹瑰櫒 */
 .bm-analysis-grid {
     display: grid;
     margin-left: 0px;
@@ -1943,13 +2314,13 @@
     align-items: center;
 }
 
-/* 表头样式*/
+/* 琛ㄥご鏍峰紡*/
 .bm-grid-header {
     font-weight: bold;
     color: #333;
 }
 
-/* 第一列标签样式 (首列) */
+/* 绗竴鍒楁爣绛炬牱寮?(棣栧垪) */
 .bm-grid-row-label {
     font-weight: bold;
     color: #333;
@@ -2036,7 +2407,7 @@
     border: none;
 }
 
-/* 调整标题和文本样式 */
+/* 璋冩暣鏍囬鍜屾枃鏈牱寮?*/
 .mapboxgl-popup-content h3 {
     margin: 3px;
     font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
@@ -2052,7 +2423,7 @@
     color: #333;
 }
 
-/* 修改搜索框的 placeholder 字体 */
+/* 淇敼鎼滅储妗嗙殑 placeholder 瀛椾綋 */
 .mapboxgl-ctrl-geocoder input::placeholder {
     font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
     font-size: 12px;
@@ -2067,7 +2438,7 @@
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* 修改搜索输入框的字体大小 */
+/* 淇敼鎼滅储杈撳叆妗嗙殑瀛椾綋澶у皬 */
 .mapboxgl-ctrl-geocoder input {
     font-family: "Roboto Mono", Tahoma, Geneva, Verdana, sans-serif;
     font-size: 12px;
@@ -2088,9 +2459,9 @@
 
 .mapboxgl-ctrl-bottom-left.mapboxgl-ctrl-scale {
     direction: rtl;
-    /* 让元素从右往左排列 */
+    /* 璁╁厓绱犱粠鍙冲線宸︽帓鍒?*/
     text-align: right;
-    /* 确保文本在右侧 */
+    /* 纭繚鏂囨湰鍦ㄥ彸渚?*/
 }
 
 .mapboxgl-ctrl-scale::after {
@@ -2166,3 +2537,7 @@
         grid-template-columns: minmax(0, 1fr) repeat(3, 68px);
     }
 }
+
+
+
+

@@ -5,7 +5,7 @@ import { getDynamicArchetypeSunburstOption, getDynamicArchetypeFootprintSunburst
 // 全局变量，存储统计数据供charts.js使用
 window.archetypeStats = {};
 
-export async function initControlPanel(map, jsonPath = './config.json') {
+export async function initControlPanel(map, jsonPath = '/user-data/config.json') {
     // 1. 获取动态数据
     let userData = null;
     try {

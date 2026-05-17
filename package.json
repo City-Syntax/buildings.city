@@ -1,17 +1,19 @@
 {
   "name": "buildings.city-package",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "ml:setup": "powershell -ExecutionPolicy Bypass -File ./ml-service/setup-venv.ps1",
-    "ml:start": "powershell -ExecutionPolicy Bypass -File ./ml-service/start-ml-service.ps1"
+    "ml:start": "powershell -ExecutionPolicy Bypass -File ./ml-service/start-ml-service.ps1",
+    "simulation:setup": "powershell -ExecutionPolicy Bypass -File ./simulation-service/setup-venv.ps1",
+    "simulation:start": "powershell -ExecutionPolicy Bypass -File ./simulation-service/start-simulation-service.ps1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "description": "UBEM Platform for Building Carbon and Energy Analysis",
   "devDependencies": {
     "vite": "^5.0.0"

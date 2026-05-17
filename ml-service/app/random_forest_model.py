@@ -44,6 +44,17 @@ MODEL_FEATURE_NAMES = [
     "height",
 ]
 
+OPTIONAL_NUMERIC_PROPERTY_FEATURES = [
+    "built_year",
+    "building_age",
+    "gross_floor_area",
+    "floor_area",
+    "building_levels",
+    "floor_height",
+]
+
+AVAILABLE_FEATURE_NAMES = MODEL_FEATURE_NAMES + OPTIONAL_NUMERIC_PROPERTY_FEATURES
+
 
 def _emit_progress(progress_callback, stage: str, progress: int, message: str) -> None:
     if progress_callback:
@@ -199,11 +210,70 @@ def height_like_feature_value(properties: dict[str, Any], height_property: str) 
     return 0.0
 
 
+def built_year_value(properties: dict[str, Any]) -> float:
+    return numeric_property_value(properties, "built_year")
+
+
+def building_age_value(properties: dict[str, Any]) -> float:
+    explicit_age = numeric_property_value(properties, "building_age")
+    if explicit_age > 0:
+        return explicit_age
+
+    year = built_year_value(properties)
+    if 1500 <= year <= 2200:
+        return max(0.0, 2026.0 - year)
+
+    return 0.0
+
+
+def gross_floor_area_value(properties: dict[str, Any]) -> float:
+    for property_name in ("gross_floor_area", "gfa", "floor_area", "building_gfa"):
+        value = numeric_property_value(properties, property_name)
+        if value > 0:
+            return value
+    return 0.0
+
+
+def building_levels_value(properties: dict[str, Any]) -> float:
+    for property_name in LEVEL_FALLBACK_PROPERTIES:
+        value = numeric_property_value(properties, property_name)
+        if value > 0:
+            return value
+    return 0.0
+
+
+def floor_height_value(properties: dict[str, Any]) -> float:
+    for property_name in ("floor_height", "floor_to_floor_height", "storey_height", "level_height"):
+        value = numeric_property_value(properties, property_name)
+        if value > 0:
+            return value
+
+    height = height_like_feature_value(properties, "height")
+    levels = building_levels_value(properties)
+    if height > 0 and levels > 0:
+        return height / levels
+
+    return 0.0
+
+
+def normalize_feature_names(feature_names: list[str] | None) -> list[str]:
+    if not feature_names:
+        return MODEL_FEATURE_NAMES.copy()
+
+    selected = []
+    for feature_name in feature_names:
+        if feature_name in AVAILABLE_FEATURE_NAMES and feature_name not in selected:
+            selected.append(feature_name)
+
+    return selected or MODEL_FEATURE_NAMES.copy()
+
+
 def build_feature_matrix(
     features: list[dict[str, Any]],
     archetype_property: str,
     height_property: str,
     unknown_values: set[str],
+    feature_names: list[str],
 ) -> tuple[np.ndarray, list[dict[str, Any]], list[dict[str, Any]], np.ndarray]:
     rows: list[list[float]] = []
     labeled_rows: list[dict[str, Any]] = []
@@ -217,7 +287,13 @@ def build_feature_matrix(
         label = "" if archetype is None else str(archetype).strip()
         feature_vector = geometry_features(geometry)
         feature_vector["height"] = height_like_feature_value(properties, height_property)
-        rows.append([feature_vector[name] for name in MODEL_FEATURE_NAMES])
+        feature_vector["built_year"] = built_year_value(properties)
+        feature_vector["building_age"] = building_age_value(properties)
+        feature_vector["gross_floor_area"] = gross_floor_area_value(properties)
+        feature_vector["floor_area"] = gross_floor_area_value(properties)
+        feature_vector["building_levels"] = building_levels_value(properties)
+        feature_vector["floor_height"] = floor_height_value(properties)
+        rows.append([feature_vector.get(name, 0.0) for name in feature_names])
 
         row_meta = {
             "feature_index": index,
@@ -234,7 +310,11 @@ def build_feature_matrix(
     return np.asarray(rows, dtype=float), labeled_rows, unknown_rows, np.asarray(labels)
 
 
-def build_dynamic_smote_strategy(class_counts: Counter[str]) -> tuple[dict[str, int], list[str], int | None]:
+def build_dynamic_smote_strategy(
+    class_counts: Counter[str],
+    max_oversampling_multiplier: float = MAX_OVERSAMPLING_MULTIPLIER,
+    majority_target_boost: float = MAJORITY_TARGET_BOOST,
+) -> tuple[dict[str, int], list[str], int | None]:
     majority_count = max(class_counts.values())
     sampling_strategy: dict[str, int] = {}
     skipped_classes: list[str] = []
@@ -244,10 +324,10 @@ def build_dynamic_smote_strategy(class_counts: Counter[str]) -> tuple[dict[str, 
         if count >= majority_count:
             continue
 
-        boosted_majority_target = int(round(majority_count * MAJORITY_TARGET_BOOST))
-        multiplier_limited_target = int(round(count * MAX_OVERSAMPLING_MULTIPLIER))
+        boosted_majority_target = int(round(majority_count * majority_target_boost))
+        multiplier_limited_target = int(round(count * max_oversampling_multiplier))
         target_ceiling = max(count, min(boosted_majority_target, multiplier_limited_target))
-        target_multiplier = min(MAX_OVERSAMPLING_MULTIPLIER, target_ceiling / count)
+        target_multiplier = min(max_oversampling_multiplier, target_ceiling / count)
         target_count = int(round(count * target_multiplier))
         target_count = max(count, min(target_ceiling, target_count))
 
@@ -272,9 +352,15 @@ def train_random_forest(
     X_train: np.ndarray,
     y_train: np.ndarray,
     random_state: int,
+    smote_max_multiplier: float = MAX_OVERSAMPLING_MULTIPLIER,
+    smote_majority_boost: float = MAJORITY_TARGET_BOOST,
 ) -> tuple[RandomForestClassifier, dict[str, Any]]:
     class_counts = Counter(y_train.tolist())
-    sampling_strategy, skipped_classes, k_neighbors = build_dynamic_smote_strategy(class_counts)
+    sampling_strategy, skipped_classes, k_neighbors = build_dynamic_smote_strategy(
+        class_counts,
+        max_oversampling_multiplier=smote_max_multiplier,
+        majority_target_boost=smote_majority_boost,
+    )
     X_resampled = X_train
     y_resampled = y_train
 
@@ -302,6 +388,8 @@ def train_random_forest(
         "sampling_strategy": sampling_strategy,
         "skipped_classes": skipped_classes,
         "k_neighbors": k_neighbors,
+        "max_multiplier": smote_max_multiplier,
+        "majority_boost": smote_majority_boost,
         "original_class_distribution": dict(class_counts),
         "resampled_class_distribution": dict(Counter(y_resampled.tolist())),
     }
@@ -312,6 +400,9 @@ def predict_archetypes(
     archetype_property: str = "building_archetype",
     height_property: str = "height",
     confidence_threshold: float = 0.2,
+    feature_names: list[str] | None = None,
+    smote_max_multiplier: float = MAX_OVERSAMPLING_MULTIPLIER,
+    smote_majority_boost: float = MAJORITY_TARGET_BOOST,
     unknown_values: set[str] | None = None,
     test_size: float = 0.2,
     random_state: int = 42,
@@ -329,8 +420,15 @@ def predict_archetypes(
         raise ValueError("GeoJSON contains no features")
 
     unknown_values = unknown_values or {"unknown", "Unknown", "UNKNOWN", "", "null", "None"}
+    selected_feature_names = normalize_feature_names(feature_names)
     _emit_progress(progress_callback, "feature_engineering", 48, "Computing geometry and height features")
-    feature_matrix, labeled_rows, unknown_rows, labels = build_feature_matrix(features, archetype_property, height_property, unknown_values)
+    feature_matrix, labeled_rows, unknown_rows, labels = build_feature_matrix(
+        features,
+        archetype_property,
+        height_property,
+        unknown_values,
+        selected_feature_names,
+    )
 
     if len(labeled_rows) < 10:
         raise ValueError("At least 10 labeled features are required for training")
@@ -358,7 +456,13 @@ def predict_archetypes(
     )
 
     _emit_progress(progress_callback, "smote", 68, "Applying dynamic SMOTE resampling to minority classes")
-    validation_model, validation_smote_summary = train_random_forest(X_train, y_train, random_state)
+    validation_model, validation_smote_summary = train_random_forest(
+        X_train,
+        y_train,
+        random_state,
+        smote_max_multiplier=smote_max_multiplier,
+        smote_majority_boost=smote_majority_boost,
+    )
 
     _emit_progress(progress_callback, "train_test", 78, "Training validation random forest")
     y_pred = validation_model.predict(X_test)
@@ -367,7 +471,13 @@ def predict_archetypes(
     matrix = confusion_matrix(y_test, y_pred, labels=sorted(class_counts.keys()))
 
     _emit_progress(progress_callback, "final_train", 88, "Training final random forest with dynamic SMOTE")
-    final_model, final_smote_summary = train_random_forest(X_labeled, y_labeled, random_state)
+    final_model, final_smote_summary = train_random_forest(
+        X_labeled,
+        y_labeled,
+        random_state,
+        smote_max_multiplier=smote_max_multiplier,
+        smote_majority_boost=smote_majority_boost,
+    )
 
     _emit_progress(progress_callback, "predicting", 94, "Predicting unknown archetypes")
     predictions: list[dict[str, Any]] = []
@@ -426,7 +536,7 @@ def predict_archetypes(
     feature_importance = [
         {"feature": name, "importance": float(value)}
         for name, value in sorted(
-            zip(MODEL_FEATURE_NAMES, final_model.feature_importances_),
+            zip(selected_feature_names, final_model.feature_importances_),
             key=lambda item: item[1],
             reverse=True,
         )
@@ -456,7 +566,10 @@ def predict_archetypes(
                 "labels": sorted(class_counts.keys()),
                 "matrix": matrix.tolist(),
             },
-            "geometry_features": MODEL_FEATURE_NAMES,
+            "geometry_features": selected_feature_names,
+            "available_features": AVAILABLE_FEATURE_NAMES,
+            "smote_max_multiplier": smote_max_multiplier,
+            "smote_majority_boost": smote_majority_boost,
             "validation_smote": validation_smote_summary,
             "final_smote": final_smote_summary,
         },
