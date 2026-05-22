@@ -799,7 +799,7 @@
 <body>
     <main class="prediction-layout">
         <div class="left-stack">
-            <section class="mode-card">
+            <section class="mode-card" data-tour="prediction-intro">
                 <div class="header-top">
                     <a class="back-link" href="/"><span class="back-icon" aria-hidden="true"></span><span>BACK TO THE MAIN MAP</span></a>
                 </div>
@@ -809,9 +809,9 @@
                 </div>
             </section>
 
-            <section class="analysis-card">
+            <section class="analysis-card" data-tour="prediction-analysis">
                 <div class="analysis-scroll">
-                    <section class="section">
+                    <section class="section" data-tour="prediction-dataset">
                         <h2 class="section-title">Dataset Overview</h2>
                         <div id="datasetMetrics" class="metric-grid"></div>
                     </section>
@@ -826,12 +826,12 @@
                         <div id="inputCompleteness" class="type-list"></div>
                     </section>
 
-                    <section class="section">
+                    <section class="section" data-tour="prediction-recommendation">
                         <h2 class="section-title">Recommendation</h2>
                         <div id="recommendation" class="recommendation">Loading dataset diagnostics.</div>
                     </section>
 
-                    <section class="section">
+                    <section class="section" data-tour="prediction-training">
                         <h2 class="section-title">Training Controls</h2>
                         <label class="model-control" for="smoteMultiplierInput">
                             <span class="model-control-row">
@@ -855,17 +855,17 @@
                         </label>
                     </section>
 
-                    <section class="section">
+                    <section class="section" data-tour="prediction-features">
                         <h2 class="section-title">Input Features</h2>
                         <div id="featureSelectList" class="feature-select-list"></div>
                     </section>
                 </div>
 
-                <button id="runPrediction" class="predict-action" type="button">Predict Unknown Archetypes</button>
+                <button id="runPrediction" class="predict-action" type="button" data-tour="prediction-run">Predict Unknown Archetypes</button>
             </section>
         </div>
 
-        <section class="summary-card">
+        <section class="summary-card" data-tour="prediction-summary">
             <div class="summary-header">
                 <div class="summary-title-row">
                     <h2>Random Forest Summary</h2>

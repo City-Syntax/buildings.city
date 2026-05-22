@@ -1,8 +1,10 @@
 import * as turf from '@turf/turf';
 import config from '../user-data/config.json';
+import './onboarding-tour.css';
 import { createPredictionJob, fetchGeoJSON, getPredictionJob } from './ml-api.js';
 import { syncGeoJSONDataset } from './data-sync-api.js';
 import { formatArchetypeName } from './data-processor.js';
+import { initOnboardingTour } from './onboarding-tour.js';
 
 const UNKNOWN_VALUES = new Set(['', 'unknown', 'none', 'null', 'undefined', 'n/a', 'na']);
 const POLYGON_TYPES = new Set(['Polygon', 'MultiPolygon']);
@@ -99,7 +101,59 @@ async function init() {
         renderDiagnostics(state.diagnostics);
     } catch (error) {
         renderLoadError(error);
+    } finally {
+        initPredictionTour();
     }
+}
+
+function initPredictionTour() {
+    initOnboardingTour({
+        storageKey: 'buildings.city.prediction-tour.v11',
+        steps: [
+            {
+                target: '[data-tour="prediction-intro"]',
+                title: 'Prediction mode overview',
+                body: 'This page checks the active GeoJSON and prepares a local random-forest workflow for missing or unknown archetypes.',
+                placement: 'right'
+            },
+            {
+                target: '[data-tour="prediction-dataset"]',
+                title: 'Dataset health',
+                body: 'Start here to confirm how many buildings are known, unknown, or missing key inputs before training the model.',
+                placement: 'right'
+            },
+            {
+                target: '[data-tour="prediction-recommendation"]',
+                title: 'Read the recommendation',
+                body: 'The recommendation flags whether the dataset is ready for prediction or needs cleanup first.',
+                placement: 'right'
+            },
+            {
+                target: '[data-tour="prediction-training"]',
+                title: 'Training controls',
+                body: 'Use these sliders to tune SMOTE balancing and the minimum confidence required before a prediction is applied.',
+                placement: 'right'
+            },
+            {
+                target: '[data-tour="prediction-features"]',
+                title: 'Input features',
+                body: 'Choose which geometry and attribute fields the model can use. At least one feature must stay enabled.',
+                placement: 'right'
+            },
+            {
+                target: '[data-tour="prediction-run"]',
+                title: 'Run prediction',
+                body: 'This sends the active GeoJSON and current controls to the local ML API, then waits for the job summary.',
+                placement: 'top'
+            },
+            {
+                target: '[data-tour="prediction-summary"]',
+                title: 'Review and sync',
+                body: 'After a run, review accuracy, feature importance, and class metrics here before downloading or syncing the predicted GeoJSON.',
+                placement: 'left'
+            }
+        ]
+    });
 }
 
 function bindUI() {

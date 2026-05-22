@@ -1840,7 +1840,7 @@
 </head>
 
 <body>
-    <div id="map"></div>
+    <div id="map" data-tour="simulation-map"></div>
 
     <div id="simulationProgressOverlay" class="sim-overlay" aria-hidden="true">
         <div class="sim-progress-card" role="dialog" aria-modal="true" aria-labelledby="simulation-progress-title">
@@ -1998,7 +1998,7 @@
     </div>
 
     <div class="top-left-stack">
-        <header class="simulation-header">
+        <header class="simulation-header" data-tour="simulation-intro">
             <div class="header-top">
                 <a class="back-link" href="/"><span class="back-icon" aria-hidden="true"></span><span>BACK TO THE MAIN MAP</span></a>
             </div>
@@ -2007,7 +2007,7 @@
                 <p id="modeDescription">Click buildings to add or remove targets, up to 50. Use the circle button for a one-time area selection.</p>
 
                 <div class="control-strip">
-                    <label class="radius-control" for="radiusInput">
+                    <label class="radius-control" for="radiusInput" data-tour="simulation-target-radius">
                         <span class="radius-control-row">
                             <span>Circle radius</span>
                             <strong id="radiusValue">200 m</strong>
@@ -2017,7 +2017,7 @@
                             <button id="resetRadius" class="radius-reset-btn" type="button">Reset</button>
                         </span>
                     </label>
-                    <label class="radius-control" for="contextRadiusInput">
+                    <label class="radius-control" for="contextRadiusInput" data-tour="simulation-context-radius">
                         <span class="radius-control-row">
                             <span>Context radius</span>
                             <strong id="contextRadiusValue">200 m</strong>
@@ -2027,13 +2027,13 @@
                             <button id="resetContextRadius" class="radius-reset-btn" type="button">Reset</button>
                         </span>
                     </label>
-                    <button id="confirmSimulation" class="confirm-sim-btn" type="button">Simulate Buildings by EnergyPlus / Eppy</button>
-                    <button id="confirmSurrogateSimulation" class="confirm-sim-btn surrogate-sim-btn" type="button">Simulate Buildings by Surrogate Model</button>
+                    <button id="confirmSimulation" class="confirm-sim-btn" type="button" data-tour="simulation-energyplus">Simulate Buildings by EnergyPlus / Eppy</button>
+                    <button id="confirmSurrogateSimulation" class="confirm-sim-btn surrogate-sim-btn" type="button" data-tour="simulation-surrogate">Simulate Buildings by Surrogate Model</button>
                 </div>
             </div>
         </header>
 
-        <div id="simResultsPanel" class="sim-results-panel">
+        <div id="simResultsPanel" class="sim-results-panel" data-tour="simulation-results">
             <div class="sim-results-panel-header">
                 <span class="sim-results-panel-title">Simulation Results</span>
                 <div class="sim-results-panel-controls">
@@ -2050,7 +2050,7 @@
             </div>
         </div>
 
-        <div class="status-bar" aria-live="polite">
+        <div class="status-bar" aria-live="polite" data-tour="simulation-status">
             <div class="status-pill-row">
                 <div class="status-pill target">Target <strong id="targetCount">0</strong></div>
                 <div class="status-pill invalid">Invalid <strong id="invalidCount">0</strong></div>
@@ -2059,13 +2059,13 @@
         </div>
     </div>
 
-    <button id="drawAreaSelection" class="simulation-map-tool" type="button" title="Draw area circle once" aria-label="Draw area circle once">
+    <button id="drawAreaSelection" class="simulation-map-tool" type="button" title="Draw area circle once" aria-label="Draw area circle once" data-tour="simulation-area-tool">
         <span class="circle-tool-icon" aria-hidden="true"></span>
     </button>
-    <button id="resetSelection" class="simulation-map-tool simulation-clear-tool" type="button" title="Clear selected map buildings" aria-label="Clear selected map buildings">
+    <button id="resetSelection" class="simulation-map-tool simulation-clear-tool" type="button" title="Clear selected map buildings" aria-label="Clear selected map buildings" data-tour="simulation-clear-tool">
         <span class="broom-tool-icon" aria-hidden="true"><span class="broom-bristles"></span></span>
     </button>
-    <button id="syncGeojsonDataset" class="sync-geojson-btn" type="button">Sync GeoJSON dataset</button>
+    <button id="syncGeojsonDataset" class="sync-geojson-btn" type="button" data-tour="simulation-sync">Sync GeoJSON dataset</button>
 
     <script type="module" src="/src/energy-simulation.js"></script>
 </body>

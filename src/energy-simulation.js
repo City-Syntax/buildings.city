@@ -6,6 +6,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import config from '../user-data/config.json';
+import './onboarding-tour.css';
 import {
     createSimulationJob,
     getBuildingHourlyOutputs,
@@ -15,6 +16,7 @@ import {
 } from './simulation-api.js';
 import { reloadSimulationBuildingLibrary, syncGeoJSONDataset } from './data-sync-api.js';
 import idfTemplateLibrary from '../user-data/simulation/templates.json';
+import { initOnboardingTour } from './onboarding-tour.js';
 
 const DEFAULT_RADIUS_METERS = 200;
 const DEFAULT_CONTEXT_RADIUS_METERS = 200;
@@ -326,6 +328,70 @@ function createMap(center = DEFAULT_MAP_CENTER) {
         modePrompt?.classList.remove('show');
         updateModeText();
         updateHint('Click buildings to add or remove simulation targets. Up to 30 buildings can be selected.');
+        initSimulationTour();
+    });
+}
+
+function initSimulationTour() {
+    initOnboardingTour({
+        storageKey: 'buildings.city.simulation-tour.v11',
+        startDelay: 500,
+        steps: [
+            {
+                target: '[data-tour="simulation-intro"]',
+                title: 'Simulation mode overview',
+                body: 'Click buildings on the map to add or remove simulation targets. Double-click a building to edit its IDF defaults.',
+                placement: 'right'
+            },
+            {
+                target: '[data-tour="simulation-target-radius"]',
+                title: 'Circle radius',
+                body: 'When the circle tool is armed, this radius defines the target selection area for one map click.',
+                placement: 'right'
+            },
+            {
+                target: '[data-tour="simulation-context-radius"]',
+                title: 'Context radius',
+                body: 'Context buildings are shaded around your targets so the simulation request keeps nearby geometry awareness.',
+                placement: 'right'
+            },
+            {
+                target: '[data-tour="simulation-area-tool"]',
+                title: 'Area selection',
+                body: 'Use this button for a one-time circular area selection, then click the map where the circle should be centered.',
+                placement: 'left'
+            },
+            {
+                target: '[data-tour="simulation-clear-tool"]',
+                title: 'Clear selection',
+                body: 'This clears the current targets, context, and area selection so you can start a new simulation set.',
+                placement: 'left'
+            },
+            {
+                target: '[data-tour="simulation-status"]',
+                title: 'Selection counts',
+                body: 'These counters show valid targets, invalid selected buildings, and context buildings in the current request.',
+                placement: 'top'
+            },
+            {
+                target: '[data-tour="simulation-energyplus"]',
+                title: 'EnergyPlus run',
+                body: 'Run the selected buildings through the local simulation API using EnergyPlus and Eppy-backed outputs.',
+                placement: 'right'
+            },
+            {
+                target: '[data-tour="simulation-surrogate"]',
+                title: 'Surrogate run',
+                body: 'Use the lighter surrogate workflow when you want faster estimated results for the current selection.',
+                placement: 'right'
+            },
+            {
+                target: '[data-tour="simulation-sync"]',
+                title: 'Sync dataset',
+                body: 'After edits or parameter syncs, this writes the active GeoJSON back to the configured project dataset.',
+                placement: 'left'
+            }
+        ]
     });
 }
 
