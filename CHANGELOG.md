@@ -7,6 +7,21 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.0.0] - 2026-06-11
+
+### Added
+
+- Enhanced landing page with 3D building visualization
+- Improved UI/UX design and layout
+- Updated documentation and contribution guidelines
+
+### Changed
+
+- Major version bump to 2.0.0
+- Updated index.html with modern design elements
+
+---
+
 ## [1.0] - 2026-03-16
 
 ### Added
